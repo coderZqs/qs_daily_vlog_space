@@ -5,6 +5,11 @@
 <script lang="ts" setup>
 import { ref, onMounted } from "vue";
 import * as THREE from "three";
+import {
+  CSS2DRenderer,
+  CSS2DObject,
+} from "three/examples/jsm/renderers/CSS2DRenderer";
+import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
 
 let container = ref<HTMLDivElement | null>(null);
 // box配置
@@ -39,6 +44,16 @@ const generateBox = (i: number) => {
 
   let { x, y, z } = getPoiByIndex(i);
   cube.position.set(x, y, z);
+
+  cube.layers.enableAll();
+
+  const cubeSpan = document.createElement("div");
+  cubeSpan.className = "label";
+  cubeSpan.textContent = "序号" + i;
+  const cubeLabel = new CSS2DObject(cubeSpan);
+  cubeLabel.position.set(0, 0, 0);
+  cube.add(cubeLabel);
+  cubeLabel.layers.set(0);
 
   return cube;
 };
@@ -75,7 +90,17 @@ const init = () => {
     (rowLength * (boxSize + boxMargin)) / 2,
     500
   );
-  /* camera.lookAt(scene.position); */
+
+  // 添加cssRenderer
+
+  let labelRenderer = new CSS2DRenderer();
+  labelRenderer.setSize(window.innerWidth, window.innerHeight);
+  labelRenderer.domElement.style.position = "absolute";
+  labelRenderer.domElement.style.top = "0px";
+
+  const controls = new OrbitControls(camera, labelRenderer.domElement);
+  controls.minDistance = 5;
+  controls.maxDistance = 100000;
 
   // 渲染器
   let renderer = new THREE.WebGLRenderer();
@@ -84,7 +109,9 @@ const init = () => {
 
   if (container.value) {
     container.value.appendChild(renderer.domElement);
+    container.value.appendChild(labelRenderer.domElement);
     renderer.render(scene, camera);
+    labelRenderer.render(scene, camera);
   }
 
   /**
@@ -95,11 +122,13 @@ const init = () => {
     let cube = generateBox(boxNum);
     scene.add(cube);
 
-    const { y } = getPoiByIndex(boxNum);
+    // 设置镜头
+    /* const { y } = getPoiByIndex(boxNum);
 
     camera.position.y = y / 2;
-    camera.position.z = y / 2 / Math.tan(Math.PI / 8);
+    camera.position.z = y / 2 / Math.tan(Math.PI / 8); */
     renderer.render(scene, camera);
+    labelRenderer.render(scene, camera);
   }, 30);
 };
 
