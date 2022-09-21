@@ -19,6 +19,8 @@ const boxColor = 0x0000ff;
 const boxMargin = 10;
 const rowLength = Math.ceil(Math.sqrt(boxNum));
 const colLength = Math.floor(Math.sqrt(boxNum));
+let group = new THREE.AnimationObjectGroup();
+let clock = new THREE.Clock();
 
 /**
  * 获得坐标
@@ -78,8 +80,22 @@ const init = () => {
 
   for (let i = 0; i <= boxNum; i++) {
     let cube = generateBox(i);
+    cube.name = "Box";
+    group.add(cube);
     scene.add(cube);
   }
+
+  // 创建帧动画
+
+  var times = [0, 10];
+  var values = [0, 0, 0, 400, 0, 0];
+  var posTrack = new THREE.KeyframeTrack("Box.position", times, values);
+  const duration = 5000;
+  var clip = new THREE.AnimationClip("default", duration, [posTrack]);
+  var mixer = new THREE.AnimationMixer(group);
+  var AnimationAction = mixer.clipAction(clip);
+  AnimationAction.timeScale = 20;
+  AnimationAction.play();
 
   // 坐标轴
   var axesHelper = new THREE.AxesHelper(100000);
@@ -129,6 +145,7 @@ const init = () => {
     camera.position.z = y / 2 / Math.tan(Math.PI / 8); */
     renderer.render(scene, camera);
     labelRenderer.render(scene, camera);
+    mixer.update(clock.getDelta());
   }, 30);
 };
 
