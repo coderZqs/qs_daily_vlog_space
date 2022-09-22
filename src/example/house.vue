@@ -11,34 +11,50 @@ import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
 let ThreeBSP = THREEBSPConstructor(THREE);
 
 const generateOutWall = () => {
-  const h = 600;
-  const w = 1000;
+  const h = 1500;
+  const l = 4000;
+  const w = 1500;
   const d = 100;
   const p = [0, 0, 0];
+
+  const wallTexture = new THREE.TextureLoader.load(
+    "../assets/image/plane.jpg"
+  );
+
   const outBox = new THREE.Mesh(
-    new THREE.BoxGeometry(w, h, w),
+    new THREE.BoxGeometry(l, h, w),
     new THREE.MeshLambertMaterial({
       color: 0xaed6f1,
+      map: wallTexture
     })
   );
+
   outBox.position.set(p[0], h / 2, p[2]);
 
   const innerBox = new THREE.Mesh(
-    new THREE.BoxGeometry(w - d, h, w - d),
+    new THREE.BoxGeometry(l - d, h, w - d),
     new THREE.MeshLambertMaterial({ color: 0xaed6f1 })
   );
 
   innerBox.position.set(p[0], h / 2, p[2]);
 
+  const emptyBox = new THREE.Mesh(
+    new THREE.BoxGeometry(600, 1000, 300),
+    material
+  );
+  emptyBox.position.set(0, 500, w / 2);
+  /*  scene.add(emptyBox); */
+
   const outBoxBSP = new ThreeBSP(outBox);
   const innerBoxBSP = new ThreeBSP(innerBox);
-  let resultBSP = outBoxBSP.subtract(innerBoxBSP);
+  const emptyBoxBSP = new ThreeBSP(emptyBox);
+  let wallBSP = outBoxBSP.subtract(innerBoxBSP);
+  let resultBSP = wallBSP.subtract(emptyBoxBSP);
   var result = resultBSP.toMesh();
   result.geometry.computeFaceNormals();
   result.geometry.computeVertexNormals();
   var material = new THREE.MeshPhongMaterial({ color: 0xaed6f1 });
   result.material = material;
-
   scene.add(result);
 };
 
