@@ -7,8 +7,13 @@ import * as THREE from "three";
 import THREEBSPConstructor from "three-js-csg";
 import { onMounted } from "vue";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
+import { Vector2 } from "three";
 
 let ThreeBSP = THREEBSPConstructor(THREE);
+let mouse = new THREE.Vector2();
+let door = null;
+
+var raycaster = new THREE.Raycaster();
 
 const houseSizeConfig = {
   h: 1500,
@@ -16,6 +21,13 @@ const houseSizeConfig = {
   w: 3000,
   wallDeep: 100,
 };
+
+let doorSizeConfig = {
+  width: 600,
+  height: 1000,
+};
+
+let isMouseOverDoor = false;
 
 const generateToilet = () => {
   let l = 1000;
@@ -146,6 +158,24 @@ const generateBed = () => {
 };
 
 /**
+ * 生成门
+ */
+
+const generateDoor = () => {
+  const doorTexture = generateTexture("/src/assets/image/door.png", 5);
+
+  door = new THREE.Mesh(
+    new THREE.BoxGeometry(30, doorSizeConfig.height, 600),
+    new THREE.MeshPhongMaterial({
+      map: doorTexture,
+    })
+  );
+
+  door.position.set(houseSizeConfig.l / 2, 500, houseSizeConfig.w / 2 - 500);
+  scene.add(door);
+};
+
+/**
  * 生成外墙
  */
 
@@ -154,11 +184,6 @@ const generateOutWall = () => {
     x: 0,
     y: 0,
     z: 0,
-  };
-
-  const doorSizeConfig = {
-    width: 600,
-    height: 1000,
   };
 
   const outBox = new THREE.Mesh(
@@ -219,24 +244,6 @@ const generateOutWall = () => {
   });
   result.material = material;
   scene.add(result);
-
-  const doorTexture = generateTexture("/src/assets/image/door.png", 5);
-
-  const door = new THREE.Mesh(
-    new THREE.BoxGeometry(30, doorSizeConfig.height, 600),
-    new THREE.MeshPhongMaterial({
-      map: doorTexture,
-    })
-  );
-
-  door.position.set(houseSizeConfig.l / 2, 500, houseSizeConfig.w / 2 - 500);
-
-  scene.add(door);
-
-  generateFloor();
-  generateBed();
-  generateWardrobe();
-  generateToilet();
 };
 
 /**
@@ -277,9 +284,12 @@ const camera = new THREE.PerspectiveCamera(
   2000000
 );
 
-const controls = new OrbitControls(camera, renderer.domElement);
-
 generateOutWall();
+generateFloor();
+generateBed();
+generateWardrobe();
+generateToilet();
+generateDoor();
 
 let planeTexture = generateTexture("/src/assets/image/plane.jpg", 100);
 const plane = new THREE.Mesh(
@@ -289,6 +299,8 @@ const plane = new THREE.Mesh(
 
 plane.rotation.x = -Math.PI / 2;
 scene.add(plane);
+
+const controls = new OrbitControls(camera, renderer.domElement);
 
 /* const directionLight = new THREE.DirectionalLight();
 directionLight.position.set(-1000, 1000, -1000);
@@ -312,12 +324,39 @@ let animate = () => {
   requestAnimationFrame(animate);
   renderer.render(scene, camera);
   controls.update();
+  raycaster.setFromCamera(mouse, camera);
+
+  var intersectObject = raycaster.intersectObjects([door]);
+  isMouseOverDoor = Boolean(intersectObject.length);
 };
 
 onMounted(() => {
   init();
-
   animate();
+
+  window.onmousemove = (event) => {
+    mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
+    mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
+  };
+
+  let i = 0;
+  var axis = new THREE.Vector3(1, 0, 0);
+
+  const doorAni = () => {
+    /* let closeAngle = 0;
+    let openAngle = Math.PI; */
+    let aniId = requestAnimationFrame(doorAni);
+    i += 0.01;
+
+    door.rotateOnAxis(axis, i);
+    /* door.rotation.y += 0.01; */
+  };
+
+  document.onclick = () => {
+    if (isMouseOverDoor) {
+      doorAni();
+    }
+  };
 });
 </script>
 
