@@ -7,7 +7,6 @@ import * as THREE from "three";
 import THREEBSPConstructor from "three-js-csg";
 import { onMounted } from "vue";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
-import { Vector2 } from "three";
 
 let ThreeBSP = THREEBSPConstructor(THREE);
 let mouse = new THREE.Vector2();
@@ -343,13 +342,10 @@ onMounted(() => {
   var axis = new THREE.Vector3(1, 0, 0);
 
   const doorAni = () => {
-    /* let closeAngle = 0;
-    let openAngle = Math.PI; */
     let aniId = requestAnimationFrame(doorAni);
     i += 0.01;
 
     door.rotateOnAxis(axis, i);
-    /* door.rotation.y += 0.01; */
   };
 
   document.onclick = () => {
