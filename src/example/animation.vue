@@ -22,8 +22,9 @@ export default {
         let mesh = new THREE.Mesh(
           new THREE.BoxGeometry(50, 50, 50),
           new THREE.MeshBasicMaterial({
-            color: 0xd58e7e,
+            color: 0xffffff,
             transparent: true,
+            opacity: 1,
           })
         );
 
@@ -34,20 +35,20 @@ export default {
       }
 
       const xAxis = new THREE.Vector3(1, 0, 0);
-      const qInitial = new THREE.Quaternion().setFromAxisAngle(xAxis, 0);
-      const qFinial = new THREE.Quaternion().setFromAxisAngle(xAxis, Math.PI);
+      /*       const qInitial = new THREE.Quaternion().setFromAxisAngle(xAxis, 0); */
+      /*       const qFinial = new THREE.Quaternion().setFromAxisAngle(xAxis, Math.PI); */
       const opacityTrack = new THREE.NumberKeyframeTrack(
         ".material.opacity",
-        [0, 1, 2],
-        [1, 0, 1]
+        [0, 1],
+        [0, 1]
       );
       const colorKF = new THREE.ColorKeyframeTrack(
         ".material.color",
-        [0, 1, 2],
-        [0, 0, 0, 1, 1, 1, 0, 0, 0],
+        [0, 1],
+        [1, 0, 0, 0, 1, 0],
         THREE.InterpolateDiscrete
       );
-      const rotationTrack = new THREE.QuaternionKeyframeTrack(
+      /*       const rotationTrack = new THREE.QuaternionKeyframeTrack(
         ".quaternion",
         [0, 1, 2],
         [
@@ -64,16 +65,22 @@ export default {
           qInitial.z,
           qInitial.w,
         ]
-      );
+      ); */
 
-      let duration = 3;
+      let duration = 2;
       let clip = new THREE.AnimationClip("default", duration, [
-        rotationTrack,
+        /*    rotationTrack, */
         colorKF,
         opacityTrack,
       ]);
       let mixer = new THREE.AnimationMixer(animationObjectGroup);
+      mixer.addEventListener("finished", function (e) {
+        animationObjectGroup._objects.forEach((object) => {
+          object.material.transparent = false;
+        });
+      });
       let AnimationAction = mixer.clipAction(clip);
+      AnimationAction.setLoop(THREE.LoopOnce);
       AnimationAction.play();
 
       scene.add(camera);

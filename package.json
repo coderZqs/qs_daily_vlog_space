@@ -11,6 +11,8 @@
   },
   "dependencies": {
     "ant-design-vue": "^3.2.12",
+    "cannon": "^0.6.2",
+    "cannon-es": "^0.20.0",
     "pinia": "^2.0.21",
     "three": "^0.124.0",
     "three-js-csg": "^72.0.0",
@@ -19,6 +21,7 @@
   },
   "devDependencies": {
     "@rushstack/eslint-patch": "^1.1.4",
+    "@types/cannon": "^0.1.8",
     "@types/node": "^18.7.15",
     "@types/three": "^0.144.0",
     "@vitejs/plugin-vue": "^3.0.3",
