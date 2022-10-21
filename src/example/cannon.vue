@@ -7,93 +7,12 @@ import * as THREE from "three";
 import { onMounted } from "vue";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
 import * as CANNON from "cannon-es";
+import cannonEsDebugger from "cannon-es-debugger";
 
-/* let renderer = new THREE.WebGLRenderer();
-renderer.shadowMap.enabled = true;
-renderer.shadowMap.type = THREE.PCFSoftShadowMap;
-let scene = new THREE.Scene();
-
-let size = {
-  w: window.innerWidth,
-  h: window.innerHeight,
-};
-
-renderer.setSize(window.innerWidth, window.innerHeight);
-
-let camera = new THREE.PerspectiveCamera(45, size.w / size.h, 0.1, 110);
-camera.position.set(0, 10, 50);
-const controls = new OrbitControls(camera, renderer.domElement);
-
-let plane = new THREE.Mesh(
-  new THREE.PlaneGeometry(30, 30),
-  new THREE.MeshPhongMaterial({ color: 0xd9d9d9 })
-);
-
-plane.rotation.x = -Math.PI / 2;
-
-plane.receiveShadow = true;
-scene.add(plane);
-
-let sphere = new THREE.Mesh(
-  new THREE.SphereGeometry(1, 16, 32),
-  new THREE.MeshStandardMaterial({ color: 0xd9d9d9 })
-);
-
-sphere.position.y = 1;
-sphere.castShadow = true;
-scene.add(sphere);
-
-let light = new THREE.AmbientLight(0xffffff, 0.28);
-scene.add(light);
-
-let directionalLight = new THREE.DirectionalLight(0xffffff, 1);
-directionalLight.position.set(5, 5, 6);
-directionalLight.castShadow = true;
-directionalLight.shadow.mapSize.width = 1024;
-directionalLight.shadow.mapSize.height = 1024;
-// 方向光投影近点、远点更新
-directionalLight.shadow.camera.near = 0.1;
-directionalLight.shadow.camera.far = 10;
-directionalLight.shadow.camera.top = 10;
-directionalLight.shadow.camera.bottom = -10;
-directionalLight.shadow.camera.left = -10;
-directionalLight.shadow.camera.right = 10;
-
-scene.add(directionalLight);
-
-let directionalLightHelper = new THREE.DirectionalLightHelper(directionalLight);
-scene.add(directionalLightHelper);
-
-const world = new CANNON.World();
-world.gravity.set(0, -9.82, 0);
-
-const sphereShape = new CANNON.Sphere(1);
-const sphereBody = new CANNON.Body({
-  mess: 5,
-  position: new CANNON.Vec3(0, 10, 0),
-  shape: sphereShape,
-});
-world.addBody(sphereBody);
-console.log(world);
-
-renderer.render(scene, camera);
-
-let animate = () => {
-  controls.update();
-  world.fixedStep();
-  sphere.position.copy(sphereBody.position);
-  //   sphere.position.y -= 0.01;
-  renderer.render(scene, camera);
-  requestAnimationFrame(animate);
-};
- */
-
-// three.js variables
-let camera, scene, renderer, controls;
+let camera, scene, renderer, cannonDebugger, controls;
 let mesh;
 let bottomMesh;
 
-// cannon.js variables
 let world;
 let body;
 let bottomBody;
@@ -123,7 +42,7 @@ function initThree() {
 
   window.addEventListener("resize", onWindowResize);
 
-  controls = new OrbitControls(camera, renderer.domElement);
+  /*   controls = new OrbitControls(camera, renderer.domElement); */
   // Box
   const geometry = new THREE.SphereGeometry(1, 16, 16);
   const material = new THREE.MeshBasicMaterial({
@@ -161,7 +80,7 @@ function initCannon() {
     defaultMaterial,
     {
       friction: 0.1,
-      restitution: 0.7,
+      restitution: 0,
     }
   );
   world.addContactMaterial(defaultContactMaterial);
@@ -173,10 +92,23 @@ function initCannon() {
   });
   body.position = new CANNON.Vec3(0, 10, 0);
   body.addShape(shape);
-  body.angularVelocity.set(0, 10, 0);
+  body.angularVelocity.set(0, 100, 0);
   body.angularDamping = 0.5;
   body.material = defaultMaterial;
   world.addBody(body);
+
+  // 底座
+
+  const bottomShape = new CANNON.Sphere(1);
+  bottomBody = new CANNON.Body({
+    mass: 1,
+  });
+  bottomBody.position = new CANNON.Vec3(1.1, 5, 0);
+  bottomBody.addShape(bottomShape);
+  bottomBody.angularVelocity.set(0, 10, 0);
+  bottomBody.angularDamping = 0.5;
+  bottomBody.material = defaultMaterial;
+  world.addBody(bottomBody);
 
   // plane
 
@@ -191,47 +123,51 @@ function initCannon() {
 
   planeBody.material = defaultMaterial;
 
-  // 底座
-
-  const bottomShape = new CANNON.Sphere(1);
-  bottomBody = new CANNON.Body({
-    mess: 1,
-  });
-
-  bottomBody.position = new CANNON.Vec3(1.1, 2, 0);
-  bottomBody.material = defaultMaterial;
-  bottomBody.angularVelocity.set(0, 10, 0);
-  bottomBody.angularDamping = 0.5;
-  bottomBody.addShape(bottomShape);
-  world.addBody(bottomBody);
+  cannonDebugger = cannonEsDebugger(scene, world);
 }
 
 function animate() {
   requestAnimationFrame(animate);
 
-  // Step the physics world
   world.fixedStep();
 
-  // Copy coordinates from cannon.js to three.js
-  mesh.position.copy(body.position);
-  mesh.quaternion.copy(body.quaternion);
-  bottomMesh.position.copy(
+  /*   mesh.position.copy(bottomBody.position);
+  mesh.quaternion.copy(bottomBody.quaternion); */
+  /*   bottomMesh.position.copy(
     new THREE.Vector3(
       bottomBody.position.x,
       bottomBody.position.y + 2.5,
       bottomBody.position.z
     )
-  );
-  console.log(bottomBody.position);
+  ); */
 
   // Render three.js
-  controls.update();
+  /*   controls.update(); */
+  camera.position.copy(body.position);
+  cannonDebugger.update();
   renderer.render(scene, camera);
 }
 
 onMounted(() => {
   document.querySelector(".container").appendChild(renderer.domElement);
   animate();
+
+  window.onkeydown = (ev) => {
+    let keycode = ev.keyCode;
+    console.log(keycode);
+
+    if (keycode === 32) {
+      body.applyForce(new CANNON.Vec3(0, 200, 0), new CANNON.Vec3(0, 0, 0));
+    }
+
+    if (keycode === 65) {
+      body.applyForce(new CANNON.Vec3(100, 0, 0), new CANNON.Vec3(0, 0, 0));
+    }
+
+    if (keycode === 68) {
+      body.applyForce(new CANNON.Vec3(-100, 0, 0), new CANNON.Vec3(0, 0, 0));
+    }
+  };
 });
 </script>
 
