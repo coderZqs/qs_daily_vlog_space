@@ -28,7 +28,7 @@ export default {
       let ratios = window.innerWidth / window.innerHeight;
       let camera = new THREE.PerspectiveCamera(45, ratios, 0.5, 20000);
       scene.add(camera);
-      camera.position.set(0, 100, 400);
+      camera.position.set(0, 100, 100);
       renderer.setSize(window.innerWidth, window.innerHeight);
       renderer.shadowMap.enabled = true;
 
@@ -163,10 +163,8 @@ export default {
 
       const gltfLoader = new GLTFLoader();
       gltfLoader.load("/src/assets/image/character.glb", (gltf) => {
-        console.log(gltf.scene);
         human = gltf.scene.children[0];
         human.scale.set(30, 30, 30);
-        console.log(human);
         human.castShadow = true;
         gltf.scene.castShadow = true;
         human.traverse((item) => {
@@ -216,22 +214,23 @@ export default {
         defaultMaterial,
         defaultMaterial,
         {
-          friction: 0.3, // 恢复力
-          restitution: 0.3, // 弹力
+          friction: 0.1, // 恢复力
+          restitution: 0.4, // 弹力
         }
       );
       world.addContactMaterial(defaultContactMaterial);
       world.gravity.set(0, -9.82, 0); // 重力
+      world.solver.iterations = 1000;
 
       // 创建人物
       let humanShape = new CANNON.Box(new CANNON.Vec3(5, 17, 1));
       let humanBody = new CANNON.Body({
-        mass: 1,
+        mass: 50,
       });
       humanBody.position.set(0, 17, 0);
       humanBody.material = defaultMaterial;
       humanBody.angularVelocity.set(0, 0, 0);
-      humanBody.angularDamping = 0.5;
+      humanBody.angularDamping = 1;
       humanBody.addShape(humanShape);
       world.addBody(humanBody);
 
@@ -254,9 +253,10 @@ export default {
 
       const sphereShape = new CANNON.Sphere(3);
       let sphereBody = new CANNON.Body({
-        mass: 1,
+        mass: 4,
       });
 
+      sphereBody.angularDamping = 0.5;
       sphereBody.addShape(sphereShape);
       sphereBody.position.set(0, 3, 100);
       sphereBody.material = defaultMaterial;
@@ -334,7 +334,6 @@ export default {
           human.position.copy(humanBody.position);
           human.quaternion.copy(humanBody.quaternion);
           human.translateY(-17);
-          console.log(human.position);
           raycaster.setFromCamera(mouse, camera);
           var intersectObject = raycaster.intersectObjects([sphere]);
 
@@ -358,13 +357,12 @@ export default {
       document.onkeydown = (e) => {
         let keyCode = e.keyCode;
 
-        console.log(keyCode);
-
+        var box = new THREE.Box3().setFromObject(human);
+        console.log(box);
         if (keyCode === 90) {
-          sphereBody.applyForce(
-            new CANNON.Vec3(0, 1000, -10000),
-            new CANNON.Vec3(0, 1, -1)
-          );
+          let power = 1;
+          humanBody.velocity.set(0, 10, 0);
+          /* sphereBody.angularVelocity.set(0, 34 * power, -100 * power); */
         }
       };
     },
