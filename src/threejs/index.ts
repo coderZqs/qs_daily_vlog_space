@@ -1,6 +1,6 @@
 import * as THREE from "three";
+import { PointerLockControls } from "three/examples/jsm/controls/PointerLockControls";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
-
 const sizeConfig = {
   height: window.innerHeight,
   width: window.innerWidth,
@@ -28,6 +28,20 @@ const appendCanvasToElement = (
 
 const addOrbitControls = (camera: THREE.Camera, canvas: HTMLCanvasElement) => {
   const controls = new OrbitControls(camera, canvas);
+
+  return controls;
+};
+
+/**
+ * 添加控制器
+ * @param camera
+ * @param canvas
+ * @returns
+ */
+
+const addLockControls = (camera: THREE.Camera) => {
+  const controls = new PointerLockControls(camera, document.body);
+
   return controls;
 };
 
@@ -117,22 +131,6 @@ const addAdaptionScreen = (
   });
 };
 
-/**
- * 添加射线
- */
-
-const addRaycaster = (camera: THREE.Camera) => {
-  const raycaster = new THREE.Raycaster();
-  const mouse = new THREE.Vector2();
-
-  window.addEventListener("mousemove", (e: MouseEvent) => {
-    mouse.x = (e.clientX / window.innerWidth) * 2 - 1;
-    mouse.y = -(e.clientY / window.innerHeight) * 2 + 1;
-  });
-
-  raycaster.setFromCamera(mouse, camera);
-  return raycaster;
-};
 
 /**
  * 判断射线是否接触到物体
@@ -189,15 +187,30 @@ const addPositionalAudio = (
   });
 };
 
+/**
+ * 生成地板
+ */
+
+const addPlane = (size: number, params: object): THREE.Mesh => {
+  let plane = new THREE.Mesh(new THREE.PlaneGeometry(size, size), new THREE.MeshBasicMaterial({
+    ...params
+  }))
+
+  plane.rotation.x = - Math.PI / 2;
+
+  return plane
+}
+
 export default {
+  addPlane,
   appendCanvasToElement,
   generateCube,
   addOrbitControls,
   initCamera,
   initRenderer,
   addAdaptionScreen,
-  addRaycaster,
   judgeRaycasterTouchObject,
   addTextureLoader,
   addPositionalAudio,
+  addLockControls
 };
