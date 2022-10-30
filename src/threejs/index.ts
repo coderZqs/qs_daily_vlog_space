@@ -1,0 +1,203 @@
+import * as THREE from "three";
+import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
+
+const sizeConfig = {
+  height: window.innerHeight,
+  width: window.innerWidth,
+};
+
+/**
+ * 添加生成的canvas
+ * @param element
+ * @param canvas
+ */
+
+const appendCanvasToElement = (
+  element: HTMLElement,
+  canvas: HTMLCanvasElement
+) => {
+  element.appendChild(canvas);
+};
+
+/**
+ * 添加控制器
+ * @param camera
+ * @param canvas
+ * @returns
+ */
+
+const addOrbitControls = (camera: THREE.Camera, canvas: HTMLCanvasElement) => {
+  const controls = new OrbitControls(camera, canvas);
+  return controls;
+};
+
+/**
+ * 添加照相机
+ * @param type
+ * @param near
+ * @param far
+ * @returns
+ */
+const initCamera = (type = "PerspectiveCamera", near = 0.1, far = 1000) => {
+  let camera;
+  if (type === "PerspectiveCamera") {
+    camera = new THREE.PerspectiveCamera(
+      45,
+      sizeConfig.width / sizeConfig.height,
+      near,
+      far
+    );
+  } else {
+    camera = new THREE.OrthographicCamera(
+      sizeConfig.width / -2,
+      sizeConfig.width / 2,
+      sizeConfig.height / 2,
+      sizeConfig.height / -2,
+      near,
+      far
+    );
+  }
+
+  return camera;
+};
+
+/**
+ * 添加渲染器
+ * @param params
+ * @returns
+ */
+
+const initRenderer = (params: object = {}) => {
+  const renderer = new THREE.WebGLRenderer({
+    ...params,
+  });
+
+  renderer.setSize(sizeConfig.width, sizeConfig.height);
+
+  return renderer;
+};
+
+/**
+ *  添加BoxGeometry
+ * @param sizeConfig
+ * @param materialType
+ * @param materialConfig
+ * @returns
+ */
+
+const generateCube = (
+  sizeConfig: number[] = [100, 100, 100],
+  materialType = "MeshBasicMaterial",
+  materialConfig: {}
+) => {
+  return new THREE.Mesh(
+    new THREE.BoxGeometry(sizeConfig[0], sizeConfig[1], sizeConfig[2]),
+    new (THREE as any)[materialType]({ ...materialConfig })
+  );
+};
+
+/**
+ * aspect scene
+ */
+
+const addAdaptionScreen = (
+  renderer: THREE.Renderer,
+  camera: THREE.PerspectiveCamera | THREE.OrthographicCamera
+) => {
+  window.addEventListener("resize", () => {
+    sizeConfig.height = window.innerHeight;
+    sizeConfig.width = window.innerWidth;
+    camera.updateProjectionMatrix();
+
+    if (camera instanceof THREE.PerspectiveCamera) {
+      camera.aspect = sizeConfig.width / sizeConfig.height;
+    }
+
+    renderer.setSize(sizeConfig.width, sizeConfig.height);
+  });
+};
+
+/**
+ * 添加射线
+ */
+
+const addRaycaster = (camera: THREE.Camera) => {
+  const raycaster = new THREE.Raycaster();
+  const mouse = new THREE.Vector2();
+
+  window.addEventListener("mousemove", (e: MouseEvent) => {
+    mouse.x = (e.clientX / window.innerWidth) * 2 - 1;
+    mouse.y = -(e.clientY / window.innerHeight) * 2 + 1;
+  });
+
+  raycaster.setFromCamera(mouse, camera);
+  return raycaster;
+};
+
+/**
+ * 判断射线是否接触到物体
+ * @param raycaster
+ * @param objectList
+ * @returns
+ */
+
+const judgeRaycasterTouchObject = (
+  raycaster: THREE.Raycaster,
+  objectList: THREE.Object3D[]
+) => {
+  const intersectObject = raycaster.intersectObjects(objectList);
+
+  return Boolean(intersectObject.length);
+};
+
+/**
+ * 添加贴图加载器
+ * @param textureUrl
+ * @param callback
+ */
+const addTextureLoader = (textureUrl: string, callback: () => any) => {
+  const loader = new THREE.TextureLoader();
+  loader.load(textureUrl, () => {
+    callback && callback();
+  });
+};
+
+/**
+ * 添加位置相关的音频对象
+ * @param audioUrl
+ * @param camera
+ * @param volume
+ * @param refDistance
+ */
+
+const addPositionalAudio = (
+  audioUrl: string,
+  camera: THREE.Camera,
+  volume: number,
+  refDistance: number
+) => {
+  const listener = new THREE.AudioListener();
+  camera.add(listener);
+  const PositionalAudio = new THREE.PositionalAudio(listener);
+
+  const audioLoader = new THREE.AudioLoader();
+
+  audioLoader.load(audioUrl, (AudioBuffer) => {
+    PositionalAudio.setBuffer(AudioBuffer);
+    PositionalAudio.setVolume(volume || 0.9); //音量
+    PositionalAudio.setRefDistance(refDistance || 1); //参数值越大,声音越大
+  });
+};
+
+export default {
+  appendCanvasToElement,
+  generateCube,
+  addOrbitControls,
+  initCamera,
+  initRenderer,
+  addAdaptionScreen,
+  addRaycaster,
+  judgeRaycasterTouchObject,
+  addTextureLoader,
+  addPositionalAudio,
+};
