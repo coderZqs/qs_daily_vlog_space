@@ -8,10 +8,10 @@ const files: Record<string, FileType> = import.meta.globEager(
   "/src/example/*.vue"
 );
 
-let routes = Object.keys(files).map((c: string) => {
+const routes = Object.keys(files).map((c: string) => {
   console.log(c);
-  let reg = /(?<=example\/).*?(?=\.)/g;
-  let path = c.match(reg)?.[0];
+  const reg = /(?<=example\/).*?(?=\.)/g;
+  const path = c.match(reg)?.[0];
   const component = files[c]?.default;
 
   return {
@@ -20,7 +20,5 @@ let routes = Object.keys(files).map((c: string) => {
     component: component,
   };
 });
-
-console.log(routes);
 
 export default routes;

@@ -51,3 +51,35 @@ fog 深度测试 贝塞尔曲线实践。 贴图细节 烘焙光照 bufferGeomet
 
 background-clip transition。 实现渐变填充。
 text-shadow animation 文本发光
+
+bufferGeometry
+
+属性： position 位置， color 颜色， 颜色是以 rgb 的形式传入 ，normal 光照
+
+
+数学基础
+
+矩阵：Matrix4
+
+
+初始4x4 矩阵
+
+// 1, 0, 0, 0,
+// 0, 1, 0, 0,
+// 0, 0, 1, 0,
+// 0, 0, 0, 1
+
+multiplyScalar 矩阵内的所有值都乘以这个参数
+
+矩阵相乘有三种方式
+
+multiplyMatrices，类似于Object.assign();  会生成新的结果
+multiply 类似于push, 会在原来的值做修改
+
+矩阵不可逆
+
+2d向量：向量ab  b代表方向
+
+点乘代表着 向量a在向量b的投影，  如结果= 0；则两个向量垂直，如果大于0，则夹角为锐角， 如果小于0，则为钝角
+
+弧度等于  两条半径所形成夹角的弧度 = 半径
