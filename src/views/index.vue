@@ -10,9 +10,9 @@ import { onMounted } from "vue";
 import channel, {
   getChannelPointPoi,
 } from "@/components/project/Channel/index.js";
-import landGroup from "./lands";
+import landGroup from "./lands/index";
 
-import { listenKeyboard } from "./human/controls";
+import { listenKeyboard } from "@/components/human/controls";
 
 let camera = threejsApi.initCamera();
 let renderer = threejsApi.initRenderer();
