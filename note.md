@@ -34,6 +34,8 @@ Math.acos(Math.PI /2) = -1;
 向量点乘 = a 的长度 + b 的长度\* 两个向量的夹角
 向量叉乘可以得出两个向量组成的平面的垂直向量 = 法线
 
+https://lexra.pixnet.net/blog/post/354226367-%EF%BF%AD-%E9%A4%98%E5%BC%A6%E5%AE%9A%E7%90%86---cosine-theorem
+
 vertexColors 顶点颜色
 envMap：环境贴图。 需搭配 cubeTexture 使用。
 reflectivity： 环境贴图的对表面的影响程度

@@ -1,6 +1,9 @@
 import * as THREE from "three";
 import { PointerLockControls } from "three/examples/jsm/controls/PointerLockControls";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
+import { FBXLoader } from "three/examples/jsm/loaders/FBXLoader";
+import { OBJLoader } from "three/examples/jsm/loaders/OBJLoader";
+import { DDSLoader } from "three/examples/jsm/loaders/DDSLoader";
 const sizeConfig = {
   height: window.innerHeight,
   width: window.innerWidth,
@@ -85,7 +88,7 @@ const initRenderer = (params: object = {}) => {
   const renderer = new THREE.WebGLRenderer({
     ...params,
   });
-
+  renderer.shadowMap.enabled = true;
   renderer.setSize(sizeConfig.width, sizeConfig.height);
 
   return renderer;
@@ -131,7 +134,6 @@ const addAdaptionScreen = (
   });
 };
 
-
 /**
  * 判断射线是否接触到物体
  * @param raycaster
@@ -153,10 +155,23 @@ const judgeRaycasterTouchObject = (
  * @param textureUrl
  * @param callback
  */
-const addTextureLoader = (textureUrl: string, callback: () => any) => {
-  const loader = new THREE.TextureLoader();
-  loader.load(textureUrl, () => {
-    callback && callback();
+const addTextureLoader = (
+  textureUrl: string,
+  callback: (arg1: object) => any
+) => {
+  const fileExtension = textureUrl.split(".").pop();
+  const isDDS = fileExtension === "dds";
+
+  let loader;
+
+  if (isDDS) {
+    loader = new DDSLoader();
+  } else {
+    loader = new THREE.TextureLoader();
+  }
+
+  loader.load(textureUrl, (object) => {
+    callback && callback(object);
   });
 };
 
@@ -192,14 +207,41 @@ const addPositionalAudio = (
  */
 
 const addPlane = (size: number, params: object): THREE.Mesh => {
-  let plane = new THREE.Mesh(new THREE.PlaneGeometry(size, size), new THREE.MeshBasicMaterial({
-    ...params
-  }))
+  const plane = new THREE.Mesh(
+    new THREE.PlaneGeometry(size, size),
+    new THREE.MeshBasicMaterial({
+      ...params,
+    })
+  );
 
-  plane.rotation.x = - Math.PI / 2;
+  plane.rotation.x = -Math.PI / 2;
 
-  return plane
-}
+  return plane;
+};
+
+/**
+ * 加载fbx
+ */
+
+const loadFBX = (url: string, callback: (arg0: object) => void) => {
+  const loader = new FBXLoader();
+  // 加载人物
+  loader.load(url, (object) => {
+    callback && callback(object);
+  });
+};
+
+/**
+ * 加载OBJ
+ */
+
+const loadOBJ = (url: string, callback: (arg0: object) => void) => {
+  const loader = new OBJLoader();
+  // 加载人物
+  loader.load(url, (object) => {
+    callback && callback(object);
+  });
+};
 
 export default {
   addPlane,
@@ -212,5 +254,7 @@ export default {
   judgeRaycasterTouchObject,
   addTextureLoader,
   addPositionalAudio,
-  addLockControls
+  addLockControls,
+  loadFBX,
+  loadOBJ,
 };

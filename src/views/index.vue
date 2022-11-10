@@ -18,13 +18,17 @@ let camera = threejsApi.initCamera();
 let renderer = threejsApi.initRenderer();
 let scene = new THREE.Scene();
 
+let spotLightHelper = new THREE.SpotLightHelper(
+  landGroup.children.find((v) => v.type === "SpotLight")
+);
+scene.add(spotLightHelper);
+
 // 聚光灯
 
 let ambientLight = new THREE.AmbientLight(0xffffff, 0.28);
 scene.add(ambientLight);
 
 let controls = threejsApi.addLockControls(camera, renderer.domElement);
-console.log(controls);
 
 window.onclick = function () {
   if (!controls || !controls.isLocked) {
@@ -45,6 +49,7 @@ window.addEventListener("click", (e) => {
 });
 
 scene.add(channel);
+landGroup.position.x = -12;
 scene.add(landGroup);
 
 camera.position.set(0, 1, 5);
