@@ -11,7 +11,7 @@ let spotLight = new THREE.SpotLight(0x2879ff);
 spotLight.position.set(0, 25, 0);
 landGroup.add(spotLight);
 spotLight.castShadow = true;
-spotLight.angle = Math.PI / 50;
+spotLight.angle = Math.PI / 5;
 
 /* let generateLightModel = (size = 1) => {
   for (let j = 0; j <= size; j += 0.05) {
@@ -38,20 +38,24 @@ spotLight.angle = Math.PI / 50;
  */
 
 let generateLightModel = () => {
-  let lightModel = new THREE.Mesh(
-    new THREE.SphereGeometry(0.4, 64, 64),
-    new THREE.MeshPhongMaterial({ color: 0x00000, size: 0.1 })
-  );
+  var sphereGeometry = new THREE.SphereGeometry(0.5, 35, 35); // 球
+  var sphereMaterial = new THREE.PointsMaterial({
+    color: 0xff00ff,
+    size: 0.05,
+    lights: true,
+  });
+  var sphere = new THREE.Points(sphereGeometry, sphereMaterial);
 
-  return lightModel;
+  return sphere;
 };
 
 let lightModel = generateLightModel();
-lightModel.position.set(0, 10, 0);
+lightModel.position.set(0, 5, 0);
+lightModel.castShadow = true;
 lightModel.receiveShadow = true;
 landGroup.add(lightModel);
 
-spotLight.position.copy(lightModel.position);
+spotLight.position.set(0, 6, 0);
 
 // 球
 let sphere = new THREE.Mesh(
