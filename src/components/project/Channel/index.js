@@ -1,4 +1,5 @@
 import * as THREE from "three";
+import threejsAPI from "@/threejs/index";
 
 const END = 500;
 
@@ -13,12 +14,17 @@ let CatmullRomCurve = new THREE.CatmullRomCurve3(points);
 
 let TubeGeometry = new THREE.TubeGeometry(CatmullRomCurve, 64, 1, 100);
 let TubeMaterial = new THREE.MeshStandardMaterial({
-  color: 0xcccccc,
+  color: 0x86e1fd,
   side: THREE.DoubleSide,
   // wireframe: true
 });
 
 let channel = new THREE.Mesh(TubeGeometry, TubeMaterial);
+
+threejsAPI.addTextureLoader("/src/assets/image/tipe.jpg", (texture) => {
+  channel.material.map = texture;
+  channel.material.needsUpdate = true;
+});
 
 export let getChannelPointPoi = (index) => {
   let pointPoiGroup = CatmullRomCurve.getPoints(END);

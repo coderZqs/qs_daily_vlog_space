@@ -2,12 +2,14 @@ import * as THREE from "three";
 import crystalBall from "./components/studio";
 let landGroup = new THREE.Group();
 import threejsApi from "@/threejs/index";
+import lefulanModel from "./components/lefulan";
+import shyvanaModel from "./components/shyvana";
 
 let light = new THREE.PointLight(0xefd49e, 0.16);
 // light.position.set(0, 25, 0);
 landGroup.add(light);
 
-let spotLight = new THREE.SpotLight(0x2879ff);
+let spotLight = new THREE.SpotLight(0xd6b027);
 spotLight.position.set(0, 25, 0);
 landGroup.add(spotLight);
 spotLight.castShadow = true;
@@ -40,7 +42,7 @@ spotLight.angle = Math.PI / 5;
 let generateLightModel = () => {
   var sphereGeometry = new THREE.SphereGeometry(0.5, 35, 35); // 球
   var sphereMaterial = new THREE.PointsMaterial({
-    color: 0xff00ff,
+    color: 0xffffff,
     size: 0.05,
     lights: true,
   });
@@ -61,7 +63,7 @@ spotLight.position.set(0, 6, 0);
 let sphere = new THREE.Mesh(
   new THREE.SphereGeometry(15, 64, 64),
   new THREE.MeshPhongMaterial({
-    color: 0xccccc,
+    color: 0xffffb8,
     side: THREE.DoubleSide,
   })
 );
@@ -82,6 +84,8 @@ threejsApi.loadFBX("/src/assets/models/sofa.fbx", (object) => {
 
 landGroup.add(sphere);
 landGroup.add(crystalBall);
+landGroup.add(lefulanModel);
+landGroup.add(shyvanaModel);
 
 // 盾牌
 

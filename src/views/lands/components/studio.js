@@ -1,5 +1,4 @@
 import * as THREE from "three";
-
 let crystalBall = new THREE.Mesh(
   new THREE.SphereGeometry(0.2, 32, 32),
   new THREE.MeshStandardMaterial({
@@ -8,5 +7,4 @@ let crystalBall = new THREE.Mesh(
 );
 
 crystalBall.position.set(0, 0.2, 0);
-
 export default crystalBall;

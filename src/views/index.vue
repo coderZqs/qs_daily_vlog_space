@@ -25,7 +25,7 @@ scene.add(spotLightHelper);
 
 // 聚光灯
 
-let ambientLight = new THREE.AmbientLight(0xffffff, 0.28);
+let ambientLight = new THREE.AmbientLight(0xffffff, 0.88);
 scene.add(ambientLight);
 
 let controls = threejsApi.addLockControls(camera, renderer.domElement);
@@ -53,6 +53,17 @@ landGroup.position.x = -12;
 scene.add(landGroup);
 
 camera.position.set(0, 1, 5);
+
+threejsApi
+  .addPositionalAudio(
+    "/src/assets/music/Taibian (타이비언) _ Dia (디아) - 배영하는 물고기 (仰泳的鱼).mp3",
+    camera,
+    1,
+    1
+  )
+  .then((personalAudio) => {
+    personalAudio.play();
+  });
 
 onMounted(() => {
   let time = 0;

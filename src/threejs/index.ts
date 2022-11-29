@@ -189,16 +189,20 @@ const addPositionalAudio = (
   volume: number,
   refDistance: number
 ) => {
-  const listener = new THREE.AudioListener();
-  camera.add(listener);
-  const PositionalAudio = new THREE.PositionalAudio(listener);
+  return new Promise((resolve, reject) => {
+    const listener = new THREE.AudioListener();
+    camera.add(listener);
+    const PositionalAudio = new THREE.PositionalAudio(listener);
 
-  const audioLoader = new THREE.AudioLoader();
+    const audioLoader = new THREE.AudioLoader();
 
-  audioLoader.load(audioUrl, (AudioBuffer) => {
-    PositionalAudio.setBuffer(AudioBuffer);
-    PositionalAudio.setVolume(volume || 0.9); //音量
-    PositionalAudio.setRefDistance(refDistance || 1); //参数值越大,声音越大
+    audioLoader.load(audioUrl, (AudioBuffer) => {
+      PositionalAudio.setBuffer(AudioBuffer);
+      PositionalAudio.setVolume(volume || 0.9); //音量
+      PositionalAudio.setRefDistance(refDistance || 1); //参数值越大,声音越大
+
+      resolve(PositionalAudio);
+    });
   });
 };
 

@@ -25,7 +25,7 @@ let angle = 0;
 
 light.position.set(0, 0, 0);
 scene.add(light);
-camera.position.set(0, 30, 50);
+camera.position.set(0, 30, 100);
 
 const generatePlane = (): THREE.Mesh => {
   plane = new THREE.Mesh(
@@ -117,7 +117,7 @@ let animate = () => {
   }
 
   camera.lookAt(sphere.position);
-  camera.position.set(sphere.position.x, 50, sphere.position.z + 10);
+  camera.position.set(sphere.position.x, 50, sphere.position.z + 50);
 };
 
 let dragControl = (e: MouseEvent) => {
