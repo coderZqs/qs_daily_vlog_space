@@ -58,9 +58,9 @@ const webglExampleRoutes = generateAudoImportRoute(
   "/example/webgl/"
 );
 
-console.log(threejsExampleRoutes);
-
 routes = routes.concat(threejsExampleRoutes);
 routes = routes.concat(webglExampleRoutes);
+
+console.log(webglExampleRoutes);
 
 export default routes;
