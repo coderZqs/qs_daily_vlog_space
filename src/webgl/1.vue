@@ -56,8 +56,6 @@ onMounted(() => {
   };
   // 创建项目
   let program = createProgram();
-
-  console.log(program);
   // 提供着色器数据
   let positionBuffer = gl.createBuffer();
   gl.bindBuffer(gl.ARRAY_BUFFER, positionBuffer);

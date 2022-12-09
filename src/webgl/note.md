@@ -23,5 +23,16 @@ Uniforms 全局变量： getUniformLocation =》 uniform4fv
 
 全局变量可一次性赋值 uniform vec2 u_someVec2[3] uniform2fv(somevec2, [1,2,3,4,5,6])
 
+Texture 纹理： createTextur e bindTexture（
 
-Texture 纹理：  createTextur      e  bindTexture（
+<!-- 数学 -->
+
+线性插值
+
+矩阵相乘
+
+a b x z ax+by az+bw
+c d y w cx+dy cz+dw
+
+
+向量到原点的距离 = 模

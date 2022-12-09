@@ -16,6 +16,7 @@
     "cannon-es": "^0.20.0",
     "cannon-es-debugger": "^1.0.0",
     "pinia": "^2.0.21",
+    "simplex-noise": "^4.0.1",
     "tailwindcss": "^3.2.1",
     "three": "^0.124.0",
     "three-js-csg": "^72.0.0",
