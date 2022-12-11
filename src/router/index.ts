@@ -7,12 +7,16 @@ const ConstantRouterMap = [
     path: "/image-effects",
     component: () => import("@/views/image-effects/index.vue"),
   },
+  {
+    path: "/article",
+    component: () => import("@/views/article/index.vue"),
+  },
 ];
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
-    ...routes,
+    /*     ...routes, */
     ...ConstantRouterMap,
     {
       path: "/",

@@ -27,6 +27,9 @@ light.position.set(0, 0, 0);
 scene.add(light);
 camera.position.set(0, 30, 100);
 
+const planeSizeWidth = 100;
+const planeSizeHeight = 100;
+
 const generatePlane = (): THREE.Mesh => {
   plane = new THREE.Mesh(
     new THREE.BoxGeometry(100, 100, 0.5),
@@ -46,8 +49,20 @@ const generateSphere = (): THREE.Mesh => {
     new THREE.SphereGeometry(1, 36, 36),
     new THREE.MeshStandardMaterial({ color: 0x050a32 })
   );
+
+  /*   let texture = threejsAPI.addTextureLoader('') */
   sphere.position.y = 1;
   return sphere;
+};
+
+const judgeISBoundary = (x: number, z: number) => {
+  let isOverX = x < -planeSizeWidth / 2 || x + 1 > planeSizeWidth / 2;
+  let isOverZ = z < -planeSizeWidth / 2 || z + 1 > planeSizeWidth / 2;
+  if (isOverX || isOverZ) {
+    return true;
+  }
+
+  return false;
 };
 
 plane = generatePlane();
@@ -96,26 +111,34 @@ let animate = () => {
   renderer.render(scene, camera);
   requestAnimationFrame(animate);
 
+  let stepX: number = 0;
+  let stepZ: number = 0;
+
   if (isForward) {
-    sphere.position.z -= 0.5;
+    stepZ = -0.5;
   }
+
   if (isBack) {
-    sphere.position.z += 0.5;
+    stepZ = 0.5;
   }
 
   if (isLeft) {
-    sphere.position.x -= 0.5;
+    stepX = -0.5;
   }
 
   if (isRight) {
-    sphere.position.x += 0.5;
+    stepX = 0.5;
   }
 
   if (angle) {
-    sphere.position.x += 0.5 * Math.cos((angle * Math.PI) / 180);
-    sphere.position.z += -0.5 * Math.sin((angle * Math.PI) / 180);
+    stepX = 0.5 * Math.cos((angle * Math.PI) / 180);
+    stepZ = -0.5 * Math.sin((angle * Math.PI) / 180);
   }
 
+  if (!judgeISBoundary(sphere.position.x + stepX, sphere.position.z + stepZ)) {
+    sphere.position.x += stepX;
+    sphere.position.z += stepZ;
+  }
   camera.lookAt(sphere.position);
   camera.position.set(sphere.position.x, 50, sphere.position.z + 50);
 };
