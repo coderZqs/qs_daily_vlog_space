@@ -2,8 +2,9 @@
   <div class="navbar">
     <CustomHeader></CustomHeader>
   </div>
-
-  <RouterView />
+  <div>
+    <RouterView />
+  </div>
 </template>
 
 <script setup lang="ts">

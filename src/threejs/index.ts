@@ -4,6 +4,7 @@ import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
 import { FBXLoader } from "three/examples/jsm/loaders/FBXLoader";
 import { OBJLoader } from "three/examples/jsm/loaders/OBJLoader";
 import { DDSLoader } from "three/examples/jsm/loaders/DDSLoader";
+import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader";
 const sizeConfig = {
   height: window.innerHeight,
   width: window.innerWidth,
@@ -143,10 +144,12 @@ const addAdaptionScreen = (
 
 const judgeRaycasterTouchObject = (
   raycaster: THREE.Raycaster,
-  objectList: THREE.Object3D[]
+  objectList: THREE.Object3D[],
+  pointer: THREE.Vector2,
+  camera: THREE.Camera
 ) => {
-  const intersectObject = raycaster.intersectObjects(objectList);
-
+  raycaster.setFromCamera(pointer, camera);
+  const intersectObject = raycaster.intersectObjects(objectList, true);
   return Boolean(intersectObject.length);
 };
 
@@ -247,6 +250,18 @@ const loadOBJ = (url: string, callback: (arg0: object) => void) => {
   });
 };
 
+/**
+ * 加载GLTF
+ */
+
+const loadGLTF = (url: string, callback: (arg0: object) => void) => {
+  const loader = new GLTFLoader();
+
+  loader.load(url, (object) => {
+    callback && callback(object);
+  });
+};
+
 export default {
   addPlane,
   appendCanvasToElement,
@@ -261,4 +276,5 @@ export default {
   addLockControls,
   loadFBX,
   loadOBJ,
+  loadGLTF,
 };

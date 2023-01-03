@@ -35,4 +35,23 @@ a b x z ax+by az+bw
 c d y w cx+dy cz+dw
 
 
+
+a,b,c     1  4      1a+2b+3c+4a+5b+6c
+d,e,f  *  2  5  =   1d+2e+3f+4d+5e+6f
+h,i,j     3  6      1h+2i+3j+4h+5i+6j
+
+
+平移矩阵
+
+1,0      x
+0,1      y   =  1x,1y
+
 向量到原点的距离 = 模
+
+
+| a  b  0 |
+| c  d  0 |
+| tx ty 1 |
+
+
+a 水平缩放  b 水平拉伸  c 垂直拉伸  d 垂直缩放  tx 水平位移  ty 垂直位移
