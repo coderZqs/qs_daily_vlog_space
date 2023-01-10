@@ -11,6 +11,10 @@ const ConstantRouterMap = [
     path: "/article",
     component: () => import("@/views/article/index.vue"),
   },
+  {
+    path: "/planet",
+    component: () => import("@/views/planet/index.vue"),
+  },
 ];
 
 const router = createRouter({

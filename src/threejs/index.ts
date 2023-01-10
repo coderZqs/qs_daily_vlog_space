@@ -5,6 +5,7 @@ import { FBXLoader } from "three/examples/jsm/loaders/FBXLoader";
 import { OBJLoader } from "three/examples/jsm/loaders/OBJLoader";
 import { DDSLoader } from "three/examples/jsm/loaders/DDSLoader";
 import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader";
+import VertexNormalsHelper from "./helper/VertexNormalHelper.js";
 const sizeConfig = {
   height: window.innerHeight,
   width: window.innerWidth,
@@ -261,6 +262,8 @@ const loadGLTF = (url: string, callback: (arg0: object) => void) => {
     callback && callback(object);
   });
 };
+
+export { VertexNormalsHelper };
 
 export default {
   addPlane,

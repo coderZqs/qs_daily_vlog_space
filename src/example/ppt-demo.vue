@@ -13,13 +13,6 @@
 import threejsAPI from "@/threejs/index";
 import * as THREE from "three";
 import { onMounted } from "vue";
-import Stats from "three/examples/js/libs/stats.min.js";
-const stats = new Stats();
-stats.dom.style.position = "absolute";
-stats.dom.style.top = "0px";
-stats.dom.style.left = "300px";
-document.body.appendChild(stats.dom);
-
 let currentPage = 0;
 let mouse = new THREE.Vector2();
 let isStartRotate = false;

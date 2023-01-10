@@ -58,13 +58,11 @@ bufferGeometry
 
 属性： position 位置， color 颜色， 颜色是以 rgb 的形式传入 ，normal 光照
 
-
 数学基础
 
 矩阵：Matrix4
 
-
-初始4x4 矩阵
+初始 4x4 矩阵
 
 // 1, 0, 0, 0,
 // 0, 1, 0, 0,
@@ -75,15 +73,25 @@ multiplyScalar 矩阵内的所有值都乘以这个参数
 
 矩阵相乘有三种方式
 
-multiplyMatrices，类似于Object.assign();  会生成新的结果
-multiply 类似于push, 会在原来的值做修改
+multiplyMatrices，类似于 Object.assign(); 会生成新的结果
+multiply 类似于 push, 会在原来的值做修改
 
 矩阵不可逆
 
-2d向量：向量ab  b代表方向
+2d 向量：向量 ab b 代表方向
 
-点乘代表着 向量a在向量b的投影，  如结果= 0；则两个向量垂直，如果大于0，则夹角为锐角， 如果小于0，则为钝角
+点乘代表着 向量 a 在向量 b 的投影， 如结果= 0；则两个向量垂直，如果大于 0，则夹角为锐角， 如果小于 0，则为钝角
 
-弧度等于  两条半径所形成夹角的弧度 = 半径
+弧度等于 两条半径所形成夹角的弧度 = 半径
 
 圆和椭圆的关系， 圆是平面中到圆心的距离为定值的所有点组成的图形， 椭圆是平面中到两个点的距离之和为定值的所有点组成的图形， 两个点是焦点，两个点距离叫做焦距。
+
+贴图：
+
+环境光遮蔽(AO)贴图,
+光线映射(lightMap)贴图
+高光(Specular)贴图
+金属(metalness)贴图
+光滑(roughness)贴图
+环境(environment)贴图
+灰阶高度(displacement map or height map)贴图

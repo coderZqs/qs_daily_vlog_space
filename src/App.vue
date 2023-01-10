@@ -1,7 +1,7 @@
 <template>
-  <div class="navbar">
+  <!-- <div class="navbar">
     <CustomHeader></CustomHeader>
-  </div>
+  </div> -->
   <div>
     <RouterView />
   </div>
