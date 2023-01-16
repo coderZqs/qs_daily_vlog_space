@@ -67,11 +67,15 @@ const initCamera = (type = "PerspectiveCamera", near = 0.1, far = 1000) => {
       far
     );
   } else {
+    var k = sizeConfig.width / sizeConfig.height; //窗口宽高比
+    var s = 150; //三维场景显示范围控制系数，系数越大，显示的范围越大
+    //创建相机对象
+    // var camera = new THREE.OrthographicCamera(-s * k, s * k, s, -s, 1, 1000);
     camera = new THREE.OrthographicCamera(
-      sizeConfig.width / -2,
-      sizeConfig.width / 2,
-      sizeConfig.height / 2,
-      sizeConfig.height / -2,
+      -150 * k,
+      150 * k,
+      150,
+      -150,
       near,
       far
     );
@@ -265,6 +269,32 @@ const loadGLTF = (url: string, callback: (arg0: object) => void) => {
 
 export { VertexNormalsHelper };
 
+const initTextGeometry = async (text: string, config: object) => {
+  const loader = new THREE.FontLoader();
+  let geometry;
+  await new Promise((resolve) => {
+    loader.load("/src/assets/font/FZShuTi_Regular.json", function (font) {
+      geometry = new THREE.TextGeometry(text, {
+        font: font,
+        ...config
+      });
+
+
+      resolve(1);
+    })
+  });
+
+  return geometry;
+}
+
+const calcObject3DSize = (object3d: THREE.Object3D) => {
+  var box = new THREE.Box3().setFromObject(object3d);
+  let width = box.max.x + box.min.x;
+  let height = box.max.y + box.min.y;
+
+  return { width, height }
+}
+
 export default {
   addPlane,
   appendCanvasToElement,
@@ -280,4 +310,6 @@ export default {
   loadFBX,
   loadOBJ,
   loadGLTF,
+  initTextGeometry,
+  calcObject3DSize
 };

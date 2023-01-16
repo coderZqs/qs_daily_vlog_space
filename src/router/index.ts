@@ -1,20 +1,36 @@
 import { createRouter, createWebHistory } from "vue-router";
-import HomeView from "../views/index.vue";
 import routes from "@/autoRouterConfig";
+import Layout from "@/views/index.vue"
 
 const ConstantRouterMap = [
   {
-    path: "/image-effects",
-    component: () => import("@/views/image-effects/index.vue"),
+    path: "/",
+    component: Layout,
+    redirect: "/home",
+    children: [
+      {
+        path: "home",
+        component: () => import("@/views/home/index.vue"),
+      },
+      {
+        path: "3d-land",
+        component: () => import("@/views/lands/index.vue"),
+      },
+      {
+        path: "image-effects",
+        component: () => import("@/views/image-effects/index.vue"),
+      },
+      {
+        path: "article",
+        component: () => import("@/views/article/index.vue")
+      },
+      {
+        path: "article/:id",
+        component: () => import("@/views/article/detail.vue"),
+      },
+    ]
   },
-  {
-    path: "/article",
-    component: () => import("@/views/article/index.vue"),
-  },
-  {
-    path: "/planet",
-    component: () => import("@/views/planet/index.vue"),
-  },
+
 ];
 
 const router = createRouter({
@@ -22,10 +38,6 @@ const router = createRouter({
   routes: [
     ...routes,
     ...ConstantRouterMap,
-    {
-      path: "/",
-      component: HomeView,
-    },
   ],
 });
 
