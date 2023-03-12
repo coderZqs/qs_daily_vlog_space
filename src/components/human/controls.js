@@ -3,6 +3,8 @@ let isMoveRight = false;
 let isMoveFront = false;
 let isMoveBack = false;
 
+let andge = 0;
+
 window.onkeydown = (e) => {
     switch (e.keyCode) {
         case 87:
@@ -30,17 +32,19 @@ window.onkeyup = (e) => {
     }
 };
 
-export const listenKeyboard = (controls) => {
+export const listenKeyboard = (mesh) => {
     if (isMoveFront) {
-        controls.moveForward(0.05);
+        mesh.position.z -= 0.05;
     }
     if (isMoveLeft) {
-        controls.moveRight(-0.05);
+        mesh.position.x -= 0.05;
+        mesh.rotation.y += 0.01;
     }
     if (isMoveRight) {
-        controls.moveRight(0.05);
+        mesh.position.x += 0.05;
+        mesh.rotateY();
     }
     if (isMoveBack) {
-        controls.moveForward(-0.05);
+        mesh.position.z += 0.05;
     }
 }

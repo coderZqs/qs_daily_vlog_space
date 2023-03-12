@@ -4,13 +4,18 @@
     <comp-eye class="eye"></comp-eye>
     <div class="menu flex mr-8">
       <div class="menu-item">我的主页</div>
-      <div class="menu-item">忙于记录</div>
+      <div class="menu-item" @click="routerTo('/article')">忙于记录</div>
       <div class="menu-item">关于我的</div>
     </div>
   </div>
 </template>
 <script lang="ts" setup>
 import CompEye from "./eye-comp.vue";
+import { useRouter } from "vue-router"
+const router = useRouter();
+const routerTo = (url: string) => {
+  router.push(url)
+}
 </script>
 
 <style lang="scss" scoped>
@@ -32,6 +37,7 @@ import CompEye from "./eye-comp.vue";
 
 .menu {
   display: flex;
+
   .menu-item {
     margin: 0 20px;
   }

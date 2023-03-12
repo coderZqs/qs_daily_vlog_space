@@ -68,9 +68,8 @@ const initCamera = (type = "PerspectiveCamera", near = 0.1, far = 1000) => {
     );
   } else {
     var k = sizeConfig.width / sizeConfig.height; //窗口宽高比
-    var s = 150; //三维场景显示范围控制系数，系数越大，显示的范围越大
+    var s = 150;
     //创建相机对象
-    // var camera = new THREE.OrthographicCamera(-s * k, s * k, s, -s, 1, 1000);
     camera = new THREE.OrthographicCamera(
       -150 * k,
       150 * k,

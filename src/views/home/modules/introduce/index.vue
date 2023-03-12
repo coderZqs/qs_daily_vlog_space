@@ -62,12 +62,15 @@ let introduceControl = async () => {
 
   let isShowIntroduce = ref(false);
 
-  /*   let timer = null; */
-  let index = 0; // 大对象的索引
+  let index = 0;
   let contentIndex = 0;
 
+  /**
+   * 打字效果
+   */
+
   let typpingAnimate = (target, pointer, speed) => {
-    let key = 0; //item的索引
+    let key = 0;
     return new Promise((resolve) => {
       timer = setInterval(async () => {
         if (pointer) {
@@ -90,10 +93,13 @@ let introduceControl = async () => {
             resolve();
           }
         }
-        // 如果
       }, speed);
     });
   };
+
+  /**
+   * 等待X秒再进行下一次打字机效果
+   */
 
   const loading = async (time) => {
     return new Promise((resolve) => {
@@ -115,6 +121,10 @@ let introduceControl = async () => {
     // index++;
   } */
 
+  /**
+   * 按空格跳过本次打字效果
+   */
+
   window.addEventListener("keydown", async (e) => {
     if (e.code === "Space") {
       if (content.length <= contentIndex) {
@@ -128,6 +138,10 @@ let introduceControl = async () => {
     }
   });
 };
+
+/**
+ * 进入3d场景
+ */
 
 const enter3DScene = () => {
   // 每走一步会消耗 25 的时间
@@ -150,6 +164,10 @@ const enter3DScene = () => {
     }
   }, s);
 };
+
+/**
+ * 初始化 ThreeJS 场景
+ */
 
 let scene, camera, renderer, light;
 

@@ -107,13 +107,6 @@ const init = () => {
     500
   );
 
-  // 添加cssRenderer
-
-  let labelRenderer = new CSS2DRenderer();
-  labelRenderer.setSize(window.innerWidth, window.innerHeight);
-  labelRenderer.domElement.style.position = "absolute";
-  labelRenderer.domElement.style.top = "0px";
-
   const controls = new OrbitControls(camera, labelRenderer.domElement);
   controls.minDistance = 5;
   controls.maxDistance = 100000;
