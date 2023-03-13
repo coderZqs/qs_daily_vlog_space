@@ -104,7 +104,7 @@ onMounted(() => {
   controler.initCrosshair();
   controler.initPerson();
 
-  let controls = threejsApi.addOrbitControls(camera, renderer.domElement);
+  // let controls = threejsApi.addOrbitControls(camera, renderer.domElement);
 
   let time = 0;
   let element = document.querySelector(".container");

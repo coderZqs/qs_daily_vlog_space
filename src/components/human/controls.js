@@ -3,7 +3,7 @@ let isMoveRight = false;
 let isMoveFront = false;
 let isMoveBack = false;
 
-let andge = 0;
+let angle = 0;
 
 window.onkeydown = (e) => {
     switch (e.keyCode) {
@@ -34,17 +34,23 @@ window.onkeyup = (e) => {
 
 export const listenKeyboard = (mesh) => {
     if (isMoveFront) {
-        mesh.position.z -= 0.05;
+        mesh.position.z -= Math.cos(Math.PI / 180 * angle) * 0.05;
+        mesh.position.x -= Math.sin(Math.PI / 180 * angle) * 0.05
+
+        console.log(Math.cos(Math.PI / 180 * angle) * 0.05, Math.sin(Math.PI / 180 * angle) * 0.05)
     }
     if (isMoveLeft) {
-        mesh.position.x -= 0.05;
-        mesh.rotation.y += 0.01;
+        angle += 1;
+        mesh.rotation.y = Math.PI / 180 * angle;
     }
     if (isMoveRight) {
-        mesh.position.x += 0.05;
-        mesh.rotateY();
+        angle -= 1;
+        mesh.rotation.y = Math.PI / 180 * angle;
     }
     if (isMoveBack) {
-        mesh.position.z += 0.05;
+        mesh.position.z += Math.cos(Math.PI / 180 * angle) * 0.05;
+        mesh.position.x += Math.sin(Math.PI / 180 * angle) * 0.05
     }
+
+
 }
