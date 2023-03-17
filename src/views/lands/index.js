@@ -1,8 +1,6 @@
 import * as THREE from "three";
-import crystalBall from "./components/studio";
 let landGroup = new THREE.Group();
 import threejsApi from "@/threejs/index";
-import { InterpolateDiscrete } from "three";
 /* import lefulanModel from "./components/lefulan";
 import shyvanaModel from "./components/shyvana"; */
 
