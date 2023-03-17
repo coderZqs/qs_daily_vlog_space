@@ -11,11 +11,11 @@
 </template>
 <script lang="ts" setup>
 import CompEye from "./eye-comp.vue";
-import { useRouter } from "vue-router"
+import { useRouter } from "vue-router";
 const router = useRouter();
 const routerTo = (url: string) => {
-  router.push(url)
-}
+  router.push(url);
+};
 </script>
 
 <style lang="scss" scoped>

@@ -49,9 +49,7 @@ let API = () => {
    * 初始化准心
    */
 
-  let initCrosshair = () => {
-
-  };
+  let initCrosshair = () => {};
 
   /**
    * 初始化项目
@@ -69,30 +67,28 @@ let API = () => {
     // addMusic();
   };
 
-
   let initPerson = () => {
     person = new THREE.Mesh(
-      new THREE.BoxGeometry(1, 1, 1
-      ),
+      new THREE.BoxGeometry(1, 1, 1),
       new THREE.MeshLambertMaterial({ color: 0xaed6f1 })
     );
 
-    person.position.set(0, 1, 0)
-    scene.add(person)
+    person.position.set(0, 1, 0);
+    scene.add(person);
 
     followCamera = new THREE.Object3D();
     followCamera.position.copy(camera.position);
 
     person.add(followCamera);
-    camera.lookAt(person.position)
-  }
+    camera.lookAt(person.position);
+  };
 
   return {
     initLight,
     initProject,
     initCrosshair,
     addMusic,
-    initPerson
+    initPerson,
   };
 };
 
@@ -115,13 +111,12 @@ onMounted(() => {
     requestAnimationFrame(animate);
     renderer.render(scene, camera);
 
-
     camera.position.lerp(
       followCamera.getWorldPosition(new THREE.Vector3()),
       0.05
     );
 
-    camera.lookAt(person.position)
+    camera.lookAt(person.position);
     listenKeyboard(person);
 
     /**

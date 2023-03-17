@@ -67,8 +67,8 @@ const initCamera = (type = "PerspectiveCamera", near = 0.1, far = 1000) => {
       far
     );
   } else {
-    var k = sizeConfig.width / sizeConfig.height; //窗口宽高比
-    var s = 150;
+    const k = sizeConfig.width / sizeConfig.height; //窗口宽高比
+    const s = 150;
     //创建相机对象
     camera = new THREE.OrthographicCamera(
       -150 * k,
@@ -275,24 +275,23 @@ const initTextGeometry = async (text: string, config: object) => {
     loader.load("/src/assets/font/FZShuTi_Regular.json", function (font) {
       geometry = new THREE.TextGeometry(text, {
         font: font,
-        ...config
+        ...config,
       });
 
-
       resolve(1);
-    })
+    });
   });
 
   return geometry;
-}
+};
 
 const calcObject3DSize = (object3d: THREE.Object3D) => {
-  var box = new THREE.Box3().setFromObject(object3d);
-  let width = box.max.x + box.min.x;
-  let height = box.max.y + box.min.y;
+  const box = new THREE.Box3().setFromObject(object3d);
+  const width = box.max.x + box.min.x;
+  const height = box.max.y + box.min.y;
 
-  return { width, height }
-}
+  return { width, height };
+};
 
 export default {
   addPlane,
@@ -310,5 +309,5 @@ export default {
   loadOBJ,
   loadGLTF,
   initTextGeometry,
-  calcObject3DSize
+  calcObject3DSize,
 };

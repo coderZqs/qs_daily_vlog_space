@@ -8,5 +8,4 @@
 import Introduce from "./modules/introduce/index.vue";
 </script>
 
-<style>
-</style>
+<style></style>
