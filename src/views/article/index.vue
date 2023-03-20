@@ -1,25 +1,12 @@
 <template>
   <div class="container page-article">
-    <a-form
-      :model="formState"
-      name="basic"
-      autocomplete="off"
-      @finish="onFinish"
-      @finishFailed="onFinishFailed"
-    >
+    <a-form :model="formState" name="basic" autocomplete="off" @finish="onFinish" @finishFailed="onFinishFailed">
       <a-form-item name="date" label="选择日期" :rules="rules.date">
-        <a-date-picker
-          v-model:value="formState.date"
-          value-format="YYYY-MM-DD"
-        />
+        <a-date-picker v-model:value="formState.date" value-format="YYYY-MM-DD" />
       </a-form-item>
 
       <a-form-item label="content" name="内容" :rules="rules.content">
-        <a-textarea
-          auto-size
-          style="min-height: 100px"
-          v-model:value="formState.content"
-        />
+        <a-textarea auto-size style="min-height: 100px" v-model:value="formState.content" />
       </a-form-item>
 
       <a-form-item :wrapper-col="{ offset: 8, span: 16 }">

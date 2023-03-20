@@ -7,6 +7,7 @@ import "./index.scss";
 import Antd from "ant-design-vue";
 import "tailwindcss/tailwind.css";
 import "ant-design-vue/dist/antd.css";
+import "regenerator-runtime";
 
 const app = createApp(App);
 
