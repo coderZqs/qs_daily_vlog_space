@@ -1,9 +1,6 @@
 import * as THREE from "three";
 let landGroup = new THREE.Group();
 import threejsApi from "@/threejs/index";
-/* import lefulanModel from "./components/lefulan";
-import shyvanaModel from "./components/shyvana"; */
-
 let light = new THREE.PointLight(0xefd49e, 0.16);
 landGroup.add(light);
 
@@ -11,7 +8,6 @@ let spotLight = new THREE.SpotLight(0xd6b027);
 spotLight.position.set(0, 105, 0);
 landGroup.add(spotLight);
 spotLight.castShadow = true;
-/* spotLight.angle = Math.PI / 5; */
 
 let initMoon = async () => {
   return new Promise((resolve) => {

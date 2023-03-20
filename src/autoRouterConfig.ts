@@ -8,10 +8,6 @@ const files: Record<string, FileType> = import.meta.globEager(
   "/src/example/*.vue"
 );
 
-const webglExampleFile: Record<string, FileType> = import.meta.globEager(
-  "/src/webgl/*.vue"
-);
-
 type routesType = {
   path?: string;
   name?: string;
@@ -39,7 +35,7 @@ const generateAudoImportRoute = (
     return {
       path: routerPrefix + path,
       name: path,
-      component: component,
+      component: component
     };
   });
 
@@ -52,14 +48,7 @@ const threejsExampleRoutes = generateAudoImportRoute(
   "/example/threejs/"
 );
 
-const webglExampleRoutes = generateAudoImportRoute(
-  webglExampleFile,
-  /(?<=webgl\/).*?(?=\.)/g,
-  "/example/webgl/"
-);
-
 routes = routes.concat(threejsExampleRoutes);
-// routes = routes.concat(webglExampleRoutes);
 
 console.log(routes);
 
