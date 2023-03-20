@@ -1,6 +1,8 @@
 <template>
-  <LayoutHeader />
-  <router-view style="margin-top: 64px"></router-view>
+  <div>
+    <LayoutHeader />
+    <router-view style="padding-top:63px;"></router-view>
+  </div>
 </template>
 
 <script setup>

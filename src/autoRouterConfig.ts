@@ -50,6 +50,4 @@ const threejsExampleRoutes = generateAudoImportRoute(
 
 routes = routes.concat(threejsExampleRoutes);
 
-console.log(routes);
-
 export default routes;

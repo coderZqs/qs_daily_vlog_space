@@ -1,11 +1,20 @@
 <template>
-  <div class="page-home">
-    <Introduce />
+  <div class="module-introduce">
   </div>
 </template>
 
-<script setup>
-import Introduce from "./modules/introduce/index.vue";
+<script lang="ts" setup>
+import * as THREE from "three";
+import THREEAPI from "@/threejs/index";
+import { onMounted, ref } from "vue";
+import { useRouter } from "vue-router";
+
+let router = useRouter();
 </script>
 
-<style></style>
+<style lang="scss" scoped>
+.module-introduce {
+  animation: hidden 5s;
+}
+</style>
+
