@@ -2,13 +2,10 @@
   <div>
     <!-- 聊天记录 -->
 
-    <div>
-      user1: <el-button @click="sendMessage('user1')">send</el-button
-      ><el-input v-model="data.user1.content"></el-input>
-    </div>
-    <div>
-      user2: <el-button @click="sendMessage('user2')">send</el-button
-      ><el-input v-model="data.user2.content"></el-input>
+    <div class="flex">
+      user1:
+      <a-button @click="sendMessage('user1')">send</a-button>
+      <a-input v-model="data.user1.content"></a-input>
     </div>
   </div>
 </template>

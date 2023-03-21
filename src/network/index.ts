@@ -1,4 +1,15 @@
 import axios from "axios";
+import jsCookie from "js-cookie";
+
+declare module "axios" {
+  interface AxiosResponse<T = any> {
+    code: number;
+    msg: string;
+    data: T;
+  }
+  export function create(config?: AxiosRequestConfig): AxiosInstance;
+}
+
 import errorHandle from "./response-error";
 const instance = axios.create({
   baseURL: "http://192.168.16.155:88",
@@ -7,6 +18,7 @@ const instance = axios.create({
 
 instance.interceptors.request.use(
   config => {
+    config.headers.authorization = jsCookie.get("authorization");
     return config;
   },
   error => Promise.reject(error)
@@ -15,7 +27,7 @@ instance.interceptors.request.use(
 instance.interceptors.response.use(
   response => {
     return response.status === 200
-      ? Promise.resolve(response)
+      ? Promise.resolve(response.data)
       : Promise.reject(response);
   },
   error => {

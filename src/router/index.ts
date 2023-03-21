@@ -9,28 +9,40 @@ const ConstantRouterMap = [
     redirect: "/home",
     children: [
       {
+        path: "login",
+        component: () => import("@/views/login/index.vue")
+      },
+      {
+        path: "register",
+        component: () => import("@/views/register/index.vue")
+      },
+      {
         path: "home",
-        component: () => import("@/views/home/index.vue"),
+        component: () => import("@/views/home/index.vue")
       },
       {
         path: "3d-land",
-        component: () => import("@/views/lands/index.vue"),
+        component: () => import("@/views/lands/index.vue")
       },
       {
         path: "article",
-        component: () => import("@/views/article/index.vue"),
+        component: () => import("@/views/article/index.vue")
       },
       {
         path: "article/:id",
-        component: () => import("@/views/article/detail.vue"),
+        component: () => import("@/views/article/detail.vue")
       },
-    ],
-  },
+      {
+        path: "/chat",
+        component: () => import("@/views/chat/index.vue")
+      }
+    ]
+  }
 ];
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
-  routes: [/* ...routes, */ ...ConstantRouterMap],
+  routes: [/* ...routes, */ ...ConstantRouterMap]
 });
 
 export default router;

@@ -1,7 +1,7 @@
 <template>
   <div>
-    <LayoutHeader />
-    <router-view style="padding-top:63px;"></router-view>
+    <!-- <LayoutHeader /> -->
+    <router-view style="padding-top: 63px"></router-view>
   </div>
 </template>
 

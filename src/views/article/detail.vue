@@ -1,21 +1,40 @@
 <template>
   <div class="article">
     <!-- 大图 -->
-    <div class="big-image"></div>
+    <!-- <div class="big-image"></div> -->
 
     <div class="content">
       <!-- 标题 -->
       <div class="header d-flex flex-column align-center">
-        <span>记录那些平淡中带刺的日子</span>
+        <!--         <span>记录那些平淡中带刺的日子</span>
         <span>2022/04/20</span>
-        <span>晴</span>
+        <span>晴</span> -->
       </div>
       <!-- 图文 -->
     </div>
   </div>
 </template>
 
-<script setup></script>
+<script lang="ts" setup>
+import BlogAPI from "@/network/api/blog";
+import moment from "moment";
+import { onMounted } from "vue";
+
+/**
+ * 获取博客
+ */
+
+const getBlog = async () => {
+  let now = moment().format("YYYY-MM-DD");
+  let blog = await BlogAPI.getBlog({ dayTime: now });
+
+  console.log(blog);
+};
+
+onMounted(() => {
+  getBlog();
+});
+</script>
 
 <style lang="scss" scoped>
 .big-image {
