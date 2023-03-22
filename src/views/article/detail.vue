@@ -6,7 +6,7 @@
     <div class="content">
       <!-- 标题 -->
       <div class="header d-flex flex-column align-center">
-        <!--         <span>记录那些平淡中带刺的日子</span>
+        <!--         <span></span>
         <span>2022/04/20</span>
         <span>晴</span> -->
       </div>
@@ -19,16 +19,17 @@
 import BlogAPI from "@/network/api/blog";
 import moment from "moment";
 import { onMounted } from "vue";
+import { useRoute } from "vue-router";
+let route = useRoute();
 
 /**
  * 获取博客
  */
 
 const getBlog = async () => {
-  let now = moment().format("YYYY-MM-DD");
-  let blog = await BlogAPI.getBlog({ dayTime: now });
-
-  console.log(blog);
+  // let now = moment().format("YYYY-MM-DD");
+  console.log(route.params.id);
+  let blog = await BlogAPI.getBlog({ id: route.params.id });
 };
 
 onMounted(() => {

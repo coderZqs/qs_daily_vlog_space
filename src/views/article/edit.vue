@@ -28,11 +28,12 @@
   </div>
 </template>
 <script lang="ts" setup>
-import { reactive, ref } from "vue";
+import { reactive, ref, onMounted } from "vue";
 import dayjs, { Dayjs } from "dayjs";
 import BlogApi from "@/network/api/blog";
 import { SUCCESS } from "@/network/response-status";
 import { message } from "ant-design-vue";
+import moment from "moment";
 
 interface FormState {
   date: any;
@@ -43,6 +44,7 @@ const formState = reactive<FormState>({
   date: ref<Dayjs>(dayjs()),
   content: ""
 });
+
 const rules = {
   content: [{ required: true, message: "请输入内容" }],
   date: [
@@ -54,17 +56,20 @@ const rules = {
   ]
 };
 
-const onFinish = async () => {
+const onFinish = async () => {};
+
+onMounted(async () => {
   let data = await BlogApi.addBlog({
     title: "dasdasd",
     category: 1,
-    content: "哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈"
+    content: "哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈",
+    created_at: new Date().getTime()
   });
 
   if (SUCCESS(data.code)) {
     message.success(data.msg);
   }
-};
+});
 </script>
 
 <style lang="scss" scoped></style>

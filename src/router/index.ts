@@ -35,6 +35,10 @@ const ConstantRouterMap = [
       {
         path: "/chat",
         component: () => import("@/views/chat/index.vue")
+      },
+      {
+        path: "/edit",
+        component: () => import("@/views/article/edit.vue")
       }
     ]
   }
