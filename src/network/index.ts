@@ -26,6 +26,8 @@ instance.interceptors.request.use(
 
 instance.interceptors.response.use(
   response => {
+    // 如果未登录，则直接退出登录。
+
     return response.status === 200
       ? Promise.resolve(response.data)
       : Promise.reject(response);
