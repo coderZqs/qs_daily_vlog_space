@@ -1,5 +1,4 @@
 import Matter from "matter-js"
-
 // module aliases
 var Engine = Matter.Engine,
     Render = Matter.Render,
@@ -10,29 +9,38 @@ var Engine = Matter.Engine,
 
 var engine = Engine.create();
 
-var render = Render.create({
-    element: document.body,
-    engine: engine,
-    options: {
-        height: window.innerHeight - 64,
-        width: window.innerWidth,
-        wireframes: false
-    },
-});
 
-var ground = Bodies.rectangle(window.innerWidth / 2, 610, window.innerWidth, 60, { isStatic: true });
-Composite.add(engine.world, [ground]);
+const renderer = (element) => {
+    var render = Render.create({
+        element: element,
+        engine: engine,
+        options: {
+            height: window.innerHeight - 64,
+            width: window.innerWidth,
+            wireframes: false
+        },
+    });
 
-setInterval(() => {
+    console.log(render)
 
-    let ball = Bodies.circle(Math.random() * window.innerWidth, 30, 5)
+    var ground = Bodies.rectangle(window.innerWidth / 2, 610, window.innerWidth, 60, { isStatic: true });
+    Composite.add(engine.world, [ground]);
 
-    ball.restitution = 1;
-    ball.frictionAir = 0.001;
+    setInterval(() => {
 
-    World.add(engine.world, ball);
-}, 500)
+        let ball = Bodies.circle(Math.random() * window.innerWidth, 30, 5)
 
-Render.run(render);
-var runner = Runner.create();
-Runner.run(runner, engine);
+        ball.restitution = 1;
+        ball.frictionAir = 0.001;
+
+        World.add(engine.world, ball);
+    }, 500)
+
+    Render.run(render);
+    var runner = Runner.create();
+    Runner.run(runner, engine);
+}
+
+
+
+export default renderer;

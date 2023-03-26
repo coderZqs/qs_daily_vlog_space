@@ -1,28 +1,25 @@
 <template>
   <div class="container page-article">
-    <a-form
-      :model="formState"
-      name="basic"
-      autocomplete="off"
-      @finish="onFinish"
-    >
-      <a-form-item name="date" label="选择日期" :rules="rules.date">
-        <a-date-picker
-          v-model:value="formState.date"
-          value-format="YYYY-MM-DD"
-        />
+    <a-form :model="data.form" name="basic" autocomplete="off" @finish="onFinish">
+
+      <a-form-item name="title" label="填写标题" :rules="rules.title">
+        <a-input v-model:value="data.form.title"></a-input>
       </a-form-item>
 
-      <a-form-item label="content" name="内容" :rules="rules.content">
-        <a-textarea
-          auto-size
-          style="min-height: 100px"
-          v-model:value="formState.content"
-        />
+      <a-form-item name="weather" label="选择天气" :rules="rules.weather">
+        <a-radio-group v-model:value="data.form.weather">
+          <a-radio :value="1">晴</a-radio>
+          <a-radio :value="2">雨</a-radio>
+          <a-radio :value="3">阴</a-radio>
+        </a-radio-group>
+      </a-form-item>
+
+      <a-form-item label="内容" name="content" :rules="rules.content">
+        <a-textarea auto-size style="min-height: 100px" v-model:value="data.form.content" />
       </a-form-item>
 
       <a-form-item :wrapper-col="{ offset: 8, span: 16 }">
-        <a-button type="primary" html-type="submit">Submit</a-button>
+        <a-button type="primary" html-type="submit">提交</a-button>
       </a-form-item>
     </a-form>
   </div>
@@ -36,40 +33,47 @@ import { message } from "ant-design-vue";
 import moment from "moment";
 
 interface FormState {
-  date: any;
-  content: string;
+
+  form: {
+    title: string;
+    category: number;
+    content: string;
+    weather: number;
+  },
 }
 
-const formState = reactive<FormState>({
-  date: ref<Dayjs>(dayjs()),
-  content: ""
+const data = reactive<FormState>({
+
+  form: {
+    title: "",
+    category: 1,
+    content: "",
+    weather: 1
+  },
 });
 
 const rules = {
   content: [{ required: true, message: "请输入内容" }],
-  date: [
-    {
-      type: "string" as const,
-      required: true,
-      message: "Please select time!"
-    }
-  ]
+  title: [{ required: true, message: "请输入标题" }],
+  weather: [{ required: true, message: "请选择天气" }],
 };
 
-const onFinish = async () => {};
-
-onMounted(async () => {
-  let data = await BlogApi.addBlog({
-    title: "dasdasd",
-    category: 1,
-    content: "哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈",
+const onFinish = async () => {
+  let result = await BlogApi.addBlog({
+    title: data.form.title,
+    category: data.form.category,
+    content: data.form.content,
+    weather: data.form.weather,
     created_at: new Date().getTime()
   });
 
-  if (SUCCESS(data.code)) {
-    message.success(data.msg);
+  if (SUCCESS(result.code)) {
+    message.success(result.msg);
+  } else {
+    message.error("请勿重复记录")
   }
-});
+};
+
 </script>
 
 <style lang="scss" scoped></style>

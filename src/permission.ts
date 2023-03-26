@@ -3,7 +3,7 @@ import router from "./router/index";
 import useStore from "@/stores/user";
 import _ from "lodash";
 
-router.beforeEach(async (to, from, next) => {
+router.beforeEach((to, from, next) => {
   let { userInfo, GETINFO } = useStore();
 
   console.log(userInfo)
@@ -11,7 +11,7 @@ router.beforeEach(async (to, from, next) => {
   if (token) {
     // 判断是否有用户信息
     if (!userInfo || _.isEmpty(userInfo)) {
-      await GETINFO();
+      GETINFO();
     }
   }
 

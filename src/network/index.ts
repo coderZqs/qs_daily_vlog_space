@@ -12,7 +12,7 @@ declare module "axios" {
 
 import errorHandle from "./response-error";
 const instance = axios.create({
-  baseURL: "http://192.168.16.155:88",
+  baseURL: "http://localhost:88",
   timeout: 5000
 });
 
