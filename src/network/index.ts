@@ -1,5 +1,6 @@
 import axios from "axios";
 import jsCookie from "js-cookie";
+import Router from "../router/index"
 
 declare module "axios" {
   interface AxiosResponse<T = any> {
@@ -26,6 +27,9 @@ instance.interceptors.request.use(
 
 instance.interceptors.response.use(
   response => {
+    if (response.data.code === 2001) {
+      Router.push("/login")
+    }
     // 如果未登录，则直接退出登录。
 
     return response.status === 200

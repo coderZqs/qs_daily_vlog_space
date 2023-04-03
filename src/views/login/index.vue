@@ -1,5 +1,7 @@
 <template>
   <div class="page-login">
+    <div class="bg"> <img src="../../assets/image/login_bg.jpg" class="bg" alt=""></div>
+
     <div class="flex login-container">
       <img src="../../assets/image/login_bg.jpg" class="bg" alt="">
 
@@ -7,8 +9,8 @@
 
         <p class="welcome">欢迎回来</p>
         <a-form :model="formState" name="basic" autocomplete="off" @finish="onFinish" @finishFailed="onFinishFailed">
-          <a-form-item name="username" :rules="[{ required: true, message: 'Please input your username!' }]">
-            <a-input v-model:value="formState.username" />
+          <a-form-item name="mobile" :rules="[{ required: true, message: 'Please input your mobile!' }]">
+            <a-input v-model:value="formState.mobile" />
           </a-form-item>
 
           <a-form-item name="password" :rules="[{ required: true, message: 'Please input your password!' }]">
@@ -29,24 +31,21 @@ import { defineComponent, reactive } from 'vue';
 import useStore from "@/stores/user";
 import { useRouter } from "vue-router";
 import { message } from 'ant-design-vue';
+import { SUCCESS } from '@/network/response-status';
 let router = useRouter();
 let { LOGIN } = useStore();
 
 interface FormState {
-  username: string;
+  mobile: string;
   password: string;
-  remember: boolean;
 }
 
 const formState = reactive<FormState>({
-  username: '',
+  mobile: '',
   password: '',
-  remember: true,
 });
 const onFinish = async (values: any) => {
-  await LOGIN({ mobile: 15387716407, password: "zqszzz" });
-  message.success('登录成功')
-  router.push("/article/1");
+  await LOGIN({ mobile: formState.mobile, password: formState.password });
 };
 
 const onFinishFailed = (errorInfo: any) => {
@@ -62,7 +61,37 @@ const onFinishFailed = (errorInfo: any) => {
   display: flex;
   justify-content: center;
   align-items: center;
+
+  .bg {
+    overflow: hidden;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+
+    img {
+      width: 100%;
+      height: 100%;
+    }
+
+
+    :before {
+      content: '';
+      width: 100%;
+      height: 100%;
+      background: inherit;
+      position: absolute;
+      left: -25px; //giving minus -25px left position
+      right: 0;
+      top: -25px; //giving minus -25px top position 
+      bottom: 0;
+      box-shadow: inset 0 0 0 200px rgba(255, 255, 255, 0.3);
+      filter: blur(10px);
+    }
+  }
 }
+
 
 .login-container {
   margin-top: 10px;

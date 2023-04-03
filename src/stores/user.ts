@@ -5,6 +5,7 @@ import UserApi from "@/network/api/user";
 import { SUCCESS } from "@/network/response-status";
 import { message } from "ant-design-vue";
 import jsCookie from "js-cookie";
+import router from "../router/index"
 
 export default defineStore("user", () => {
   let userInfo = reactive<User | object>({});
@@ -19,9 +20,12 @@ export default defineStore("user", () => {
 
       if (SUCCESS(code)) {
         jsCookie.set("authorization", data);
-        return;
+        message.success('登录成功')
+        router.push("/article/index");
+      } else {
+        message.error(msg)
       }
-    } catch (err) {}
+    } catch (err) { }
   };
 
   const GETINFO = async () => {

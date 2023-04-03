@@ -12,7 +12,7 @@ import { RouterView } from "vue-router";
 
 <style lang="scss">
 * {
-  padding: 0;
+  margin: 0;
   margin: 0;
 }
 
@@ -64,29 +64,31 @@ body {
 }
 
 .container {
+  max-width: auto !important;
+
   @include render(large) {
     width: auto !important;
-    padding: 0 20% !important;
+    margin: 0 20% !important;
   }
 
   @include render(medium) {
     width: auto !important;
-    padding: 0 18% !important;
+    margin: 0 18% !important;
   }
 
   @include render(small) {
     width: auto !important;
-    padding: 0 100px !important;
+    margin: 0 100px !important;
   }
 
   @include render(mini) {
     width: auto !important;
-    padding: 0 50px !important;
+    margin: 0 50px !important;
   }
 
   @include render(phone) {
     width: auto !important;
-    padding: 12px !important;
+    margin: 12px !important;
   }
 }
 </style>

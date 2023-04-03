@@ -49,7 +49,7 @@ let API = () => {
    * 初始化准心
    */
 
-  let initCrosshair = () => {};
+  let initCrosshair = () => { };
 
   /**
    * 初始化项目

@@ -7,6 +7,7 @@ import Antd from "ant-design-vue";
 import "tailwindcss/tailwind.css";
 import "ant-design-vue/dist/antd.css";
 import "regenerator-runtime";
+import "./assets/icon/iconfont.css"
 import "./permission";
 
 const app = createApp(App);

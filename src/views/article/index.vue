@@ -1,5 +1,6 @@
 <template>
   <div class="page-article container">
+
     <div class="big-sign">
       <span>THE DAILY</span>
     </div>
@@ -26,7 +27,7 @@
           flexFlow: index % 2 == 0 ? 'row-reverse' : '',
         }" v-for="index in Math.ceil(data.articles.length / 3)" class="flex justify-between article-container">
           <div class="article-item"
-            :class="[index === Math.ceil(data.articles.length / 3) && key + 1 === data.articles.slice(3 * (index - 1), 3 * index).length ? index % 2 === 0 ? 'ml-auto' : 'mr-auto' : '']"
+            :class="[index === Math.ceil(data.articles.length / 3) && key === data.articles.slice(3 * (index - 1), 3 * index).length ? index % 2 === 0 ? 'ml-auto' : 'mr-auto' : '']"
             v-for="(item, key) in data.articles.slice(3 * (index - 1), 3 * index)" @click="enterDetail(item)">
             <!--             <div class="line" v-if="key < 2"
               :style="{ width: `calc((100% - 750px)/2 + 25px)`, left: `calc((250px + (100% - 750px)/2) * ${key} + 230px)`, top: `calc(352px * ${index - 1} + 140px)` }">
@@ -46,9 +47,9 @@
     </div>
 
     <div class="toolbar">
-      <a-button @click="enterAdd">添加日记</a-button>
-      <a-button>筛选日期</a-button>
-      <a-button>回到顶部</a-button>
+      <i class="iconfont icon-icon--tianjia" @click="enterAdd"></i>
+      <i class="iconfont icon-shijian"></i>
+      <i class="iconfont icon-huidaodingbu"></i>
     </div>
   </div>
 </template>
@@ -262,11 +263,20 @@ onMounted(() => {
 .toolbar {
   // width: 100px;
   padding: 20px;
-  background: red;
+  background: white;
+  box-shadow: 0 0 2px #CCC;
   position: fixed;
   right: 100px;
   bottom: 100px;
   display: flex;
   flex-direction: column;
+
+  i {
+    cursor: pointer;
+    color: #1890ff;
+    fill: currentColor;
+    font-size: 30px;
+  }
 }
 </style>
+
