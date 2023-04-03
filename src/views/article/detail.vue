@@ -13,7 +13,7 @@
         </p>
       </div>
 
-      <div class="content container">2{{ data.blogInfo.content }}</div>
+      <div class="content container">{{ data.blogInfo.content }}</div>
     </div>
   </div>
 </template>

@@ -20,6 +20,7 @@ const instance = axios.create({
 instance.interceptors.request.use(
   config => {
     config.headers.authorization = jsCookie.get("authorization");
+    console.log(config)
     return config;
   },
   error => Promise.reject(error)
@@ -38,6 +39,7 @@ instance.interceptors.response.use(
   },
   error => {
     const { response } = error;
+    console.log(error)
     errorHandle(response.status, response.info);
   }
 );
