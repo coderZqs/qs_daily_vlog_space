@@ -1,55 +1,52 @@
 <template>
-  <div class="page-article container">
+  <div class="page-article" ref="container">
 
-    <div class="big-sign">
-      <span>THE DAILY</span>
+    <div class="navigation-bar">
+      <div class="big-sign">
+        <span>THE DAILY</span>
+      </div>
     </div>
-    <div class="navigation-bar">我的日记旅程</div>
-
-    <!--   <div style="background: #ececec; padding: 16px">
-      <a-card title="日期" :bordered="false" style="width: 300px">
-        <template #extra>
-          <a-date-picker v-model:value="data.date" picker="month" />
-        </template>
-
-        <div class="flex flex-wrap">
-          <div class="day-item" v-for="item in dayList" :key="item">
-            <span>{{ item }}</span>
-          </div>
-        </div>
-      </a-card>
-    </div> -->
-
     <div>
-      <!-- <p>在{{ data.date.year() }}. {{ data.date.month() }}的你，记录了{{ data.articles.length }}篇文章</p> -->
-      <div class="article-list mt-5" style="position:relative">
-        <div :style="{
-          flexFlow: index % 2 == 0 ? 'row-reverse' : '',
-        }" v-for="index in Math.ceil(data.articles.length / 3)" class="flex justify-between article-container">
-          <div class="article-item"
-            :class="[index === Math.ceil(data.articles.length / 3) && key === data.articles.slice(3 * (index - 1), 3 * index).length ? index % 2 === 0 ? 'ml-auto' : 'mr-auto' : '']"
-            v-for="(item, key) in data.articles.slice(3 * (index - 1), 3 * index)" @click="enterDetail(item)">
-            <!--             <div class="line" v-if="key < 2"
-              :style="{ width: `calc((100% - 750px)/2 + 25px)`, left: `calc((250px + (100% - 750px)/2) * ${key} + 230px)`, top: `calc(352px * ${index - 1} + 140px)` }">
-            </div>
-
-            <div class="shu-line" v-else></div> -->
-            <div class="image-box">
+      <div class="article-list mt-5">
+        <div class="article-container">
+          <div ref="articleItem" class="flex article-item" v-for="item in data.articles" :key="item.id"
+            @click="enterDetail(item)">
+            <!-- <div class="image-box">
               <img :src="item.image" alt="">
+            </div> -->
+            <div class="p-4 relative">
+              <div class="created-at">{{ item.created_at.day }}</div>
+              <div class="title">{{ item.title }}</div>
+              <div class="content">{{ item.content }}</div>
             </div>
-            <div class="created-at truncate">{{ item.created_at }}</div>
-            <div class="title truncate">{{ item.title }}</div>
-            <div class="content truncate">{{ item.content }}</div>
           </div>
         </div>
-        <!-- <div class="loading">loading...</div> -->
       </div>
     </div>
 
+
+    <div class="dater flex flex-col items-center justify-center" v-if="data.currentItem.created_at">
+      <p style="margin-top:-20px;"><span style="font-size:50px">{{ data.currentItem.created_at.month }}</span> . <span
+          class="mx-1">{{
+            data.currentItem.created_at.year }}</span></p>
+    </div>
+
     <div class="toolbar">
-      <i class="iconfont icon-icon--tianjia" @click="enterAdd"></i>
-      <i class="iconfont icon-shijian"></i>
-      <i class="iconfont icon-huidaodingbu"></i>
+      <div>
+        <img src="@/assets/icon/img/add.png" @click="enterAdd" alt="">
+      </div>
+      <div>
+        <img src="@/assets/icon/img/date.png" alt="">
+      </div>
+      <div>
+        <img src="@/assets/icon/img/back-top.png" alt="">
+      </div>
+      <div @click="showTarget" ref="targetControlContainer">
+        <div ref="targetControl" class="target-container">
+          <img src="@/assets/icon/img/target.png" alt="">
+          <div class="container" v-if="isOpenTargetDialog">dasdasddadasd</div>
+        </div>
+      </div>
     </div>
   </div>
 </template>
@@ -58,34 +55,45 @@
 import { onMounted, computed } from "vue";
 import BlogApi from "@/network/api/blog";
 import moment from "moment";
-import { reactive } from "vue";
+import { reactive, ref } from "vue";
 import { SUCCESS } from "@/network/response-status";
 import { message } from "ant-design-vue";
 import dayjs, { Dayjs } from "dayjs";
 import { CalculatorOutlined } from "@ant-design/icons-vue"
 import router from "@/router";
 import { Item } from "ant-design-vue/lib/menu";
+import _ from "lodash"
+
+type Article = {
+  category: string;
+  content: string;
+  created_at: string;
+  id: number;
+  sort_id: number;
+  title: string;
+  updatedAt: string;
+  user_id: number
+  image: string;
+}
 
 type Data = {
   date: Dayjs;
-  articles: {
-    category: string;
-    content: string;
-    createdAt: string;
-    created_at: string;
-    id: number;
-    sort_id: number;
-    title: string;
-    updatedAt: string;
-    user_id: number
-    image: string;
-  }[];
+  articles: Article[];
+  currentItem: Article
 };
+
+const container = ref()
+const articleItem = ref();
+const targetControl = ref();
 
 const data = reactive<Data>({
   date: dayjs(),
-  articles: []
+  articles: [],
+  currentItem: {},
 });
+
+const sourcePoi = ref({ left: 0, top: 0 });
+const isOpenTargetDialog = ref(false)
 
 const dayList = computed(() => data.date.daysInMonth());
 
@@ -102,7 +110,18 @@ const getList = async () => {
   });
 
   if (SUCCESS(result.code)) {
-    data.articles = result.data;
+    data.articles = result.data.map((v) => {
+      return {
+        ...v,
+        created_at: {
+          year: new Date(v.created_at).getFullYear(),
+          month: new Date(v.created_at).getMonth() + 1,
+          day: new Date(v.created_at).getDate()
+        },
+      }
+    });
+
+    data.currentItem = _.cloneDeep(data.articles[0])
   } else {
     message.error(result.msg);
   }
@@ -124,17 +143,62 @@ const enterAdd = () => {
   router.push("/article/edit")
 }
 
+/**
+ * 监听滚动事件
+ */
+
+const listenPageScroll = () => {
+  articleItem.value.forEach((e, key) => {
+    let { top, height } = e.getBoundingClientRect();
+    let center = document.body.clientHeight / 2;
+
+    if (top < center && (top + height) > center) {
+      data.currentItem = _.cloneDeep(data.articles[key]);
+    }
+  })
+}
+
+
+const showTarget = () => {
+
+  if (!isOpenTargetDialog.value) {
+    targetControl.value.style.position = "absolute";
+    let { top, left, } = targetControl.value.getBoundingClientRect();
+
+    targetControl.value.style.height = window.innerHeight + 'px'
+    targetControl.value.style.width = window.innerWidth + 'px'
+    targetControl.value.style.left = - left + 'px';
+    targetControl.value.style.top = - top + 64 + 'px';
+    targetControl.value.style.backgroundColor = "#F3F9F1"
+    // targetControl.value.style.padding = `24px ${window.innerWidth * 0.2 + 'px'}`
+    isOpenTargetDialog.value = true;
+  } else {
+    targetControl.value.style.position = "relative"
+    targetControl.value.style.width = "100%"
+    targetControl.value.style.height = "100%"
+    isOpenTargetDialog.value = false;
+    targetControl.value.style.left = 0 + 'px'
+    targetControl.value.style.top = 0 + 'px'
+    targetControl.value.style.backgroundColor = "white"
+    // targetControl.value.style.padding = `0px 0px`
+  }
+}
+
 onMounted(() => {
   getList();
+  window.addEventListener('scroll', listenPageScroll)
 });
 </script>
 
 <style lang="scss" scoped>
 .page-article {
+  padding: 0 20%;
+  background: #F3F9F1;
   margin: 0 auto;
   z-index: 1;
   padding-top: 64px;
   box-sizing: border-box;
+  overflow: scroll;
 }
 
 .setting-bar {
@@ -159,12 +223,13 @@ onMounted(() => {
 
 .navigation-bar {
   width: 100%;
-  height: 100px;
-  background: black;
+  height: 200px;
+  background: url(../../assets/image/login_bg.jpg);
+  background-attachment: fixed;
+  background-size: 100% auto;
   text-align: center;
-  line-height: 100px;
+  line-height: 200px;
   color: white;
-  margin-top: 20px;
 }
 
 
@@ -187,17 +252,14 @@ onMounted(() => {
 .article-container {
 
   .article-item {
-    width: 250px;
-    margin: 30px 0;
+    background: white;
+    margin: 12px 0;
     transition: 0.1s all;
 
     cursor: pointer;
 
-    &:hover {
-      transform: scale(1.1);
-    }
-
     .image-box {
+      flex-shrink: 0;
       border: 6px solid black;
       height: 230px;
       width: 230px;
@@ -214,43 +276,33 @@ onMounted(() => {
     }
 
     .created-at {
-      font-size: 13px;
+      height: 60px;
+      width: 60px;
+      text-align: center;
+      line-height: 60px;
+      border-radius: 50%;
+      font-size: 30px;
+      font-weight: 700;
+      position: absolute;
+      opacity: 0.7;
+      z-index: 0;
+      right: 30px;
+      top: 0px;
     }
 
     .title {
-      font-size: 14px;
-      font-weight: 500;
+      display: inline-block;
+      font-size: 16px;
+      font-weight: 600;
+      margin-bottom: 4px;
+      padding-bottom: 4px;
+      border-bottom: 2px solid #CCC;
     }
 
     .content {
       font-size: 13px;
     }
-
-
-    .line {
-      position: absolute;
-      width: 30%;
-      height: 4px;
-      background: black;
-      left: 230px;
-      top: 100px;
-    }
-
-    &:last-child {
-      .line {
-        display: none;
-      }
-    }
-
-    .shu-line {
-      position: absolute;
-      width: 4px;
-      height: 200px;
-      background: red;
-    }
   }
-
-
 }
 
 .loading {
@@ -261,6 +313,10 @@ onMounted(() => {
 
 
 .toolbar {
+  display: flex;
+  flex-flow: column;
+  align-items: center;
+  justify-content: center;
   // width: 100px;
   padding: 20px;
   background: white;
@@ -271,12 +327,46 @@ onMounted(() => {
   display: flex;
   flex-direction: column;
 
-  i {
-    cursor: pointer;
-    color: #1890ff;
-    fill: currentColor;
-    font-size: 30px;
+  div {
+    position: relative;
+    width: 100%;
+    height: 40px;
+
+    &:first-child {
+      margin-bottom: 6px;
+
+      img {
+        height: 25px;
+        width: 25px;
+      }
+    }
+
+    &:last-child {
+      img {
+        height: 34px;
+        width: 34px;
+      }
+    }
   }
+
+  img {
+    cursor: pointer;
+    height: 30px;
+    width: 30px;
+  }
+}
+
+.dater {
+  position: fixed;
+  right: 8%;
+  top: 100px;
+}
+
+.target-container {
+  transition: 0.5s all;
+  background: white;
+  left: 0;
+  top: 0;
 }
 </style>
 

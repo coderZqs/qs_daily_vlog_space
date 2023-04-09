@@ -1,12 +1,8 @@
 <template>
   <div class="page-login">
-    <div class="bg"> <img src="../../assets/image/login_bg.jpg" class="bg" alt=""></div>
-
     <div class="flex login-container">
-      <img src="../../assets/image/login_bg.jpg" class="bg" alt="">
-
+      <div class="login-image"> <img src="../../assets/image/login.jpg" alt=""></div>
       <div class="form flex flex-col justify-center align-center">
-
         <p class="welcome">欢迎回来</p>
         <a-form :model="formState" name="basic" autocomplete="off" @finish="onFinish" @finishFailed="onFinishFailed">
           <a-form-item name="mobile" :rules="[{ required: true, message: 'Please input your mobile!' }]">
@@ -56,8 +52,9 @@ const onFinishFailed = (errorInfo: any) => {
 
 <style lang="scss" scoped>
 .page-login {
+  background: #BACAC6;
   width: 100%;
-  height: 100vh;
+  height: calc(100vh - 64px);
   display: flex;
   justify-content: center;
   align-items: center;
@@ -94,12 +91,12 @@ const onFinishFailed = (errorInfo: any) => {
 
 
 .login-container {
+  border-radius: 4px;
+  overflow: hidden;
   margin-top: 10px;
-  // box-shadow: 0 0 10px #CCC;
-  border: 3px solid whitesmoke;
   display: flex;
   width: 60%;
-  height: 600px;
+  height: 500px;
   position: relative;
 
   img {
@@ -120,6 +117,14 @@ const onFinishFailed = (errorInfo: any) => {
     .welcome {
       font-size: 20px;
     }
+  }
+}
+
+
+.login-image {
+  img {
+    width: 100%;
+    height: 100%;
   }
 }
 </style>

@@ -1,46 +1,85 @@
 import Matter from "matter-js"
-// module aliases
-var Engine = Matter.Engine,
-    Render = Matter.Render,
-    Runner = Matter.Runner,
-    Bodies = Matter.Bodies,
-    World = Matter.World,
-    Composite = Matter.Composite;
 
-var engine = Engine.create();
+let { Engine, Runner, Render, Bodies, World, Composite } = Matter;
 
+class Emoji {
+    public engine = Engine.create();
+    public timer;
+    public runner;
+    public render;
+    constructor() {
 
-const renderer = (element) => {
-    var render = Render.create({
-        element: element,
-        engine: engine,
-        options: {
-            height: window.innerHeight - 64,
-            width: window.innerWidth,
-            wireframes: false
-        },
-    });
+    }
 
-    console.log(render)
+    run(element) {
+        var render = Render.create({
+            element: element,
+            engine: this.engine,
+            options: {
+                height: window.innerHeight - 64,
+                width: window.innerWidth,
+                wireframes: false
+            },
+        });
 
-    var ground = Bodies.rectangle(window.innerWidth / 2, 610, window.innerWidth, 60, { isStatic: true });
-    Composite.add(engine.world, [ground]);
+        // 生成墙壁
+        var ground = Bodies.rectangle(window.innerWidth / 2, window.innerHeight - 64, window.innerWidth, 20, { isStatic: true });
+        var leftGround = Bodies.rectangle(window.innerWidth, window.innerHeight / 2, 20, window.innerHeight, { isStatic: true });
+        var rightGround = Bodies.rectangle(0, window.innerHeight / 2, 20, window.innerHeight, { isStatic: true });
 
-    setInterval(() => {
+        Composite.add(this.engine.world, [ground, leftGround, rightGround]);
 
+        this.timer = setInterval(() => {
+            this.generateBall();
+        }, 500)
+
+        Render.run(render);
+        this.runner = Runner.create();
+        Runner.run(this.runner, this.engine);
+    }
+
+    /**
+     * 生成球
+     */
+
+    generateBall() {
         let ball = Bodies.circle(Math.random() * window.innerWidth, 30, 5)
-
         ball.restitution = 1;
         ball.frictionAir = 0.001;
+        World.add(this.engine.world, ball);
+    }
 
-        World.add(engine.world, ball);
-    }, 500)
+    /**
+     * 暂停
+     */
 
-    Render.run(render);
-    var runner = Runner.create();
-    Runner.run(runner, engine);
+    stop() {
+        clearInterval(this.timer);
+        Runner.stop(this.runner)
+    }
+
+    /**
+     * 开始
+     */
+
+
+    start() {
+        this.timer = setInterval(() => {
+            this.generateBall();
+        }, 500)
+        Runner.start(this.runner)
+    }
+
+    /**
+     * 取消动画
+     */
+
+    clear() {
+        this.stop();
+        World.clear(this.engine.world);
+        Engine.clear(this.engine)
+    }
 }
 
 
-
-export default renderer;
+export default new Emoji()

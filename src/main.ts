@@ -8,6 +8,7 @@ import "tailwindcss/tailwind.css";
 import "ant-design-vue/dist/antd.css";
 import "regenerator-runtime";
 import "./assets/icon/iconfont.css"
+import "./assets/styles/reset.scss"
 import "./permission";
 
 const app = createApp(App);

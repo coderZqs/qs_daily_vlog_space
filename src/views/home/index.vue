@@ -1,14 +1,29 @@
 <template>
-  <div class="module-introduce"></div>
+  <div class="module-introduce" ref="canvas"></div>
 </template>
 
 
 <script lang="ts" setup>
-import renderer from "./hooks/emoji";
-import { onMounted, } from "vue";
+import Emoji from "./hooks/emoji";
+import { onMounted, ref, onUnmounted } from "vue";
+
+let canvas = ref()
 
 onMounted(() => {
-  renderer(document.querySelector('.module-introduce'));
+  Emoji.run(canvas.value);
+})
+
+onUnmounted(() => {
+  Emoji.clear()
+})
+
+
+window.addEventListener('visibilityChange', () => {
+  if (document.hidden) {
+    Emoji.stop();
+  } else {
+    Emoji.start();
+  }
 })
 </script>
 

@@ -1,9 +1,19 @@
 <template>
-  <div class="page-article">
+  <div class="page-article" :style="{ background: data.form.weather === 1 ? 'gray' : '#F3EEEA' }">
     <div class="container content relative">
       <div class="form relative" :style="{ backgroundImage: `url(${data.form.image})` }">
         <textarea class="textarea" name="" v-model="data.form.content" id="" cols="30" rows="10"></textarea>
         <div class="toolbar">
+          <div class="target">
+            <a-tooltip color="white">
+              <template #title>
+                <div class="flex justify-center items-center flex-col" @click="triggerUpload">
+                  <a-checkbox-group v-model:value="targetCheckValues" name="checkboxgroup" :options="targets" />
+                </div>
+              </template>
+              <img src="@/assets/icon/img/target.png" alt="">
+            </a-tooltip>
+          </div>
 
           <div class="uploader">
             <a-tooltip color="white">
@@ -47,6 +57,11 @@
                     <div class="price">{{ billSummary }}</div>
                     <span>元</span>
                   </div>
+
+                  <div class="remark">
+                    <textarea placeholder="备注一下吧" v-model="data.form.remark" name="" autosize id="" cols="30"
+                      rows="3"></textarea>
+                  </div>
                 </div>
               </template>
               <img src="@/assets/icon/img/bill.png" alt="">
@@ -57,9 +72,9 @@
             <a-tooltip color="white">
               <template #title>
                 <div class="weather-group">
-                  <img src="@/assets/icon/img/yutian.png" @click="chooseWeather(2)" alt="">
+                  <img src="@/assets/icon/img/yutian.png" @click="chooseWeather(1)" alt="">
                   <div class="divider"></div>
-                  <img src="@/assets/icon/img/qingtian.png" @click="chooseWeather(1)" alt="">
+                  <img src="@/assets/icon/img/qingtian.png" @click="chooseWeather(2)" alt="">
                   <div class="divider"></div>
                   <img src="@/assets/icon/img/yintian.png" alt="" @click="chooseWeather(3)">
                 </div>
@@ -80,7 +95,6 @@
     <div class="rain" v-for="item in rainList" :style="{ left: item.left + 'px', top: item.top + 'px' }" :key="item.left">
     </div>
 
-
     <a-modal v-model:visible="data.visibleSubmitModal" title="想一个有个性的标题！" @ok="submit">
       <p><a-input v-model:value="data.form.title"></a-input></p>
     </a-modal>
@@ -96,8 +110,9 @@ import { message } from "ant-design-vue";
 import moment from "moment";
 import { formItemProps } from "ant-design-vue/lib/form";
 import useBill from "./hooks/useBill"
-import { Vue } from "vue-demi";
+import useTarget from "./hooks/useTarget"
 import router from "@/router";
+let timer;
 let { addBill, bill, billSummary } = useBill();
 
 interface FormState {
@@ -107,6 +122,7 @@ interface FormState {
     content: string;
     weather: number;
     image: string
+    remark: string;
   },
 
   visibleSubmitModal: boolean
@@ -125,7 +141,8 @@ const data = reactive<FormState>({
     category: 1,
     content: "",
     weather: 1,
-    image: ""
+    image: "",
+    remark: ""
   },
 
   visibleSubmitModal: false,
@@ -169,6 +186,10 @@ const submit = async () => {
 
 const chooseWeather = (weather) => {
   data.form.weather = weather;
+  clearInterval(timer)
+  if (data.form.weather === 1) {
+    generateMain();
+  }
 }
 
 const beforeSubmit = () => {
@@ -209,7 +230,7 @@ let generateMain = () => {
   let width = box!.clientWidth;
   let height = box!.clientHeight;
 
-  setInterval(() => {
+  timer = setInterval(() => {
     rainList.value.push({
       left: Math.random() * width,
       top: 0
@@ -232,10 +253,12 @@ onMounted(() => {
 
 <style lang="scss" scoped>
 .page-article {
+  transition: 1s background;
   position: relative;
   height: calc(100vh - 64px);
   overflow: hidden;
-  background: gray;
+  // background: gray;
+  background: #F3EEEA;
 }
 
 .weather-group {
@@ -301,6 +324,15 @@ onMounted(() => {
       width: 30px;
     }
   }
+
+  .target {
+    cursor: pointer;
+    margin: 0 10px;
+
+    img {
+      width: 30px;
+    }
+  }
 }
 
 .form {
@@ -337,7 +369,8 @@ onMounted(() => {
       margin: 0 4px;
       border: none;
       outline: none;
-      width: 60px;
+
+      flex: 1;
     }
   }
 }
