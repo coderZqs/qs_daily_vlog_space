@@ -1,30 +1,24 @@
 <template>
   <div class="page-article" :style="{ background: data.form.weather === 1 ? 'gray' : '#F3EEEA' }">
     <div class="container content relative">
-      <div class="form relative" :style="{ backgroundImage: `url(${data.form.image})` }">
+      <div class="form relative" :style="{ backgroundImage: `url(${serverAddress + data.form.image})` }">
         <textarea class="textarea" name="" v-model="data.form.content" id="" cols="30" rows="10"></textarea>
         <div class="toolbar">
-          <div class="target">
-            <a-tooltip color="white">
-              <template #title>
-                <div class="flex justify-center items-center flex-col" @click="triggerUpload">
-                  <a-checkbox-group v-model:value="targetCheckValues" name="checkboxgroup" :options="targets" />
-                </div>
-              </template>
-              <img src="@/assets/icon/img/target.png" alt="">
-            </a-tooltip>
-          </div>
 
           <div class="uploader">
             <a-tooltip color="white">
               <template #title>
                 <div class="flex justify-center items-center flex-col" @click="triggerUpload">
                   <template v-if="data.form.image">
-                    <img :src="data.form.image" alt="">
+                    <img :src="serverAddress + data.form.image" alt="">
                   </template>
                   <template v-else>
-                    <img src="../../assets/icon/img/upload.png" alt="">
-                    <div class="click-me">点我上传</div>
+
+                    <div style="width:200px;height:250px;" class="flex flex-col justify-center items-center">
+                      <img src="../../assets/icon/img/upload.png" style="width:100px;" alt="">
+                      <div class="click-me mt-5" style="font-size:18px;">上传背景图</div>
+                    </div>
+
                   </template>
                 </div>
               </template>
@@ -86,7 +80,17 @@
 
           </div>
 
-          <a-button class="ml-2" type="primary" @click="beforeSubmit">提交</a-button>
+          <a-popover placement="topRight">
+            <template #content>
+              <p><a-input style="width:300px" v-model:value="data.form.title"></a-input></p>
+            </template>
+            <template #title>
+              <span style="font-size:14px">总结标题</span>
+            </template>
+            <a-button class="ml-2" type="primary" @click="beforeSubmit">提交</a-button>
+          </a-popover>
+
+
         </div>
       </div>
     </div>
@@ -94,10 +98,10 @@
     <input ref="uploader" @change="uploadFile" type="file" id="file" style="opacity:0;position: absolute;top:-1000%">
     <div class="rain" v-for="item in rainList" :style="{ left: item.left + 'px', top: item.top + 'px' }" :key="item.left">
     </div>
-
-    <a-modal v-model:visible="data.visibleSubmitModal" title="想一个有个性的标题！" @ok="submit">
+    <!-- 
+    <a-modal v-model:visible="data.visibleSubmitModal" title="" @ok="submit">
       <p><a-input v-model:value="data.form.title"></a-input></p>
-    </a-modal>
+    </a-modal> -->
   </div>
 </template>
 <script lang="ts" setup>
@@ -112,6 +116,7 @@ import { formItemProps } from "ant-design-vue/lib/form";
 import useBill from "./hooks/useBill"
 import useTarget from "./hooks/useTarget"
 import router from "@/router";
+import { serverAddress } from "../../network/index.ts"
 let timer;
 let { addBill, bill, billSummary } = useBill();
 

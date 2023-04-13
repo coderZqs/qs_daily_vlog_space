@@ -33,18 +33,18 @@
 
     <div class="toolbar">
       <div>
-        <img src="@/assets/icon/img/add.png" @click="enterAdd" alt="">
-      </div>
-      <div>
-        <img src="@/assets/icon/img/date.png" alt="">
-      </div>
-      <div>
-        <img src="@/assets/icon/img/back-top.png" alt="">
+        <img style="margin-left:3px" src="@/assets/icon/img/add.png" @click="enterAdd" alt="">
       </div>
       <div @click="showTarget" ref="targetControlContainer">
         <div ref="targetControl" class="target-container">
           <img src="@/assets/icon/img/target.png" alt="">
-          <div class="container" v-if="isOpenTargetDialog">dasdasddadasd</div>
+          <div class="container" v-if="isOpenTargetDialog">
+
+            <div class="target-card"></div>
+            <!-- 今日目标 -->
+            <!-- 今月目标 -->
+            <!-- 今年目标 -->
+          </div>
         </div>
       </div>
     </div>
@@ -179,7 +179,7 @@ const showTarget = () => {
     isOpenTargetDialog.value = false;
     targetControl.value.style.left = 0 + 'px'
     targetControl.value.style.top = 0 + 'px'
-    targetControl.value.style.backgroundColor = "white"
+    targetControl.value.style.backgroundColor = ""
     // targetControl.value.style.padding = `0px 0px`
   }
 }
@@ -319,8 +319,6 @@ onMounted(() => {
   justify-content: center;
   // width: 100px;
   padding: 20px;
-  background: white;
-  box-shadow: 0 0 2px #CCC;
   position: fixed;
   right: 100px;
   bottom: 100px;
@@ -336,15 +334,15 @@ onMounted(() => {
       margin-bottom: 6px;
 
       img {
-        height: 25px;
-        width: 25px;
+        height: 35px;
+        width: 35px;
       }
     }
 
     &:last-child {
       img {
-        height: 34px;
-        width: 34px;
+        height: 48px;
+        width: 48px;
       }
     }
   }
@@ -364,9 +362,16 @@ onMounted(() => {
 
 .target-container {
   transition: 0.5s all;
-  background: white;
   left: 0;
   top: 0;
+
+
+
+  .target-card {
+    height: 300px;
+    width: 300px;
+    background: red;
+  }
 }
 </style>
 

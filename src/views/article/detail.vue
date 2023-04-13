@@ -1,7 +1,7 @@
 <template>
   <div class="article">
     <!-- 大图 -->
-    <div class="big-image" :style="{ backgroundImage: `url(${data.blogInfo.image})` }"></div>
+    <div class="big-image" :style="{ backgroundImage: `url(${serverAddress + data.blogInfo.image})` }"></div>
 
     <div class="content">
       <!-- 标题 -->
@@ -25,6 +25,7 @@ import moment from "moment";
 import { onMounted, reactive, toRefs } from "vue";
 import { useRoute } from "vue-router";
 let route = useRoute();
+import { serverAddress } from "../../network/index.ts"
 
 type Blog = {
   category?: string;

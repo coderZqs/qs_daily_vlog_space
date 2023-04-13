@@ -23,11 +23,11 @@ class Emoji {
         });
 
         // 生成墙壁
-        var ground = Bodies.rectangle(window.innerWidth / 2, window.innerHeight - 64, window.innerWidth, 20, { isStatic: true });
+        // var ground = Bodies.rectangle(window.innerWidth / 2, window.innerHeight - 64, window.innerWidth, 20, { isStatic: true });
         var leftGround = Bodies.rectangle(window.innerWidth, window.innerHeight / 2, 20, window.innerHeight, { isStatic: true });
         var rightGround = Bodies.rectangle(0, window.innerHeight / 2, 20, window.innerHeight, { isStatic: true });
 
-        Composite.add(this.engine.world, [ground, leftGround, rightGround]);
+        Composite.add(this.engine.world, [leftGround, rightGround]);
 
         this.timer = setInterval(() => {
             this.generateBall();

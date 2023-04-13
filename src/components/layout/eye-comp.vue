@@ -1,6 +1,6 @@
 <template>
-  <div class="comp-eye">
-    <div class="eye-dot"></div>
+  <div class="comp-eye" :style="{ background: theme === 'dark' ? 'black' : 'white' }">
+    <div class="eye-dot" :style="{ background: theme === 'dark' ? 'white' : 'black' }"></div>
   </div>
 </template>
 
@@ -8,6 +8,12 @@
 import { defineComponent, onMounted } from "vue";
 
 export default defineComponent({
+  props: {
+    theme: {
+      type: String,
+      default: "dark",
+    }
+  },
   setup() {
     // let dotList: Ref<{ x: number; y: number }[]> = ref([]);
 
@@ -73,6 +79,7 @@ export default defineComponent({
   margin: 0 auto;
   position: relative;
   z-index: 9;
+  transition: 0.2s all;
 
   &:hover {
     .eye-dot {

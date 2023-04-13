@@ -2,7 +2,7 @@
   <div class="header flex justify-between items-center" :style="{ backgroundColor: scrollTop === 0 ? 'white' : 'black' }"
     ref="headerRef">
     <div class="icon-area"></div>
-    <comp-eye class="eye"></comp-eye>
+    <comp-eye class="eye" :theme="scrollTop === 0 ? 'dark' : 'light'"></comp-eye>
     <div class="menu flex mr-8" :style="{ color: scrollTop === 0 ? 'black' : 'white' }">
       <div class="menu-item" @click="routerTo('/')">我的主页</div>
       <div class="menu-item" @click="routerTo('/article/index')">忙于记录</div>

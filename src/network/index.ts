@@ -44,4 +44,6 @@ instance.interceptors.response.use(
   }
 );
 
+export const serverAddress = "http://192.168.191.1:88"
+
 export default instance;
