@@ -13,7 +13,7 @@
         </p>
       </div>
 
-      <div class="content container">{{ data.blogInfo.content }}</div>
+      <div class="container mt-2">{{ data.blogInfo.content }}</div>
     </div>
   </div>
 </template>
@@ -71,6 +71,11 @@ onMounted(() => {
   background-size: 100% auto;
   background-attachment: fixed;
   background-position: center;
+
+
+  @include render(phone) {
+    height: 200px;
+  }
 }
 
 .content {
@@ -79,10 +84,15 @@ onMounted(() => {
   margin: 0 auto;
   margin-top: -100px;
 
+
+  @include render(phone) {
+    margin-top: -150px;
+  }
+
   .header {
     text-align: center;
     font-size: 20px;
-    height: 200px;
+    height: 120px;
     color: white;
   }
 }

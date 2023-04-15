@@ -1,13 +1,19 @@
 <template>
   <div class="header flex justify-between items-center" :style="{ backgroundColor: scrollTop === 0 ? 'white' : 'black' }"
     ref="headerRef">
-    <div class="icon-area"></div>
-    <comp-eye class="eye" :theme="scrollTop === 0 ? 'dark' : 'light'"></comp-eye>
+    <!-- <div class="icon-area"></div> -->
+    <div class="flex items-center icon-area">
+      <comp-eye class="eye" :theme="scrollTop === 0 ? 'dark' : 'light'"></comp-eye>
+      <div class="title mt-1 ml-1" :style="{ color: scrollTop === 0 ? 'black' : 'white' }">简记</div>
+    </div>
+
     <div class="menu flex mr-8" :style="{ color: scrollTop === 0 ? 'black' : 'white' }">
       <div class="menu-item" @click="routerTo('/')">我的主页</div>
       <div class="menu-item" @click="routerTo('/article/index')">忙于记录</div>
       <div class="menu-item">关于我的</div>
     </div>
+
+
   </div>
 </template>
 <script lang="ts" setup>
@@ -39,21 +45,47 @@ onMounted(() => {
   width: 100%;
   color: black;
   transition: all 0.5s;
-  z-index: 9
+  z-index: 9;
+
+
+  @include render(phone) {
+    padding: 0 12px;
+  }
 }
 
 .eye {
-  position: absolute;
+  /*   position: absolute;
   left: 50%;
-  transform: translateX(-50%);
+  transform: translateX(-50%); */
 }
 
 .menu {
   display: flex;
 
+
+  @include render(phone) {
+    display: none;
+  }
+
   .menu-item {
     margin: 0 20px;
     cursor: pointer;
+  }
+}
+
+
+.title {
+  font-size: 22px;
+  font-weight: 600;
+  font-family: 'Courier New', Courier, monospace;
+}
+
+.icon-area {
+  margin-left: 30px;
+
+
+  @include render(phone) {
+    margin-left: 0;
   }
 }
 </style>

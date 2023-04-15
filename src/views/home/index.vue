@@ -1,19 +1,27 @@
 <template>
-  <div>
+  <div class="page-home">
     <div class="module-introduce" ref="canvas"></div>
     <div class="info">
       <div class="container flex items-center" style="overflow:hidden;height:100%;width:100%;">
         <div class="card-container relative" style="perspective:800px; transform-style: preserve-3d;">
-          <div class="card flex flex-col justify-center items-center" @mousemove="cardMouseMove" @mouseleave="resetPoi">
-            <div class="target-model">
-              <div class="target-input">
-                <input type="text" placeholder="做你想要做的事情">
+          <div class="card" @mousemove="cardMouseMove" @mouseleave="resetPoi">
+            <!-- <div class="card-title">今日看板</div> -->
+            <div class="target-model card-item">
+              <h1>今日目标</h1>
+
+              <div class="today">
+                <div class="target-input">
+                  <input type="text" v-model="targetValue" @keyup.enter="createTarget" placeholder="做你想要做的事情">
+                </div>
+
+
+                <div class="target-list" v-for="item in targets" :key="item.id">
+                  <a-checkbox>
+                    <span style="color:white"> {{ item.content }}</span>
+                  </a-checkbox>
+                </div>
+
               </div>
-              <!-- 前往记录 -->
-
-              <!-- 今日任务 -->
-
-              <!-- 今日特征 -->
             </div>
             <div ref="cardContainer" class="bg"></div>
           </div>
@@ -25,17 +33,39 @@
 
 
 <script lang="ts" setup>
+import { message } from "ant-design-vue";
 import Emoji from "./hooks/emoji";
+import useTarget from "./hooks/target"
 import { onMounted, ref, onUnmounted } from "vue";
+let { addTarget, getTarget, targets } = useTarget();
+import DateHelper from "@/utils/date"
 
 let canvas = ref()
 let cardContainer = ref();
+let targetValue = ref("");
+
+/**
+ * 创建目标
+ */
+
+const createTarget = async () => {
+  let data = {
+    content: targetValue.value,
+    start_at: DateHelper.curStartTime(),
+    end_at: DateHelper.curEndTime(),
+  }
+
+  await addTarget(data);
+  message.success('添加成功');
+  targetValue.value = "";
+  getTarget();
+}
 
 /**
  * 卡片鼠标交互
  */
 
-const cardMouseMove = (e) => {
+/* const cardMouseMove = (e) => {
   let { offsetX, offsetY } = e;
   let { height, width } = e.currentTarget.getBoundingClientRect();
   let deg = 2;
@@ -44,7 +74,7 @@ const cardMouseMove = (e) => {
   cardContainer.value.style.left = e.offsetX - 300 + 'px';
   cardContainer.value.style.top = e.offsetY - 300 + 'px';
   cardContainer.value.style.opacity = 1;
-}
+} */
 
 /**
  * 重回状态
@@ -70,6 +100,7 @@ window.addEventListener('visibilityChange', () => {
 
 onMounted(() => {
   Emoji.run(canvas.value);
+  getTarget();
 })
 
 onUnmounted(() => {
@@ -78,7 +109,13 @@ onUnmounted(() => {
 </script>
 
 <style lang="scss" scoped>
+.page-home {
+  height: calc(100vh - 64px);
+  overflow: hidden;
+}
+
 .module-introduce {
+  position: absolute;
   width: 100%;
   overflow: hidden;
 }
@@ -86,10 +123,8 @@ onUnmounted(() => {
 
 .info {
   z-index: 99;
-  position: absolute;
-  width: 100%;
-  top: 64px;
-  height: calc(100% - 64px);
+  height: 100%;
+  overflow: hidden;
 
   .card-container {
     width: 100%;
@@ -127,9 +162,16 @@ onUnmounted(() => {
 
 
 .target-model {
-  display: flex;
-  justify-content: center;
-  align-items: center;
+  margin: 12px;
+  padding: 12px;
+  height: 300px;
+  width: 500px;
+  color: white;
+
+  h1 {
+    color: white;
+    font-size: 20px;
+  }
 
   .target-input {
     height: 40px;
@@ -143,5 +185,11 @@ onUnmounted(() => {
       width: 100%;
     }
   }
+
+  .target-list {
+    margin-top: 12px;
+  }
 }
+
+.card-item {}
 </style>

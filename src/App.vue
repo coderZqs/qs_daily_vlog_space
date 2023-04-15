@@ -19,48 +19,11 @@ import { RouterView } from "vue-router";
 
 html,
 body {
-  min-width: 1024px !important;
+  // min-width: 1024px !important;
 }
 
 .app {
   overflow: hidden;
-}
-
-@mixin render($size) {
-  $large: 1920px;
-  $medium: 1338px;
-  $small: 1180px;
-  $mini: 768px;
-
-  @if ($size =="large") {
-    @media screen and (min-width: $large) {
-      @content;
-    }
-  }
-
-  @if ($size =="medium") {
-    @media screen and (min-width: $medium) and (max-width: $large) {
-      @content;
-    }
-  }
-
-  @if ($size =="small") {
-    @media screen and (min-width: $small) and (max-width: $medium) {
-      @content;
-    }
-  }
-
-  @if ($size =="mini") {
-    @media screen and (min-width: $mini) and (max-width: $small) {
-      @content;
-    }
-  }
-
-  @if ($size =="phone") {
-    @media screen and (max-width: $mini) {
-      @content;
-    }
-  }
 }
 
 .container {

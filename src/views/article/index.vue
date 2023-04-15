@@ -1,51 +1,50 @@
 <template>
   <div class="page-article" ref="container">
-
-    <div class="navigation-bar">
-      <div class="big-sign">
-        <span>THE DAILY</span>
+    <div class="container">
+      <div class="navigation-bar">
+        <div class="big-sign">
+          <span>THE DAILY</span>
+        </div>
       </div>
-    </div>
-    <div>
-      <div class="article-list mt-5">
-        <div class="article-container">
-          <div ref="articleItem" class="flex article-item" v-for="item in data.articles" :key="item.id"
-            @click="enterDetail(item)">
-            <!-- <div class="image-box">
+      <div>
+        <div class="article-list mt-5 sm:mt-1">
+          <div class="article-container">
+            <div ref="articleItem" class="flex article-item" v-for="item in data.articles" :key="item.id"
+              @click="enterDetail(item)">
+              <!-- <div class="image-box">
               <img :src="item.image" alt="">
             </div> -->
-            <div class="p-4 relative">
-              <div class="created-at">{{ item.created_at.day }}</div>
-              <div class="title">{{ item.title }}</div>
-              <div class="content">{{ item.content }}</div>
+              <div class="p-4 relative">
+                <div class="created-at">{{ item.created_at.day }}</div>
+                <div class="title">{{ item.title }}</div>
+                <div class="content">{{ item.content }}</div>
+              </div>
             </div>
           </div>
         </div>
       </div>
-    </div>
 
 
-    <div class="dater flex flex-col items-center justify-center" v-if="data.currentItem.created_at">
-      <p style="margin-top:-20px;"><span style="font-size:50px">{{ data.currentItem.created_at.month }}</span> . <span
-          class="mx-1">{{
-            data.currentItem.created_at.year }}</span></p>
-    </div>
+      <div class="toolbar">
 
-    <div class="toolbar">
-      <div>
-        <img style="margin-left:3px" src="@/assets/icon/img/add.png" @click="enterAdd" alt="">
-      </div>
-      <div @click="showTarget" ref="targetControlContainer">
+        <div class="dater flex flex-col items-center justify-center" v-if="data.currentItem.created_at">
+          <p style="margin-top:-20px;"><span style="font-size:50px">{{ data.currentItem.created_at.month }}</span> . <span
+              class="mx-1">{{
+                data.currentItem.created_at.year }}</span></p>
+        </div>
+
+        <div>
+          <img style="margin-left:3px" src="@/assets/icon/img/add.png" @click="enterAdd" alt="">
+        </div>
+        <!--  <div @click="showTarget" ref="targetControlContainer">
         <div ref="targetControl" class="target-container">
           <img src="@/assets/icon/img/target.png" alt="">
           <div class="container" v-if="isOpenTargetDialog">
 
             <div class="target-card"></div>
-            <!-- 今日目标 -->
-            <!-- 今月目标 -->
-            <!-- 今年目标 -->
           </div>
         </div>
+      </div> -->
       </div>
     </div>
   </div>
@@ -192,13 +191,17 @@ onMounted(() => {
 
 <style lang="scss" scoped>
 .page-article {
-  padding: 0 20%;
+  // padding: 0 20%;
   background: #F3F9F1;
   margin: 0 auto;
   z-index: 1;
   padding-top: 64px;
   box-sizing: border-box;
   overflow: scroll;
+
+  @include render(phone) {
+    padding-top: 0 !important;
+  }
 }
 
 .setting-bar {
@@ -230,6 +233,11 @@ onMounted(() => {
   text-align: center;
   line-height: 200px;
   color: white;
+
+  @include render(phone) {
+    height: 120px;
+    line-height: 120px;
+  }
 }
 
 
@@ -325,6 +333,14 @@ onMounted(() => {
   display: flex;
   flex-direction: column;
 
+
+
+  @include render(phone) {
+    left: 50%;
+    bottom: 30px;
+    transform: translateX(-50%);
+  }
+
   div {
     position: relative;
     width: 100%;
@@ -355,9 +371,10 @@ onMounted(() => {
 }
 
 .dater {
-  position: fixed;
-  right: 8%;
-  top: 100px;
+
+  @include render(phone) {
+    top: calc(100vh - 100px)
+  }
 }
 
 .target-container {
