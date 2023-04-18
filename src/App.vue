@@ -1,7 +1,7 @@
 <template>
   <div class="app">
     <LayoutHeader />
-    <RouterView style="margin-top:64px;overflow:hidden" />
+    <RouterView style="margin-top: 64px; overflow: hidden" />
   </div>
 </template>
 
@@ -15,7 +15,6 @@ import { RouterView } from "vue-router";
   margin: 0;
   margin: 0;
 }
-
 
 html,
 body {
