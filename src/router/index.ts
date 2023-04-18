@@ -45,8 +45,8 @@ const ConstantRouterMap = [
   },
 
   {
-    path: "/clendar",
-    component: () => import("@/views/clendar/index.vue")
+    path: "/calendar",
+    component: () => import("@/views/calendar/index.vue")
   },
 
   // 3D区

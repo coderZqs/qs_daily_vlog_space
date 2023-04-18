@@ -45,8 +45,9 @@ import { message } from "ant-design-vue";
 import Emoji from "./hooks/emoji";
 import useTarget from "./hooks/target";
 import { onMounted, ref, onUnmounted } from "vue";
-let { addTarget, getTarget, targets } = useTarget();
 import { curStartTime, curEndTime } from "@/utils/date";
+
+let { addTarget, getTarget, targets } = useTarget();
 
 let canvas = ref();
 let cardContainer = ref();
@@ -73,16 +74,18 @@ const createTarget = async () => {
  * 卡片鼠标交互
  */
 
-/* const cardMouseMove = (e) => {
+const cardMouseMove = e => {
   let { offsetX, offsetY } = e;
   let { height, width } = e.currentTarget.getBoundingClientRect();
   let deg = 2;
-  e.currentTarget.style.transform = `rotateX( ${-1 * (offsetY / height - 0.5) * deg}deg ) rotateY(${(offsetX / width - 0.5) * deg}deg)`
+  e.currentTarget.style.transform = `rotateX( ${
+    -1 * (offsetY / height - 0.5) * deg
+  }deg ) rotateY(${(offsetX / width - 0.5) * deg}deg)`;
 
-  cardContainer.value.style.left = e.offsetX - 300 + 'px';
-  cardContainer.value.style.top = e.offsetY - 300 + 'px';
+  cardContainer.value.style.left = e.offsetX - 300 + "px";
+  cardContainer.value.style.top = e.offsetY - 300 + "px";
   cardContainer.value.style.opacity = 1;
-} */
+};
 
 /**
  * 重回状态
