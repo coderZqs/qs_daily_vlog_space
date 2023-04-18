@@ -2,8 +2,14 @@
   <div class="page-home">
     <div class="module-introduce" ref="canvas"></div>
     <div class="info">
-      <div class="container flex items-center" style="overflow:hidden;height:100%;width:100%;">
-        <div class="card-container relative" style="perspective:800px; transform-style: preserve-3d;">
+      <div
+        class="container flex items-center"
+        style="overflow: hidden; height: 100%; width: 100%"
+      >
+        <div
+          class="card-container relative"
+          style="perspective: 800px; transform-style: preserve-3d"
+        >
           <div class="card" @mousemove="cardMouseMove" @mouseleave="resetPoi">
             <!-- <div class="card-title">今日看板</div> -->
             <div class="target-model card-item">
@@ -11,16 +17,19 @@
 
               <div class="today">
                 <div class="target-input">
-                  <input type="text" v-model="targetValue" @keyup.enter="createTarget" placeholder="做你想要做的事情">
+                  <input
+                    type="text"
+                    v-model="targetValue"
+                    @keyup.enter="createTarget"
+                    placeholder="做你想要做的事情"
+                  />
                 </div>
-
 
                 <div class="target-list" v-for="item in targets" :key="item.id">
                   <a-checkbox>
-                    <span style="color:white"> {{ item.content }}</span>
+                    <span style="color: white"> {{ item.content }}</span>
                   </a-checkbox>
                 </div>
-
               </div>
             </div>
             <div ref="cardContainer" class="bg"></div>
@@ -31,16 +40,15 @@
   </div>
 </template>
 
-
 <script lang="ts" setup>
 import { message } from "ant-design-vue";
 import Emoji from "./hooks/emoji";
-import useTarget from "./hooks/target"
+import useTarget from "./hooks/target";
 import { onMounted, ref, onUnmounted } from "vue";
 let { addTarget, getTarget, targets } = useTarget();
-import DateHelper from "@/utils/date"
+import { curStartTime, curEndTime } from "@/utils/date";
 
-let canvas = ref()
+let canvas = ref();
 let cardContainer = ref();
 let targetValue = ref("");
 
@@ -51,15 +59,15 @@ let targetValue = ref("");
 const createTarget = async () => {
   let data = {
     content: targetValue.value,
-    start_at: DateHelper.curStartTime(),
-    end_at: DateHelper.curEndTime(),
-  }
+    start_at: curStartTime(),
+    end_at: curEndTime()
+  };
 
   await addTarget(data);
-  message.success('添加成功');
+  message.success("添加成功");
   targetValue.value = "";
   getTarget();
-}
+};
 
 /**
  * 卡片鼠标交互
@@ -80,32 +88,31 @@ const createTarget = async () => {
  * 重回状态
  */
 
-const resetPoi = (e) => {
-  e.currentTarget.style.transform = "none"
+const resetPoi = e => {
+  e.currentTarget.style.transform = "none";
   cardContainer.value.style.opacity = 0;
-}
+};
 
 /**
  * 离开页面停止定时器
  */
 
-window.addEventListener('visibilityChange', () => {
+window.addEventListener("visibilityChange", () => {
   if (document.hidden) {
     Emoji.stop();
   } else {
     Emoji.start();
   }
-})
-
+});
 
 onMounted(() => {
   Emoji.run(canvas.value);
   getTarget();
-})
+});
 
 onUnmounted(() => {
-  Emoji.clear()
-})
+  Emoji.clear();
+});
 </script>
 
 <style lang="scss" scoped>
@@ -120,7 +127,6 @@ onUnmounted(() => {
   overflow: hidden;
 }
 
-
 .info {
   z-index: 99;
   height: 100%;
@@ -133,7 +139,6 @@ onUnmounted(() => {
     align-items: center;
     justify-content: center;
   }
-
 
   .card {
     overflow: hidden;
@@ -159,7 +164,6 @@ onUnmounted(() => {
     }
   }
 }
-
 
 .target-model {
   margin: 12px;
@@ -191,5 +195,6 @@ onUnmounted(() => {
   }
 }
 
-.card-item {}
+.card-item {
+}
 </style>
