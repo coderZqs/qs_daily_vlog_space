@@ -1,25 +1,24 @@
 <template>
   <div class="calendar">
-    <div class="container">
-      <div class="header">{{ month }} {{ year }}</div>
+    <div class="pa-2">
+      <div class="header">{{ currentDate.month }} {{ currentDate.year }}</div>
       <div class="body">
         <div class="weekdays">
           <div v-for="day in daysOfWeek" :key="day">{{ day }}</div>
         </div>
-        <div class="days">
+        <div class="days" style="background:#f5f5f5;">
           <div class="last-month-day" v-for="day in lastMonthDay"></div>
 
-          <div
-            v-for="item in daysInMonth"
-            :key="item.day"
-            :class="{
-              today: isToday(item.day),
-              selected: isSelected(item.day)
-            }"
-            @click="selectDay(item.day)"
-          >
-            <p>{{ item.day }}</p>
-            <div>{{ item.festivals[0] }}</div>
+          <div v-for="item in daysInMonth" :key="item.day" class="day-item" :class="{
+            today: isToday(item.day),
+            selected: isSelected(item.day)
+          }" @click="selectDay(item.day)">
+            <div style="height:100%;width:100%;">
+              <!--    <span class="day-number">{{ item.day }}</span>
+              <span class="festival">{{ item.festivals[0] }}</span> -->
+
+              <textarea v-model="item.content"></textarea>
+            </div>
           </div>
 
           <div class="next-month-day"></div>
@@ -63,7 +62,8 @@ export default {
 
         days.push({
           day: i,
-          festivals
+          festivals,
+          content: ""
         });
       }
       return days;
@@ -79,7 +79,11 @@ export default {
 
       let lastDate = new Date(year, lastMonth + 1, 0).getDay();
       let firstDayinWeek = new Date(year, lastMonth, 1).getDate();
+
+
+      console.log(firstDayinWeek)
       let days = [];
+
 
       for (let i = 0; i < firstDayinWeek; i++) {
         let festivals = Object.values(findFestival(year, lastMonth, i)).filter(
@@ -90,6 +94,8 @@ export default {
           day: i
         });
       }
+
+      return days;
     });
 
     const month = computed(() => {
@@ -107,44 +113,45 @@ export default {
         "November",
         "December"
       ];
-      return monthNames[selectedDate.value.getMonth()];
+      return monthNames[state.currentDate.year];
     });
 
-    const year = computed(() => selectedDate.value.getFullYear());
 
-    const isToday = day => {
-      const today = new Date();
-      return (
-        day === today.getDate() &&
-        selectedDate.value.getMonth() === today.getMonth() &&
-        selectedDate.value.getFullYear() === today.getFullYear()
-      );
+    const getToday = () => {
+      let date = new Date();
+      let year = date.getFullYear();
+      let month = date.getMonth();
+      let day = date.getDate();
+
+      return { year, month, day }
+    }
+
+    const isToday = (day) => {
+      let { year, month } = getToday();
+      let { year: cyear, month: cmonth, day: cday } = state.currentDate;
+
+      if (year === cyear && month === cmonth && day === cday) {
+        return true;
+      } else {
+        return false;
+      }
     };
 
-    const isSelected = day => {
-      return (
-        day === selectedDate.value.getDate() &&
-        selectedDate.value.getMonth() === props.date.getMonth() &&
-        selectedDate.value.getFullYear() === props.date.getFullYear()
-      );
-    };
+    const isSelected = (day) => day == state.currentDate.day;
 
-    const selectDay = day => {
-      selectedDate.value = new Date(
-        selectedDate.value.getFullYear(),
-        selectedDate.value.getMonth(),
-        day
-      );
-    };
+    const selectDay = (day) => {
+      state.currentDate.day = day;
+    }
+
 
     return {
       daysOfWeek,
       daysInMonth,
-      month,
-      year,
       isToday,
       isSelected,
-      selectDay
+      lastMonthDay,
+      selectDay,
+      ...state
     };
   }
 };
@@ -157,7 +164,6 @@ export default {
 }
 
 .header {
-  background-color: #f0f0f0;
   padding: 5px;
   text-align: center;
 }
@@ -172,12 +178,37 @@ export default {
 .days {
   display: grid;
   grid-template-columns: repeat(7, 1fr);
-  gap: 5px;
-  padding: 5px;
-  text-align: center;
+  gap: 4px;
+  padding: 4px;
+  box-sizing: border-box;
+  margin: 4px;
 
-  > div {
-    height: 60px;
+  .day-item {
+    position: relative;
+    background: white;
+    height: 200px;
+    box-sizing: border-box;
+    padding: 8px;
+
+    .day-number {
+      font-size: 20px;
+      font-weight: 600;
+    }
+
+    .festival {
+      position: absolute;
+      right: 4px;
+      top: 4px;
+    }
+
+    textarea {
+      width: 100%;
+      height: 100%;
+      display: block;
+      padding: 0;
+      border: none;
+      outline: none;
+    }
   }
 }
 
