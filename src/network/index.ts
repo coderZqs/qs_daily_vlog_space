@@ -20,7 +20,6 @@ const instance = axios.create({
 instance.interceptors.request.use(
   config => {
     config.headers.authorization = jsCookie.get("authorization");
-    console.log(config)
     return config;
   },
   error => Promise.reject(error)
