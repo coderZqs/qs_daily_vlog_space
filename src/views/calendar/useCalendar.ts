@@ -1,4 +1,4 @@
-import { ref, computed } from "vue";
+import { ref, computed, Ref, watch } from "vue";
 import { findFestival } from "@/utils/date";
 
 export const useCalendar = () => {
@@ -8,48 +8,34 @@ export const useCalendar = () => {
     day: new Date().getDate()
   });
 
+  let daysInMonth: Ref<any[]> = ref([]);
+  let daysInLastMonth: Ref<any[]> = ref([]);
+
   const daysOfWeek = ["周一", "周二", "周三", "周四", "周五", "周六", "周日"];
 
-  const daysInMonth = computed(() => {
-    let { year, month } = currentDate.value;
-    const daysInMonth = new Date(year, month + 1, 0).getDate();
+  watch(
+    () => currentDate.value,
+    () => {
+      let { year, month } = currentDate.value;
+      const count = new Date(year, month + 1, 0).getDate();
+      let lastCount = new Date(year, month - 1, 1).getDate();
 
-    const days: any[] = [];
-    for (let i = 1; i <= daysInMonth; i++) {
-      let festivals = Object.values(findFestival(year, month, i)).filter(v =>
-        Boolean(v)
-      );
+      for (let i = 1; i <= count; i++) {
+        let festivals = Object.values(findFestival(year, month, i)).filter(v =>
+          Boolean(v)
+        );
+        daysInMonth.value.push({ day: i, festivals, task: [] });
+      }
 
-      days.push({ day: i, festivals, content: "" });
-    }
-
-    return days;
-  });
-
-  /**
-   * 需要填充上个月的天数
-   */
-
-  const lastMonthDay = computed(() => {
-    let { year, month } = currentDate.value;
-    let lastMonth = month - 1;
-
-    let firstDayinWeek = new Date(year, lastMonth, 1).getDate();
-    let days: any[] = [];
-
-    for (let i = 0; i < firstDayinWeek; i++) {
-      let festivals = Object.values(findFestival(year, lastMonth, i)).filter(
-        v => Boolean(v)
-      );
-
-      days.push({
-        day: i,
-        festivals
-      });
-    }
-
-    return days;
-  });
+      for (let i = 0; i < lastCount; i++) {
+        let festivals = Object.values(findFestival(year, month - 1, i)).filter(
+          v => Boolean(v)
+        );
+        daysInLastMonth.value.push({ day: i, festivals, task: [] });
+      }
+    },
+    { immediate: true }
+  );
 
   const month = computed(() => {
     const monthNames = [
@@ -117,7 +103,7 @@ export const useCalendar = () => {
     daysInMonth,
     isToday,
     isSelected,
-    lastMonthDay,
+    daysInLastMonth,
     selectDay,
     month
   };

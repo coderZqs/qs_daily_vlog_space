@@ -21,7 +21,7 @@ export const useData = () => {
   };
 
   let add = async data => {
-    let { code } = await CalendarAPI.updateCalendar({ ...data });
+    let { code } = await CalendarAPI.addCalendar({ ...data });
 
     if (SUCCESS(code)) {
       return;
