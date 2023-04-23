@@ -120,7 +120,7 @@ onUnmounted(() => {
 
 <style lang="scss" scoped>
 .page-home {
-  height: calc(100vh - 64px);
+  height: calc(100vh - $navbar-height);
   overflow: hidden;
 }
 

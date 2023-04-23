@@ -62,8 +62,8 @@ onMounted(() => {
 
 <style lang="scss" scoped>
 .header {
-  height: 64px;
-  line-height: 64px;
+  height: $navbar-height;
+  line-height: $navbar-height;
   position: fixed;
   top: 0;
   width: 100%;

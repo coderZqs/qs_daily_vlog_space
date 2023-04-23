@@ -1,40 +1,75 @@
 <template>
   <div class="page-article" ref="container">
     <div class="container">
-      <div class="navigation-bar">
+      <div class="navigation-bar mt-10">
         <div class="big-sign">
           <span>THE DAILY</span>
         </div>
       </div>
-      <div>
-        <div class="article-list mt-5 sm:mt-1">
-          <div class="article-container">
-            <div ref="articleItem" class="flex article-item" v-for="item in data.articles" :key="item.id"
-              @click="enterDetail(item)">
-              <!-- <div class="image-box">
-              <img :src="item.image" alt="">
-            </div> -->
-              <div class="p-4 relative">
-                <div class="created-at">{{ item.created_at.day }}</div>
-                <div class="title">{{ item.title }}</div>
-                <div class="content">{{ item.content }}</div>
-              </div>
+      <div class="article-list mt-5 sm:mt-1">
+        <div class="article-container" v-if="data.articles.length">
+          <div
+            ref="articleItem"
+            class="article-item"
+            v-for="item in data.articles"
+            :key="item.id"
+            @click="enterDetail(item)"
+          >
+            <div class="p-4 relative">
+              <div class="created-at">{{ item.created_at.day }}</div>
+              <div class="title">{{ item.title }}</div>
+              <div class="content">{{ item.content }}</div>
             </div>
+
+            <div class="handle">
+              <a-button
+                size="mini"
+                type="primary"
+                @click.stop="enterUpdate(item)"
+                >修改</a-button
+              >
+              <a-button size="mini" class="ml-2" type="danger" @click.stop
+                >删除</a-button
+              >
+            </div>
+          </div>
+        </div>
+
+        <div v-else class="empty">
+          <div class="p-4 relative article-item">
+            <div class="created-at">24</div>
+            <div class="title">日记示例</div>
+            <div class="content">
+              传说在北极的人因为天寒地冻，一开口说话就结成冰雪，对方听不见，只好回家慢慢地烤来听。遇到谈情说爱的时候，回家就要仔细酿造当时的气氛先用情诗情词裁冰，把它切成细细的碎片，加上一点酒来煮，那么，煮出来的话便能使人微醉。倘若情浓，则不可以用炉火，要用烛火再加一杯咖啡，才不会醉得太厉害，还能维持一丝清醒。如果失恋等不到冰雪尽溶的时候，就放一把大火把雪屋都烧了烧成另一个春天。
+            </div>
+          </div>
+
+          <div class="text-center">
+            <a @click="enterAdd">记录第一章</a>
           </div>
         </div>
       </div>
 
-
       <div class="toolbar">
-
-        <div class="dater flex flex-col items-center justify-center" v-if="data.currentItem.created_at">
-          <p style="margin-top:-20px;"><span style="font-size:50px">{{ data.currentItem.created_at.month }}</span> . <span
-              class="mx-1">{{
-                data.currentItem.created_at.year }}</span></p>
+        <div
+          class="dater flex flex-col items-center justify-center"
+          v-if="data.currentItem?.created_at"
+        >
+          <p style="margin-top: -20px">
+            <span style="font-size: 50px">{{
+              data.currentItem.created_at.month
+            }}</span>
+            . <span class="mx-1">{{ data.currentItem.created_at.year }}</span>
+          </p>
         </div>
 
         <div>
-          <img style="margin-left:3px" src="@/assets/icon/img/add.png" @click="enterAdd" alt="">
+          <img
+            style="margin-left: 3px"
+            src="@/assets/icon/img/add.png"
+            @click="enterAdd"
+            alt=""
+          />
         </div>
         <!--  <div @click="showTarget" ref="targetControlContainer">
         <div ref="targetControl" class="target-container">
@@ -58,10 +93,10 @@ import { reactive, ref } from "vue";
 import { SUCCESS } from "@/network/response-status";
 import { message } from "ant-design-vue";
 import dayjs, { Dayjs } from "dayjs";
-import { CalculatorOutlined } from "@ant-design/icons-vue"
+import { CalculatorOutlined } from "@ant-design/icons-vue";
 import router from "@/router";
- 
-import _ from "lodash"
+
+import _ from "lodash";
 
 type Article = {
   category: string;
@@ -71,28 +106,28 @@ type Article = {
   sort_id: number;
   title: string;
   updatedAt: string;
-  user_id: number
+  user_id: number;
   image: string;
-}
+};
 
 type Data = {
   date: Dayjs;
   articles: Article[];
-  currentItem: Article
+  currentItem: Article;
 };
 
-const container = ref()
+const container = ref();
 const articleItem = ref();
 const targetControl = ref();
 
 const data = reactive<Data>({
   date: dayjs(),
   articles: [],
-  currentItem: {},
+  currentItem: {}
 });
 
 const sourcePoi = ref({ left: 0, top: 0 });
-const isOpenTargetDialog = ref(false)
+const isOpenTargetDialog = ref(false);
 
 const dayList = computed(() => data.date.daysInMonth());
 
@@ -109,18 +144,18 @@ const getList = async () => {
   });
 
   if (SUCCESS(result.code)) {
-    data.articles = result.data.map((v) => {
+    data.articles = result.data.map(v => {
       return {
         ...v,
         created_at: {
           year: new Date(v.created_at).getFullYear(),
           month: new Date(v.created_at).getMonth() + 1,
           day: new Date(v.created_at).getDate()
-        },
-      }
+        }
+      };
     });
 
-    data.currentItem = _.cloneDeep(data.articles[0])
+    data.currentItem = _.cloneDeep(data.articles[0]);
   } else {
     message.error(result.msg);
   }
@@ -130,17 +165,25 @@ const getList = async () => {
  * 查看详情
  */
 
-const enterDetail = (item) => {
-  router.push("/article/" + item.id)
-}
+const enterDetail = item => {
+  router.push("/article/" + item.id);
+};
 
 /**
  * 添加
  */
 
 const enterAdd = () => {
-  router.push("/article/edit")
-}
+  router.push("/article/edit");
+};
+
+/**
+ * 更新
+ */
+
+const enterUpdate = item => {
+  router.push("/article/edit?type=edit&id=" + item.id);
+};
 
 /**
  * 监听滚动事件
@@ -151,53 +194,51 @@ const listenPageScroll = () => {
     let { top, height } = e.getBoundingClientRect();
     let center = document.body.clientHeight / 2;
 
-    if (top < center && (top + height) > center) {
+    if (top < center && top + height > center) {
       data.currentItem = _.cloneDeep(data.articles[key]);
     }
-  })
-}
-
+  });
+};
 
 const showTarget = () => {
-
   if (!isOpenTargetDialog.value) {
     targetControl.value.style.position = "absolute";
-    let { top, left, } = targetControl.value.getBoundingClientRect();
+    let { top, left } = targetControl.value.getBoundingClientRect();
 
-    targetControl.value.style.height = window.innerHeight + 'px'
-    targetControl.value.style.width = window.innerWidth + 'px'
-    targetControl.value.style.left = - left + 'px';
-    targetControl.value.style.top = - top + 64 + 'px';
-    targetControl.value.style.backgroundColor = "#F3F9F1"
+    targetControl.value.style.height = window.innerHeight + "px";
+    targetControl.value.style.width = window.innerWidth + "px";
+    targetControl.value.style.left = -left + "px";
+    targetControl.value.style.top = -top + 64 + "px";
+    targetControl.value.style.backgroundColor = "#F3F9F1";
     // targetControl.value.style.padding = `24px ${window.innerWidth * 0.2 + 'px'}`
     isOpenTargetDialog.value = true;
   } else {
-    targetControl.value.style.position = "relative"
-    targetControl.value.style.width = "100%"
-    targetControl.value.style.height = "100%"
+    targetControl.value.style.position = "relative";
+    targetControl.value.style.width = "100%";
+    targetControl.value.style.height = "100%";
     isOpenTargetDialog.value = false;
-    targetControl.value.style.left = 0 + 'px'
-    targetControl.value.style.top = 0 + 'px'
-    targetControl.value.style.backgroundColor = ""
+    targetControl.value.style.left = 0 + "px";
+    targetControl.value.style.top = 0 + "px";
+    targetControl.value.style.backgroundColor = "";
     // targetControl.value.style.padding = `0px 0px`
   }
-}
+};
 
 onMounted(() => {
   getList();
-  window.addEventListener('scroll', listenPageScroll)
+  window.addEventListener("scroll", listenPageScroll);
 });
 </script>
 
 <style lang="scss" scoped>
 .page-article {
+  min-height: calc(100vh);
   // padding: 0 20%;
-  background: #F3F9F1;
+  background: #f3f9f1;
   margin: 0 auto;
   z-index: 1;
-  padding-top: 64px;
+  padding-top: $navbar-height;
   box-sizing: border-box;
-  overflow: scroll;
 
   @include render(phone) {
     padding-top: 0 !important;
@@ -218,7 +259,7 @@ onMounted(() => {
   margin: 2px;
   width: 32px;
   height: 32px;
-  border: 1px solid #CCC;
+  border: 1px solid #ccc;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -240,7 +281,6 @@ onMounted(() => {
   }
 }
 
-
 .big-sign {
   font-size: 40px;
   font-weight: 600;
@@ -249,16 +289,16 @@ onMounted(() => {
 
 .ml-auto {
   margin-left: auto !important;
-  margin-right: calc((100% - 750px)/2) !important;
+  margin-right: calc((100% - 750px) / 2) !important;
 }
 
 .mr-auto {
   margin-right: auto !important;
-  margin-left: calc((100% - 750px)/2) !important;
+  margin-left: calc((100% - 750px) / 2) !important;
 }
 
-.article-container {
-
+.article-container,
+.empty {
   .article-item {
     background: white;
     margin: 12px 0;
@@ -304,11 +344,17 @@ onMounted(() => {
       font-weight: 600;
       margin-bottom: 4px;
       padding-bottom: 4px;
-      border-bottom: 2px solid #CCC;
+      border-bottom: 2px solid #ccc;
     }
 
     .content {
       font-size: 13px;
+    }
+
+    .handle {
+      padding: 20px;
+      display: flex;
+      justify-content: flex-end;
     }
   }
 }
@@ -318,7 +364,6 @@ onMounted(() => {
   height: 50px;
   background: red;
 }
-
 
 .toolbar {
   display: flex;
@@ -332,8 +377,6 @@ onMounted(() => {
   bottom: 100px;
   display: flex;
   flex-direction: column;
-
-
 
   @include render(phone) {
     left: 50%;
@@ -371,9 +414,8 @@ onMounted(() => {
 }
 
 .dater {
-
   @include render(phone) {
-    top: calc(100vh - 100px)
+    top: calc(100vh - 100px);
   }
 }
 
@@ -382,8 +424,6 @@ onMounted(() => {
   left: 0;
   top: 0;
 
-
-
   .target-card {
     height: 300px;
     width: 300px;
@@ -391,4 +431,3 @@ onMounted(() => {
   }
 }
 </style>
-

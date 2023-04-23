@@ -23,17 +23,30 @@
               :style="{ background: item.bgcolor }"
               @click="enterEditStatus(item, $event)"
             >
-              <div class="task-list" v-for="subTask in item.task">
-                <p v-if="!subTask.isEdit" @click="subTask.isEdit = true">
-                  {{ subTask.content }}
-                </p>
-                <input
-                  v-else
-                  type="text"
-                  @blur="saveContent(item, $event)"
-                  v-model="subTask.content"
-                />
-              </div>
+              <a-popover placement="topLeft" v-for="subTask in item.task">
+                <template #content>
+                  <span>完成</span>
+                  <span>
+                    <color-picker
+                      v-model:pureColor="pureColor"
+                      v-model:gradientColor="gradientColor"
+                  /></span>
+                </template>
+                <template #title>
+                  <span></span>
+                </template>
+                <div class="task-list">
+                  <p v-if="!subTask.isEdit" @click="subTask.isEdit = true">
+                    {{ subTask.content }}
+                  </p>
+                  <input
+                    v-else
+                    type="text"
+                    @blur="saveContent(item, $event)"
+                    v-model="subTask.content"
+                  />
+                </div>
+              </a-popover>
 
               <div class="task-list">
                 <input
@@ -54,11 +67,14 @@
 </template>
 
 <script setup lang="ts">
-import { onMounted } from "vue";
+import { onMounted, ref } from "vue";
 import { useCalendar } from "./useCalendar";
 import { useData } from "./useData";
 import CalendarAPI from "../../network/api/calendar";
 import { SUCCESS } from "@/network/response-status";
+import { ColorPicker } from "vue3-colorpicker";
+import "vue3-colorpicker/style.css";
+import { ColorInputWithoutInstance } from "tinycolor2";
 
 let {
   daysOfWeek,
@@ -69,6 +85,11 @@ let {
   selectDay,
   currentDate
 } = useCalendar();
+
+const pureColor = ref<ColorInputWithoutInstance>("red");
+const gradientColor = ref(
+  "linear-gradient(0deg, rgba(0, 0, 0, 1) 0%, rgba(0, 0, 0, 1) 100%)"
+);
 
 const getList = async () => {
   let { year, month } = currentDate.value;
@@ -89,6 +110,7 @@ const getList = async () => {
         let day = date.getDate();
 
         let { year: cyear, month: cMonth } = currentDate.value;
+
         if (year === cyear && month == cMonth && day === ele.day) {
           ele.id = item.id;
           ele.task = item.task;
@@ -221,6 +243,7 @@ onMounted(() => {
     }
 
     .task-list {
+      padding: 4px;
       p,
       input {
         line-height: 30px;

@@ -7,5 +7,9 @@ export default {
 
   addBlog(data) {
     return http({ url: "/blog", method: "post", data });
+  },
+
+  detailBlog(id) {
+    return http({ url: "/blog/" + id, method: "get" });
   }
 };

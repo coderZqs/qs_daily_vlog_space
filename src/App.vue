@@ -1,7 +1,7 @@
 <template>
   <div class="app">
     <LayoutHeader />
-    <RouterView style="margin-top: 64px; overflow: hidden" />
+    <RouterView class="router-view" />
   </div>
 </template>
 
@@ -22,6 +22,11 @@ body {
 }
 
 .app {
+  overflow: hidden;
+}
+
+.router-view {
+  margin-top: $navbar-height;
   overflow: hidden;
 }
 
