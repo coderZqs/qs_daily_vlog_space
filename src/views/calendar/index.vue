@@ -23,26 +23,54 @@
               :style="{ background: item.bgcolor }"
               @click="enterEditStatus(item, $event)"
             >
-              <a-popover placement="topLeft" v-for="subTask in item.task">
+              <a-popover placement="bottom" v-for="subTask in item.task">
                 <template #content>
-                  <span>完成</span>
-                  <span>
-                    <color-picker
-                      v-model:pureColor="pureColor"
-                      v-model:gradientColor="gradientColor"
-                  /></span>
-                </template>
-                <template #title>
-                  <span></span>
+                  <div class="flex items-center">
+                    <CheckOutlined
+                      style="font-size: 16px"
+                      @click="finishTask(item, subTask)"
+                    />
+                    <div class="divider"></div>
+                    <a-popover
+                      placement="bottom"
+                      :getPopupContainer="trigger => trigger.parentNode"
+                    >
+                      <template #content>
+                        <ColorPicker
+                          theme="light"
+                          :color="subTask.color"
+                          :sucker-hide="true"
+                          @changeColor="changeColor($event, subTask, item)"
+                        />
+                      </template>
+                      <div
+                        class="flex items-center font-box justify-center"
+                        :style="{ background: subTask.color }"
+                      >
+                        A
+                      </div>
+                    </a-popover>
+                  </div>
                 </template>
                 <div class="task-list">
-                  <p v-if="!subTask.isEdit" @click="subTask.isEdit = true">
+                  <p
+                    v-if="!subTask.isEdit"
+                    @click="subTask.isEdit = true"
+                    :style="{
+                      color: subTask.color,
+                      textDecoration: subTask.status === 1 ? '' : 'line-through'
+                    }"
+                  >
                     {{ subTask.content }}
                   </p>
                   <input
+                    :style="{
+                      color: subTask.color,
+                      textDecoration: subTask.status === 1 ? '' : 'line-through'
+                    }"
                     v-else
                     type="text"
-                    @blur="saveContent(item, $event)"
+                    @blur="saveContent(item)"
                     v-model="subTask.content"
                   />
                 </div>
@@ -52,7 +80,7 @@
                 <input
                   class="add-input"
                   type="text"
-                  @blur="saveContent(item, $event, 'ADD')"
+                  @blur="addTask(item, $event.target!.value)"
                   v-model="item.addContent"
                 />
               </div>
@@ -72,9 +100,9 @@ import { useCalendar } from "./useCalendar";
 import { useData } from "./useData";
 import CalendarAPI from "../../network/api/calendar";
 import { SUCCESS } from "@/network/response-status";
-import { ColorPicker } from "vue3-colorpicker";
-import "vue3-colorpicker/style.css";
-import { ColorInputWithoutInstance } from "tinycolor2";
+import { ColorPicker } from "vue-color-kit";
+import { CheckOutlined } from "@ant-design/icons-vue";
+import "vue-color-kit/dist/vue-color-kit.css";
 
 let {
   daysOfWeek,
@@ -85,11 +113,6 @@ let {
   selectDay,
   currentDate
 } = useCalendar();
-
-const pureColor = ref<ColorInputWithoutInstance>("red");
-const gradientColor = ref(
-  "linear-gradient(0deg, rgba(0, 0, 0, 1) 0%, rgba(0, 0, 0, 1) 100%)"
-);
 
 const getList = async () => {
   let { year, month } = currentDate.value;
@@ -140,50 +163,69 @@ const enterEditStatus = async (item, e) => {
 };
 
 /**
+ * 添加内容
+ * @param item
+ * @param value
+ * @param subTask
+ */
+
+const addTask = (item, value) => {
+  if (value) {
+    item.task.push({ content: value, status: "1", color: "black" });
+    item.addContent = "";
+
+    saveContent(item);
+  }
+};
+
+/**
+ * 完成任务
+ */
+
+const finishTask = (item, subTask) => {
+  let status = subTask.status === 1 ? 0 : 1;
+  subTask.status = status;
+
+  saveContent(item);
+};
+
+/**
  * 保存内容
  * @param item
  */
 
-const saveContent = (item, $event, status?) => {
-  let value = $event.target.value;
-  if (value) {
-    let { year, month, day } = currentDate.value;
+const saveContent = item => {
+  let { year, month, day } = currentDate.value;
 
-    if (status === "ADD") {
-      item.task.push({ content: value, status: 1 });
-      item.addContent = "";
-    }
-
-    if (item.id) {
-      CalendarAPI.updateCalendar({
-        task: item.task,
-        id: item.id
-      });
-    } else {
-      CalendarAPI.addCalendar({
-        task: item.task,
-        date: new Date(year, month, day).getTime(),
-        countdown: [],
-        bgcolor: "#FFFFFF"
-      });
-    }
+  if (item.id) {
+    CalendarAPI.updateCalendar({
+      task: item.task,
+      id: item.id
+    });
+  } else {
+    CalendarAPI.addCalendar({
+      task: item.task,
+      date: new Date(year, month, day).getTime(),
+      countdown: [],
+      bgcolor: "#FFFFFF"
+    });
   }
+};
+
+/**
+ * 修改颜色
+ * @param subTask
+ */
+
+let changeColor = (color, subTask, item) => {
+  const { r, g, b, a } = color.rgba;
+  subTask.color = `rgba(${r}, ${g}, ${b}, ${a})`;
+
+  saveContent(item);
 };
 
 onMounted(() => {
   getList();
-
-  /*   add({
-    task: [
-      { content: "哈哈哈哈哈哈", status: 1 },
-      { content: "哈哈哈哈哈哈", status: 1 },
-      { content: "哈哈哈哈哈哈", status: 1 },
-      { content: "哈哈哈哈哈哈", status: 1 }
-    ],
-    bgcolor: "#F5F5F5",
-    countdown: [{ type: 1, describe: "zqszzzzzz" }],
-    date: 1681884087452
-  }); */
 });
 </script>
 
@@ -260,5 +302,18 @@ onMounted(() => {
 
 .selected {
   background-color: #6cf;
+}
+
+.font-box {
+  width: 20px;
+  height: 20px;
+  font-size: 18px;
+}
+
+.divider {
+  margin: 0 12px;
+  height: 16px;
+  width: 1px;
+  background: gray;
 }
 </style>
