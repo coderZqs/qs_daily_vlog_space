@@ -42,7 +42,7 @@
   </div>
 </template>
 <script lang="ts" setup>
-import CompEye from "./eye-comp.vue";
+import CompEye from "./EyeComp.vue";
 import { useRouter } from "vue-router";
 import { onMounted, ref } from "vue";
 const router = useRouter();

@@ -1,38 +1,15 @@
 <template>
   <div class="page-login">
-    <div class="flex login-container">
-      <div class="login-image">
-        <img src="../../assets/image/login.jpg" alt="" />
+    <div class="canvas"></div>
+    <div class="form">
+      <div class="form-item">
+        <input type="text" placeholder="账号" v-model="formState.mobile" />
       </div>
-      <div class="form flex flex-col justify-center align-center">
-        <p class="welcome">欢迎回来</p>
-        <a-form
-          :model="formState"
-          name="basic"
-          autocomplete="off"
-          @finish="onFinish"
-          @finishFailed="onFinishFailed"
-        >
-          <a-form-item
-            name="mobile"
-            :rules="[{ required: true, message: 'Please input your mobile!' }]"
-          >
-            <a-input v-model:value="formState.mobile" />
-          </a-form-item>
-
-          <a-form-item
-            name="password"
-            :rules="[
-              { required: true, message: 'Please input your password!' }
-            ]"
-          >
-            <a-input-password v-model:value="formState.password" />
-          </a-form-item>
-
-          <a-form-item>
-            <a-button type="primary" block html-type="submit">登录</a-button>
-          </a-form-item>
-        </a-form>
+      <div class="form-item">
+        <input type="text" placeholder="密码" v-model="formState.password" />
+      </div>
+      <div class="form-item">
+        <div class="login-btn" @click="loign">进入生命画卷</div>
       </div>
     </div>
   </div>
@@ -56,87 +33,33 @@ const formState = reactive<FormState>({
   mobile: "",
   password: ""
 });
-const onFinish = async (values: any) => {
-  await LOGIN({ mobile: formState.mobile, password: formState.password });
-};
 
-const onFinishFailed = (errorInfo: any) => {
-  console.log("Failed:", errorInfo);
+const loign = async (values: any) => {
+  await LOGIN({ mobile: formState.mobile, password: formState.password });
 };
 </script>
 
 <style lang="scss" scoped>
 .page-login {
-  background: #bacac6;
+  background: linear-gradient(360deg, #eed6d6 0%, white 130%);
   width: 100%;
   height: calc(100vh - $navbar-height);
   display: flex;
   justify-content: center;
   align-items: center;
 
-  .bg {
-    overflow: hidden;
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-
-    img {
-      width: 100%;
-      height: 100%;
-    }
-
-    :before {
-      content: "";
-      width: 100%;
-      height: 100%;
-      background: inherit;
-      position: absolute;
-      left: -25px; //giving minus -25px left position
-      right: 0;
-      top: -25px; //giving minus -25px top position
-      bottom: 0;
-      box-shadow: inset 0 0 0 200px rgba(255, 255, 255, 0.3);
-      filter: blur(10px);
-    }
-  }
-}
-
-.login-container {
-  border-radius: 4px;
-  overflow: hidden;
-  margin-top: 10px;
-  display: flex;
-  width: 60%;
-  height: 500px;
-  position: relative;
-
-  img {
-    width: 55%;
-    object-fit: cover;
-  }
-
   .form {
-    padding: 20px;
-    box-sizing: border-box;
-    margin-left: auto;
-    flex-shrink: 0;
-    width: 45%;
-    background: white;
-    height: 100%;
-    z-index: 1;
+    width: 500px;
 
-    .welcome {
-      font-size: 20px;
+    input {
+      width: 400px;
+      outline: none;
+      background: transparent;
+      border: none;
+      border-bottom: 1px solid white;
+      height: 50px;
+      display: block;
     }
-  }
-}
-
-.login-image {
-  img {
-    width: 100%;
-    height: 100%;
   }
 }
 </style>

@@ -2,12 +2,18 @@
   <div class="app">
     <LayoutHeader />
     <RouterView class="router-view" />
+
+    <!-- <DailyNoteDialog></DailyNoteDialog> -->
   </div>
 </template>
 
 <script setup lang="ts">
-import LayoutHeader from "@/components/layout/header.vue";
+import LayoutHeader from "@/components/Layout/Header.vue";
 import { RouterView } from "vue-router";
+import commonApi from "./network/api/common";
+import DailyNoteDialog from "./components/DailyNoteDialog/index.vue";
+
+commonApi.getOneWord();
 </script>
 
 <style lang="scss">

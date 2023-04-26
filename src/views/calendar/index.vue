@@ -17,12 +17,16 @@
               today: isToday(item.day),
               selected: isSelected(item.day)
             }"
+            :style="{ background: item.bgcolor }"
           >
-            <div
-              style="height: 100%; width: 100%"
-              :style="{ background: item.bgcolor }"
-              @click="enterEditStatus(item, $event)"
-            >
+            <div class="day-number">
+              <span class="solar">{{ item.day }}</span>
+              <span class="lunar">{{
+                item.festivals.length ? item.festivals[0] : item.lunar
+              }}</span>
+            </div>
+
+            <div @click="enterEditStatus(item, $event)">
               <a-popover placement="bottom" v-for="subTask in item.task">
                 <template #content>
                   <div class="flex items-center">
@@ -171,7 +175,7 @@ const enterEditStatus = async (item, e) => {
 
 const addTask = (item, value) => {
   if (value) {
-    item.task.push({ content: value, status: "1", color: "black" });
+    item.task.push({ content: value, status: 1, color: "black" });
     item.addContent = "";
 
     saveContent(item);
@@ -207,7 +211,7 @@ const saveContent = item => {
       task: item.task,
       date: new Date(year, month, day).getTime(),
       countdown: [],
-      bgcolor: "#FFFFFF"
+      bgcolor: ""
     });
   }
 };
@@ -264,8 +268,18 @@ onMounted(() => {
     padding: 8px;
 
     .day-number {
-      font-size: 20px;
-      font-weight: 600;
+      display: flex;
+      align-items: center;
+      .solar {
+        font-size: 16px;
+        font-weight: 600;
+      }
+
+      .lunar {
+        font-size: 13px;
+        color: gray;
+        margin-left: 20px;
+      }
     }
 
     input {

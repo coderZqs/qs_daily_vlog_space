@@ -4,9 +4,9 @@ import { SUCCESS } from "@/network/response-status";
 import { message } from "ant-design-vue";
 
 let bill = ref([
-  { id: 1, amount: 0 },
-  { id: 2, amount: 0 },
-  { id: 3, amount: 0 }
+  { id: 1, amount: 0, content: "包子" },
+  { id: 2, amount: 0, content: "快餐" },
+  { id: 3, amount: 0, content: "自煮饭菜" }
 ]);
 
 let date = ref(new Date().getTime());

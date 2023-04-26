@@ -7,7 +7,10 @@
         </div>
       </div>
       <div class="article-list mt-5 sm:mt-1">
-        <div class="article-container" v-if="data.articles.length">
+        <div
+          class="article-container"
+          v-if="data.articles.length && !isLoading"
+        >
           <div
             ref="articleItem"
             class="article-item"
@@ -21,18 +24,22 @@
               <div class="content">{{ item.content }}</div>
             </div>
 
-            <div class="handle">
-              <a-button
-                size="mini"
-                type="primary"
-                @click.stop="enterUpdate(item)"
-                >修改</a-button
-              >
-              <a-button size="mini" class="ml-2" type="danger" @click.stop
-                >删除</a-button
-              >
+            <div class="handle mt-4">
+              <div @click="enterUpdate(item)" class="flex items-center">
+                <EditOutlined style="font-size: 18px" />
+                <span class="ml-1">重新编辑</span>
+              </div>
+              <div class="flex items-center ml-4">
+                <DeleteOutlined style="font-size: 18px" />
+                <span class="ml-1">删除</span>
+              </div>
             </div>
           </div>
+        </div>
+
+        <div v-else-if="isLoading" class="m-4 flex items-center justify-center">
+          <a-spin :indicator="indicator" />
+          <span class="ml-2 mt-1">数据正在加载</span>
         </div>
 
         <div v-else class="empty">
@@ -86,14 +93,18 @@
 </template>
 
 <script setup lang="ts">
-import { onMounted, computed } from "vue";
+import { onMounted, computed, h } from "vue";
 import BlogApi from "@/network/api/blog";
 import moment from "moment";
 import { reactive, ref } from "vue";
 import { SUCCESS } from "@/network/response-status";
 import { message } from "ant-design-vue";
 import dayjs, { Dayjs } from "dayjs";
-import { CalculatorOutlined } from "@ant-design/icons-vue";
+import {
+  LoadingOutlined,
+  EditOutlined,
+  DeleteOutlined
+} from "@ant-design/icons-vue";
 import router from "@/router";
 
 import _ from "lodash";
@@ -126,8 +137,16 @@ const data = reactive<Data>({
   currentItem: {}
 });
 
+const indicator = h(LoadingOutlined, {
+  style: {
+    fontSize: "18px"
+  },
+  spin: true
+});
+
 const sourcePoi = ref({ left: 0, top: 0 });
 const isOpenTargetDialog = ref(false);
+const isLoading = ref(false);
 
 const dayList = computed(() => data.date.daysInMonth());
 
@@ -138,6 +157,7 @@ const dayList = computed(() => data.date.daysInMonth());
 const getList = async () => {
   let y = data.date.year();
   let m = data.date.month();
+  isLoading.value = true;
 
   let result = await BlogApi.getBlog({
     // created_at: moment([y, m, 24]).format("x")
@@ -154,6 +174,8 @@ const getList = async () => {
         }
       };
     });
+
+    isLoading.value = false;
 
     data.currentItem = _.cloneDeep(data.articles[0]);
   } else {

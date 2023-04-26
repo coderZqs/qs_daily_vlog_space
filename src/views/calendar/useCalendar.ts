@@ -1,10 +1,11 @@
 import { ref, computed, Ref, watch } from "vue";
 import { findFestival } from "@/utils/date";
+import calendar from "../../utils/calendar.js";
 
 export const useCalendar = () => {
   const currentDate = ref({
     year: new Date().getFullYear(),
-    month: new Date().getMonth(),
+    month: new Date().getMonth() + 1,
     day: new Date().getDate()
   });
 
@@ -24,14 +25,24 @@ export const useCalendar = () => {
         let festivals = Object.values(findFestival(year, month, i)).filter(v =>
           Boolean(v)
         );
-        daysInMonth.value.push({ day: i, festivals, task: [] });
+        daysInMonth.value.push({
+          day: i,
+          festivals,
+          task: [],
+          lunar: calendar.solar2lunar(year, month, i).IDayCn
+        });
       }
 
       for (let i = 0; i < lastCount; i++) {
         let festivals = Object.values(findFestival(year, month - 1, i)).filter(
           v => Boolean(v)
         );
-        daysInLastMonth.value.push({ day: i, festivals, task: [] });
+        daysInLastMonth.value.push({
+          day: i,
+          festivals,
+          task: [],
+          lunar: calendar.solar2lunar(year, month, i).IDayCn
+        });
       }
     },
     { immediate: true }
