@@ -1049,6 +1049,11 @@
     "require-from-string" "^2.0.2"
     "uri-js" "^4.2.2"
 
+"animation.css@^0.1.0":
+  "integrity" "sha512-3uP0qvR1XYmrZRO0Iydv/j8oG+XOD80hfkvW35MmkmbymKp+q+cyn48XwjHxlpQKisTb2ZbbdI98VAGGQYS7LQ=="
+  "resolved" "https://registry.npmmirror.com/animation.css/-/animation.css-0.1.0.tgz"
+  "version" "0.1.0"
+
 "ansi-regex@^2.0.0":
   "integrity" "sha512-TIGnTpdo+E3+pCyAluZvtED5p5wCqLdezCyhPZzKPcxvFplEt4i+W7OONCKgeZFT3+y5NZZfOOS/Bdcanm1MYA=="
   "resolved" "https://registry.npmmirror.com/ansi-regex/-/ansi-regex-2.1.1.tgz"

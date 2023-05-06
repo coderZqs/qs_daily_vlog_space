@@ -1,7 +1,7 @@
 <template>
   <div class="app">
-    <LayoutHeader />
-    <RouterView class="router-view" />
+    <!-- <LayoutHeader /> -->
+    <RouterView />
 
     <!-- <DailyNoteDialog></DailyNoteDialog> -->
   </div>
@@ -24,12 +24,12 @@ commonApi.getOneWord();
 
 html,
 body {
+  width: 100%;
+  overflow-x: hidden;
   // min-width: 1024px !important;
 }
 
-.app {
-  overflow: hidden;
-}
+.app {}
 
 .router-view {
   margin-top: $navbar-height;

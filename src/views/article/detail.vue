@@ -25,7 +25,7 @@ import moment from "moment";
 import { onMounted, reactive, toRefs } from "vue";
 import { useRoute } from "vue-router";
 let route = useRoute();
-import { serverAddress } from "../../network/index.ts"
+import { serverAddress } from "../../network/index"
 
 type Blog = {
   category?: string;
