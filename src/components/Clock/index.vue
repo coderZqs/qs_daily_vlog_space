@@ -1,25 +1,42 @@
 <template>
-  <canvas id="clock" :width="props.size" :height="props.size"></canvas>
+  <canvas id="clock" :width="size" :height="size"></canvas>
 </template>
 
 <script setup lang="ts">
-import { onMounted } from "vue";
+import { watch, onMounted, ref } from "vue";
 
-let props = defineProps<{ size: number }>();
+let props = withDefaults(defineProps<{ size: number; scale: number }>(), {
+  size: 200,
+  scale: 1
+});
 
 let context;
 
-const size = props.size || 150;
+const scale = ref(props.scale);
+const size = ref(props.size);
+
+watch(
+  () => props.scale,
+  val => {
+    size.value = val * props.size;
+    scale.value = val;
+  }
+);
 
 onMounted(() => {
   const canvas: HTMLCanvasElement | null = document.querySelector("#clock");
   if (canvas) {
     context = canvas.getContext("2d");
     context.save();
-    context.translate(size / 2, size / 2);
+    context.translate(size.value / 2, size.value / 2);
 
     let draw = () => {
-      context.clearRect(-size / 2, -size / 2, size, size);
+      context.clearRect(
+        -size.value / 2,
+        -size.value / 2,
+        size.value,
+        size.value
+      );
       // 定时器旋转
       drawCenterDot(context);
       // 画圆
@@ -42,7 +59,8 @@ onMounted(() => {
 const drawCircle = (ctx: CanvasRenderingContext2D) => {
   context.save();
   ctx.beginPath();
-  ctx.arc(0, 0, size / 2, 0, Math.PI * 2, true);
+
+  ctx.arc(0, 0, size.value / 2, 0, Math.PI * 2, true);
   ctx.stroke();
   ctx.closePath();
   context.restore();
@@ -51,7 +69,7 @@ const drawCircle = (ctx: CanvasRenderingContext2D) => {
 const drawCenterDot = (ctx: CanvasRenderingContext2D) => {
   ctx.save();
   ctx.beginPath();
-  ctx.arc(0, 0, 4, 0, Math.PI * 2, true);
+  ctx.arc(0, 0, 4 * scale.value, 0, Math.PI * 2, true);
   ctx.fill();
   ctx.stroke();
   ctx.closePath();
@@ -59,12 +77,12 @@ const drawCenterDot = (ctx: CanvasRenderingContext2D) => {
 };
 
 const drawNeedle = (ctx: CanvasRenderingContext2D) => {
-  const hourNeedleWidth = 4;
-  const hourNeedleHeight = 40;
-  const minuteNeedleWidth = 3;
-  const minuteNeedleHeight = 50;
-  const secondNeedleWidth = 2;
-  const secondNeedleHeight = 70;
+  const hourNeedleWidth = 4 * scale.value;
+  const hourNeedleHeight = 40 * scale.value;
+  const minuteNeedleWidth = 3 * scale.value;
+  const minuteNeedleHeight = 50 * scale.value;
+  const secondNeedleWidth = 2 * scale.value;
+  const secondNeedleHeight = 70 * scale.value;
 
   const date = new Date();
   const milliseconds = date.getMilliseconds();
@@ -77,7 +95,7 @@ const drawNeedle = (ctx: CanvasRenderingContext2D) => {
   ctx.beginPath();
   ctx.lineTo(-hourNeedleWidth / 2, 0);
   ctx.lineTo(-hourNeedleWidth / 2, -hourNeedleHeight);
-  ctx.lineTo(0, -hourNeedleHeight - 5);
+  ctx.lineTo(0, -hourNeedleHeight - 5 * scale.value);
   ctx.lineTo(hourNeedleWidth / 2, -hourNeedleHeight);
   ctx.lineTo(hourNeedleWidth / 2, 0);
   ctx.fill();
@@ -89,7 +107,7 @@ const drawNeedle = (ctx: CanvasRenderingContext2D) => {
   ctx.beginPath();
   ctx.lineTo(-minuteNeedleWidth / 2, 0);
   ctx.lineTo(-minuteNeedleWidth / 2, -minuteNeedleHeight);
-  ctx.lineTo(0, -minuteNeedleHeight - 5);
+  ctx.lineTo(0, -minuteNeedleHeight - 5 * scale.value);
   ctx.lineTo(minuteNeedleWidth / 2, -minuteNeedleHeight);
   ctx.lineTo(minuteNeedleWidth / 2, 0);
   ctx.fill();
@@ -101,7 +119,7 @@ const drawNeedle = (ctx: CanvasRenderingContext2D) => {
   ctx.beginPath();
   ctx.lineTo(-secondNeedleWidth / 2, 0);
   ctx.lineTo(-secondNeedleWidth / 2, -secondNeedleHeight);
-  ctx.lineTo(0, -secondNeedleHeight - 5);
+  ctx.lineTo(0, -secondNeedleHeight - 5 * scale.value);
   ctx.lineTo(secondNeedleWidth / 2, -secondNeedleHeight);
   ctx.lineTo(secondNeedleWidth / 2, 0);
   ctx.fill();
@@ -114,8 +132,8 @@ const drawDegree = (ctx: CanvasRenderingContext2D) => {
   for (let i = 0; i <= 60; i++) {
     ctx.rotate(Math.PI / 30);
     ctx.beginPath();
-    ctx.moveTo(0, -90);
-    ctx.lineTo(0, -size / 2);
+    ctx.moveTo(0, -size.value / 2 + 5 * scale.value);
+    ctx.lineTo(0, -size.value / 2);
     ctx.fill();
     ctx.stroke();
     ctx.closePath();

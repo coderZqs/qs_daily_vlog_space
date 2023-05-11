@@ -1,7 +1,6 @@
 <template>
-  <!-- <div class="page-login">
-    <div class="canvas"></div>
-    <div class="form">
+  <div class="page-login">
+    <!--     <div class="form">
       <div class="form-item">
         <input
           type="text"
@@ -11,7 +10,7 @@
       </div>
       <div class="form-item">
         <input
-          type="text"
+          type="password"
           placeholder="请输入密码"
           v-model="formState.password"
         />
@@ -19,25 +18,18 @@
       <div class="form-item">
         <div class="login-btn" @click="loign">进入生命画卷</div>
       </div>
-    </div>
-  </div> -->
-
+    </div> -->
+  </div>
   <div>
-    <div>
-      <div class="first-step box" style="margin-top: 100vh">
-        <div class="sticky-content flex justify-center items-center">
-          <div class="test">
-            <Clock :size="clockSize"></Clock>
-          </div>
-        </div>
-      </div>
-      <div class="second-step box">
-        <div class="sticky-content">
-          <div class="circle">1</div>
-          <div class="circle2">2</div>
-        </div>
-      </div>
-    </div>
+    <StickyContent ref="stickyContent1">
+      <Clock class="clock" :size="clockSize" :scale="clockScale"></Clock>
+    </StickyContent>
+
+    <StickyContent ref="stickyContent">
+      <div class="rect"></div>
+      <div class="rect-left"></div>
+      <div class="rect-right"></div>
+    </StickyContent>
   </div>
 </template>
 
@@ -48,14 +40,18 @@ import { useRouter } from "vue-router";
 import Clock from "@/components/Clock/index.vue";
 let router = useRouter();
 let { LOGIN } = useStore();
+import StickyContent from "@/components/StickyContent/index.vue";
 
 interface FormState {
   mobile: string;
   password: string;
 }
 
-const clockSize = ref(200);
+let stickyContent = ref();
+let stickyContent1 = ref();
 
+const clockSize = ref(200);
+const clockScale = ref(2);
 const formState = reactive<FormState>({
   mobile: "",
   password: ""
@@ -67,87 +63,20 @@ const loign = async (values: any) => {
 
 onMounted(() => {
   document.body.addEventListener("scroll", e => {
-    calcAnimate(".second-step", [
-      { ele: ".circle", step: { x: 400 }, start: "10%", end: "50%" },
-      { ele: ".circle2", step: { x: 500 }, start: "25%", end: "80%" }
-    ]);
-
-    calcAnimate(".first-step", [{ ele: ".test", step: { x: 500, scale: 3 } }]);
+    /*     stickyContent.value.init([
+      { ele: ".rect", step: { scale: 2.5 }, start: "10%", end: "30%" },
+      { ele: ".rect", step: { opacity: 1 }, start: "10%", end: "30%" },
+      { ele: ".rect-left", step: { opacity: 1 }, start: "30%", end: "50%" },
+      { ele: ".rect-left", step: { x: 100 }, start: "30%", end: "50%" },
+      { ele: ".rect-right", step: { x: -100 }, start: "50%", end: "70%" },
+      { ele: ".rect-right", step: { opacity: 1 }, start: "50%", end: "70%" }
+    ]); */
+    let { scrollInContainerProportion } = stickyContent1.value.init([]);
+    if (scrollInContainerProportion > 0 && scrollInContainerProportion < 1) {
+      clockScale.value = 1 + 2 * scrollInContainerProportion;
+    }
   });
 });
-
-/**
- *
- * @param className
- * @param param1
- */
-
-const calcAnimate = (className, animation) => {
-  let container = document.querySelector(className);
-  if (container) {
-    let { top, height } = container?.getBoundingClientRect();
-    // 滚动条到元素的距离，当元素为展示在屏幕，则<=0
-    let scrollOverContainerDistance = height - Math.abs(top);
-    // 判断是否是否滚动到元素
-    let isScrollInContainer = top <= 0 && scrollOverContainerDistance >= 0;
-    // 滚动到元素的比例
-    let scrollInContainerProportion =
-      Math.abs(top) / (height - window.innerHeight);
-
-    if (isScrollInContainer) {
-      if (animation.length) {
-        animation.forEach(item => {
-          let ele = container.querySelector(item.ele);
-          if (
-            ele &&
-            item.step &&
-            scrollInContainerProportion > toPoint(item.start || "0%") &&
-            scrollInContainerProportion < toPoint(item.end || "100%")
-          ) {
-            let attrs = { left: 0, top: 0, scale: 1 };
-            if (ele.style.transform) {
-              attrs = getTransformValue(ele.style.transform);
-            }
-
-            // 有配置则配置，无配置则默认
-
-            let x = item.step.x
-              ? item.step["x"] * scrollInContainerProportion + "px"
-              : attrs.left;
-            let y = item.step.y
-              ? item.step["y"] * scrollInContainerProportion + "px"
-              : attrs.top;
-            let scale = item.step.scale
-              ? 1 + (item.step["scale"] - 1) * scrollInContainerProportion
-              : attrs.scale;
-
-            ele.style.transform = `translate(${x},${y}) scale(${scale})`;
-          }
-        });
-      }
-    }
-  }
-};
-
-/**
- * 获取transform 的数据
- * @param transform
- */
-
-const getTransformValue = transform => {
-  let scale = transform.match(/\.*scale\((.*)\)/i)[1];
-  let translate = transform.match(/\.*translate\((.+?)\)/i)[1];
-  let left = translate.split(",")[0];
-  let top = translate.split(",")[1];
-
-  return { scale, left, top };
-};
-
-const toPoint = percent => {
-  var str = percent.replace("%", "");
-  str = str / 100;
-  return str;
-};
 </script>
 
 <style lang="scss" scoped>
@@ -195,31 +124,31 @@ const toPoint = percent => {
   }
 }
 
-.box {
-  background: #f5f5f5;
-  height: 300vh;
-  position: relative;
-  .sticky-content {
-    position: sticky;
-    height: 100vh;
-    width: 100vw;
-    overflow: hidden;
-    top: 0;
-
-    .circle,
-    .circle2 {
-      height: 100px;
-      width: 100px;
-      background: red;
-    }
-
-    .circle2 {
-      left: calc(100% - 100px);
-    }
-  }
+.rect {
+  position: absolute;
+  height: 100px;
+  width: 150px;
+  background: gray;
+  opacity: 0;
 }
 
-.ddbox2 {
-  background: white;
+.rect-left {
+  height: 100px;
+  width: 100px;
+  background: yellow;
+  position: absolute;
+  opacity: 0;
+  left: 300px;
+  top: 300px;
+}
+
+.rect-right {
+  height: 100px;
+  width: 100px;
+  opacity: 0;
+  background: green;
+  position: absolute;
+  right: 300px;
+  top: 300px;
 }
 </style>
