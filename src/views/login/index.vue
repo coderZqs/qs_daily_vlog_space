@@ -1,5 +1,18 @@
 <template>
   <div class="page-login">
+    <div class="first-page">
+      <StickyContent ref="stickyContent" height="800vh">
+        <div class="big-title" data-name="🌀 测试测试">🌀 测试测试</div>
+        <div class="bg"></div>
+
+        <div class="screen">
+          <div class="border-box">
+            <div class="box-content"></div>
+          </div>
+        </div>
+      </StickyContent>
+    </div>
+
     <!--     <div class="form">
       <div class="form-item">
         <input
@@ -20,17 +33,6 @@
       </div>
     </div> -->
   </div>
-  <div>
-    <StickyContent ref="stickyContent1">
-      <Clock class="clock" :size="clockSize" :scale="clockScale"></Clock>
-    </StickyContent>
-
-    <StickyContent ref="stickyContent">
-      <div class="rect"></div>
-      <div class="rect-left"></div>
-      <div class="rect-right"></div>
-    </StickyContent>
-  </div>
 </template>
 
 <script setup lang="ts">
@@ -48,10 +50,7 @@ interface FormState {
 }
 
 let stickyContent = ref();
-let stickyContent1 = ref();
 
-const clockSize = ref(200);
-const clockScale = ref(2);
 const formState = reactive<FormState>({
   mobile: "",
   password: ""
@@ -63,17 +62,15 @@ const loign = async (values: any) => {
 
 onMounted(() => {
   document.body.addEventListener("scroll", e => {
-    /*     stickyContent.value.init([
-      { ele: ".rect", step: { scale: 2.5 }, start: "10%", end: "30%" },
-      { ele: ".rect", step: { opacity: 1 }, start: "10%", end: "30%" },
-      { ele: ".rect-left", step: { opacity: 1 }, start: "30%", end: "50%" },
-      { ele: ".rect-left", step: { x: 100 }, start: "30%", end: "50%" },
-      { ele: ".rect-right", step: { x: -100 }, start: "50%", end: "70%" },
-      { ele: ".rect-right", step: { opacity: 1 }, start: "50%", end: "70%" }
-    ]); */
-    let { scrollInContainerProportion } = stickyContent1.value.init([]);
-    if (scrollInContainerProportion > 0 && scrollInContainerProportion < 1) {
-      clockScale.value = 1 + 2 * scrollInContainerProportion;
+    let { scrollInContainerProportion } = stickyContent.value.init([
+      { ele: ".big-title", step: { scale: 0.7 }, start: "0%", end: "10%" },
+      { ele: ".big-title", step: { x: -500 }, start: "0%", end: "10%" },
+      { ele: ".big-title", step: { y: -370 }, start: "0%", end: "10%" },
+      { ele: ".bg", step: { opacity: 1 }, start: "8%", end: "13%" },
+      { ele: ".border-box", step: { opacity: 1 }, start: "8%", end: "14%" }
+    ]);
+
+    if (scrollInContainerProportion < 0.28) {
     }
   });
 });
@@ -81,12 +78,6 @@ onMounted(() => {
 
 <style lang="scss" scoped>
 .page-login {
-  width: 100%;
-  height: calc(100vh - $navbar-height);
-  display: flex;
-  justify-content: center;
-  align-items: center;
-
   .form {
     width: 400px;
 
@@ -120,6 +111,94 @@ onMounted(() => {
 
     &:hover {
       box-shadow: -10px 10px 16px gray;
+    }
+  }
+
+  .first-page {
+    height: 200vh;
+
+    .big-title {
+      z-index: 9;
+      font-weight: 600;
+      text-shadow: 4px 4px 1px #333;
+      font-family: Times New Roman, "serif";
+      text-align: center;
+      font-size: 60px;
+      position: relative;
+
+      &::before {
+        content: "";
+        display: block;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        position: absolute;
+        background-image: linear-gradient(
+          -45deg,
+          white 0%,
+          white 25%,
+          transparent 25%,
+          transparent 50%,
+          white 50%,
+          white 75%,
+          transparent 75%,
+          transparent 100%
+        );
+        background-size: 6px 6px;
+
+        z-index: 1;
+      }
+
+      &::after {
+        width: 100%;
+        position: absolute;
+        content: attr(data-name);
+        top: -4px;
+        left: -2px;
+        right: 6px;
+        bottom: 6px;
+        color: #333;
+        z-index: 2;
+        text-shadow: 3px 3px #fff;
+      }
+    }
+
+    .bg {
+      height: 100vh;
+      width: 100vw;
+      left: 0;
+      top: 0;
+      background: #7697ff;
+      position: absolute;
+      opacity: 0;
+    }
+
+    .screen {
+      position: absolute;
+      height: 80vh;
+      width: 80vw;
+
+      .border-box {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        position: absolute;
+        height: 100%;
+        width: 100%;
+        background-image: conic-gradient(
+          transparent 0,
+          gray 0,
+          transparent 30deg
+        );
+        opacity: 0;
+      }
+
+      .box-content {
+        background: white;
+        height: calc(100% - 20px);
+        width: calc(100% - 20px);
+      }
     }
   }
 }

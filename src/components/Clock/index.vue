@@ -3,7 +3,7 @@
 </template>
 
 <script setup lang="ts">
-import { watch, onMounted, ref } from "vue";
+import { watch, onMounted, nextTick, ref } from "vue";
 
 let props = withDefaults(defineProps<{ size: number; scale: number }>(), {
   size: 200,
@@ -13,7 +13,7 @@ let props = withDefaults(defineProps<{ size: number; scale: number }>(), {
 let context;
 
 const scale = ref(props.scale);
-const size = ref(props.size);
+const size = ref(props.size * props.scale);
 
 watch(
   () => props.scale,
@@ -26,11 +26,9 @@ watch(
 onMounted(() => {
   const canvas: HTMLCanvasElement | null = document.querySelector("#clock");
   if (canvas) {
-    context = canvas.getContext("2d");
-    context.save();
-    context.translate(size.value / 2, size.value / 2);
-
     let draw = () => {
+      context = canvas.getContext("2d");
+      context.save();
       context.clearRect(
         -size.value / 2,
         -size.value / 2,
@@ -60,7 +58,7 @@ const drawCircle = (ctx: CanvasRenderingContext2D) => {
   context.save();
   ctx.beginPath();
 
-  ctx.arc(0, 0, size.value / 2, 0, Math.PI * 2, true);
+  ctx.arc(size.value / 2, size.value / 2, size.value / 2, 0, Math.PI * 2, true);
   ctx.stroke();
   ctx.closePath();
   context.restore();
@@ -69,7 +67,14 @@ const drawCircle = (ctx: CanvasRenderingContext2D) => {
 const drawCenterDot = (ctx: CanvasRenderingContext2D) => {
   ctx.save();
   ctx.beginPath();
-  ctx.arc(0, 0, 4 * scale.value, 0, Math.PI * 2, true);
+  ctx.arc(
+    size.value / 2,
+    size.value / 2,
+    4 * scale.value,
+    0,
+    Math.PI * 2,
+    true
+  );
   ctx.fill();
   ctx.stroke();
   ctx.closePath();

@@ -1,5 +1,5 @@
 <template>
-  <div class="box" ref="box">
+  <div class="box" ref="box" :style="{ height: props.height }">
     <div class="sticky-content flex justify-center items-center">
       <slot></slot>
     </div>
@@ -8,6 +8,10 @@
 
 <script setup lang="ts">
 import { ref } from "vue";
+
+let props = withDefaults(defineProps<{ height: string | number }>(), {
+  height: "300vh"
+});
 
 let box = ref();
 
@@ -87,7 +91,7 @@ const generateAnimateByConfig = (
       let scale = item.step.scale
         ? 1 + (item.step["scale"] - 1) * step
         : attrs.scale;
-
+        
       ele.style.transform = `translate(${x},${y}) scale(${scale})`;
 
       if (item.step.opacity) {
@@ -111,6 +115,10 @@ const getTransformValue = transform => {
   return { scale, left, top };
 };
 
+const getNumberByPx = str => {
+  return str.replace("px", "");
+};
+
 /**
  * 百分转小数
  * @param percentToPoint
@@ -127,7 +135,6 @@ defineExpose({ init });
 
 <style lang="scss" scoped>
 .box {
-  background: #f5f5f5;
   height: 300vh;
   position: relative;
   .sticky-content {
