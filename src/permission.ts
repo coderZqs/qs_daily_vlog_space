@@ -4,7 +4,7 @@ import useStore from "@/stores/user";
 import _ from "lodash";
 
 router.beforeEach((to, from, next) => {
-  let { userInfo, GETINFO } = useStore();
+ /*  let { userInfo, GETINFO } = useStore();
 
   console.log(userInfo)
   let token = jsCookie.get("authorization");
@@ -14,6 +14,6 @@ router.beforeEach((to, from, next) => {
       GETINFO();
     }
   }
-
+ */
   next();
 });

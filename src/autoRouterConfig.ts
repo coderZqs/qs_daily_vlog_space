@@ -30,6 +30,8 @@ const generateAudoImportRoute = (
 ) => {
   const routes: routesType[] = Object.keys(files).map((c: string) => {
     const path = c.match(regExp)?.[0];
+
+    console.log(path);
     const component = files[c]?.default;
 
     return {
@@ -42,12 +44,22 @@ const generateAudoImportRoute = (
   return routes;
 };
 
-const threejsExampleRoutes = generateAudoImportRoute(
+/* const threejsExampleRoutes = generateAudoImportRoute(
   files,
   /(?<=example\/).*?(?=\.)/g,
   "/example/threejs/"
+); */
+
+const webglFile: Record<string, FileType> = import.meta.globEager(
+  "/src/webgl/*.vue"
 );
 
-routes = routes.concat(threejsExampleRoutes);
+const webgljsExampleRoutes = generateAudoImportRoute(
+  webglFile,
+  /(?<=webgl\/).*?(?=\.)/g,
+  "/example/webgl/"
+);
+
+routes = routes.concat(webgljsExampleRoutes);
 
 export default routes;

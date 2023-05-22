@@ -7,7 +7,12 @@
 
         <div class="screen">
           <div class="border-box">
-            <div class="box-content"></div>
+            <div class="box-content">
+              <div class="beautiful-text">
+                生产率 加快高质量软件开发。 我们的 AI
+                驱动平台通过可提高开发人员速度的工具推动创新。
+              </div>
+            </div>
           </div>
         </div>
       </StickyContent>
@@ -70,8 +75,18 @@ onMounted(() => {
       { ele: ".border-box", step: { opacity: 1 }, start: "8%", end: "14%" }
     ]);
 
-    if (scrollInContainerProportion < 0.28) {
+    let box = document.querySelector(".border-box");
+    let rate = ((scrollInContainerProportion - 0.14) / 0.14) * 360;
+
+    if (scrollInContainerProportion >= 0.28) {
+      rate = 360;
     }
+
+    if (scrollInContainerProportion <= 0.14) {
+      rate = 0;
+    }
+
+    box.style.backgroundImage = `conic-gradient(#7EE787 ${rate}deg,transparent ${rate}deg)`;
   });
 });
 </script>
@@ -126,7 +141,7 @@ onMounted(() => {
       font-size: 60px;
       position: relative;
 
-      &::before {
+      /*      &::before {
         content: "";
         display: block;
         top: 0;
@@ -148,7 +163,7 @@ onMounted(() => {
         background-size: 6px 6px;
 
         z-index: 1;
-      }
+      } */
 
       &::after {
         width: 100%;
@@ -169,14 +184,14 @@ onMounted(() => {
       width: 100vw;
       left: 0;
       top: 0;
-      background: #7697ff;
+      background: black;
       position: absolute;
       opacity: 0;
     }
 
     .screen {
       position: absolute;
-      height: 80vh;
+      height: 70vh;
       width: 80vw;
 
       .border-box {
@@ -186,18 +201,39 @@ onMounted(() => {
         position: absolute;
         height: 100%;
         width: 100%;
-        background-image: conic-gradient(
-          transparent 0,
-          gray 0,
-          transparent 30deg
-        );
         opacity: 0;
       }
 
       .box-content {
-        background: white;
+        background: #7697ff;
         height: calc(100% - 20px);
         width: calc(100% - 20px);
+
+        .beautiful-text {
+          max-width: 400px;
+          position: relative;
+          margin-top: 30px;
+          font-size: 30px;
+          color: transparent;
+          background: linear-gradient(
+            45deg,
+            transparent 0,
+            transparent 20%,
+            blue 20%,
+            blue 40%,
+            transparent 40%,
+            transparent 60%,
+            blue 60%,
+            blue 80%,
+            transparent 80%,
+            transparent 100%
+          );
+          background-size: 100%;
+          background-position: 70px 0;
+          background-clip: text;
+
+          animation: foo 3s linear 1s;
+        }
       }
     }
   }
@@ -229,5 +265,14 @@ onMounted(() => {
   position: absolute;
   right: 300px;
   top: 300px;
+}
+
+@keyframes foo {
+  from {
+    background-position: 100px 0;
+  }
+  to {
+    background-position: 300px 0;
+  }
 }
 </style>

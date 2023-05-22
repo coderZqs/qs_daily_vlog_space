@@ -13,7 +13,7 @@ import { RouterView } from "vue-router";
 import commonApi from "./network/api/common";
 import DailyNoteDialog from "./components/DailyNoteDialog/index.vue";
 
-commonApi.getOneWord();
+// commonApi.getOneWord();
 </script>
 
 <style lang="scss">
