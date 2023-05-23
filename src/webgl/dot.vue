@@ -27,9 +27,9 @@ class Gl {
 
   static fsString = `
       precision mediump float;
-      // varying vec4 v_Color;
+      varying vec4 v_Color;
       void main(){
-          gl_FragColor = vec4(0.0,1.0,0.0,1.0);
+          gl_FragColor = v_Color;
       }
     `;
   constructor() {}
@@ -74,24 +74,42 @@ class Gl {
     if (gl) {
       let points: any[] = [];
       let aPosition = gl.getAttribLocation(this.program!, "a_position");
+      this.canvas?.addEventListener("click", e => {
+        let gl = this.webgl!;
+        let x = e.clientX;
+        let y = e.clientY;
+
+        let { top, left, width, height } = this.canvas!.getBoundingClientRect();
+        let pointAsClickArea = {
+          x: (x - left - width / 2) / (width / 2),
+          y: -(y - top - height / 2) / (height / 2)
+        };
+
+        points = points.concat([pointAsClickArea.x, pointAsClickArea.y, 0.0]);
+        let pointPosition = new Float32Array(points);
+
+        let pointBuffer = gl.createBuffer();
+        gl.bindBuffer(gl.ARRAY_BUFFER, pointBuffer);
+        gl.bufferData(gl.ARRAY_BUFFER, pointPosition, gl.STATIC_DRAW);
+        gl.enableVertexAttribArray(aPosition);
+        gl.vertexAttribPointer(aPosition, 3, gl.FLOAT, false, 0, 0);
+
+        let aColor = gl.getAttribLocation(this.program!, "a_Color");
+        gl.vertexAttribPointer(aColor, 3, gl.FLOAT, false, 0, 0);
+        gl.enableVertexAttribArray(aColor);
+
+        gl.clearColor(0.0, 0.0, 0.0, 1.0);
+        gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
+        gl.drawArrays(gl.POINTS, 0, pointPosition.length / 3);
+      });
     }
   }
   draw() {
     let gl = this.webgl;
     if (gl) {
-      let points: any[] = [1, 0.5, 0, 0.6, 0.6, 0, 0.8, 0.2, 0];
-      let aPosition = gl.getAttribLocation(this.program!, "a_position");
-      let pointPosition = new Float32Array(points);
-
-      let pointBuffer = gl.createBuffer();
-      gl.bindBuffer(gl.ARRAY_BUFFER, pointBuffer);
-      gl.bufferData(gl.ARRAY_BUFFER, pointPosition, gl.STATIC_DRAW);
-      gl.enableVertexAttribArray(aPosition);
-      gl.vertexAttribPointer(aPosition, 3, gl.FLOAT, false, 0, 0);
-
       gl.clearColor(0.0, 0.0, 0.0, 1.0);
       gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
-      gl.drawArrays(gl.LINE_LOOP, 0, pointPosition.length / 2);
+      gl.drawArrays(gl.POINTS, 0, 1);
     }
   }
 }
