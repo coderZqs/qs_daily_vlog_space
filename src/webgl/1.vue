@@ -1,5 +1,5 @@
 <template>
-  <canvas id="canvas"></canvas>
+  <canvas id="canvas" width="500" height="500"></canvas>
 </template>
 
 <script setup lang="ts">
@@ -27,7 +27,7 @@ class Gl {
         gl_FragColor = vec4(1, 0, 0.5, 1);
     }
   `;
-  constructor() {}
+  constructor() { }
 
   init() {
     this.initGl();
@@ -41,6 +41,7 @@ class Gl {
     this.webgl = canvas.getContext("webgl");
     this.webgl?.viewport(0, 0, canvas.clientWidth, canvas.clientHeight);
   }
+
   initShader() {
     let gl = this.webgl;
 
@@ -63,6 +64,7 @@ class Gl {
       this.program = program;
     }
   }
+
   initBuffer() {
     if (this.webgl) {
       let pointPosition = new Float32Array([0.2, 0.0, 0.0, 1.0]);
@@ -70,6 +72,7 @@ class Gl {
       this.webgl.vertexAttrib4fv(aPosition, pointPosition);
     }
   }
+
   draw() {
     let gl = this.webgl;
     if (gl) {

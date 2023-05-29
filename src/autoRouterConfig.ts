@@ -44,13 +44,12 @@ const generateAudoImportRoute = (
   return routes;
 };
 
-/* const threejsExampleRoutes = generateAudoImportRoute(
+const threejsExampleRoutes = generateAudoImportRoute(
   files,
   /(?<=webgl\/).*?(?=\.)/g,
   "/webgl/"
 );
 
-console.log(threejsExampleRoutes)
 
 routes = routes.concat(threejsExampleRoutes);
 
