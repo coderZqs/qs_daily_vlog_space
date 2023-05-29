@@ -7,17 +7,9 @@
         </div>
       </div>
       <div class="article-list mt-5 sm:mt-1">
-        <div
-          class="article-container"
-          v-if="data.articles.length && !isLoading"
-        >
-          <div
-            ref="articleItem"
-            class="article-item"
-            v-for="item in data.articles"
-            :key="item.id"
-            @click="enterDetail(item)"
-          >
+        <div class="article-container" v-if="data.articles.length && !isLoading">
+          <div ref="articleItem" class="article-item" v-for="item in data.articles" :key="item.id"
+            @click="enterDetail(item)">
             <div class="p-4 relative">
               <div class="created-at">{{ item.created_at.day }}</div>
               <div class="title">{{ item.title }}</div>
@@ -25,7 +17,7 @@
             </div>
 
             <div class="handle mt-4">
-              <div @click="enterUpdate(item)" class="flex items-center">
+              <div @click.stop="enterUpdate(item)" class="flex items-center">
                 <EditOutlined style="font-size: 18px" />
                 <span class="ml-1">重新编辑</span>
               </div>
@@ -58,10 +50,7 @@
       </div>
 
       <div class="toolbar">
-        <div
-          class="dater flex flex-col items-center justify-center"
-          v-if="data.currentItem?.created_at"
-        >
+        <div class="dater flex flex-col items-center justify-center" v-if="data.currentItem?.created_at">
           <p style="margin-top: -20px">
             <span style="font-size: 50px">{{
               data.currentItem.created_at.month
@@ -70,13 +59,8 @@
           </p>
         </div>
 
-        <div>
-          <img
-            style="margin-left: 3px"
-            src="@/assets/icon/img/add.png"
-            @click="enterAdd"
-            alt=""
-          />
+        <div @click="enterAdd">
+          <img style="margin-left: 3px" src="@/assets/icon/img/add.png" alt="" />
         </div>
         <!--  <div @click="showTarget" ref="targetControlContainer">
         <div ref="targetControl" class="target-container">

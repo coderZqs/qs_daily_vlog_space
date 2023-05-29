@@ -1,24 +1,26 @@
 <template>
   <div class="calendar">
     <div class="pa-2">
-      <div class="header">{{ currentDate.month }} {{ currentDate.year }}</div>
+      <div class="header flex items-center justify-end">
+        <LeftOutlined style="font-size:16px;" class="m-2" @click="prevMonth"></LeftOutlined>
+        <span style="margin-top:2px">{{ currentDate.year }} 年 {{ currentDate.month }} 月</span>
+        <RightOutlined style="font-size:16px;" class="m-2" @click="nextMonth"></RightOutlined>
+      </div>
       <div class="body">
         <div class="weekdays">
-          <div v-for="day in daysOfWeek" :key="day">{{ day }}</div>
+          <div v-for="day in daysOfWeek" :key="day" class="flex justify-between items-center">
+            <span>{{ day }}</span>
+            <a-popover title="设置周任务" placement="bottomRight">
+              <template #content></template>
+              <menu-fold-outlined />
+            </a-popover>
+          </div>
         </div>
         <div class="days" style="background: white">
-          <div class="last-month-day" v-for="day in daysInLastMonth"></div>
-
-          <div
-            v-for="item in daysInMonth"
-            :key="item.day"
-            class="day-item"
-            :class="{
+          <div v-for="(item, index) in daysInMonth" :key="index" class="day-item" :class="{
               today: isToday(item.day),
               selected: isSelected(item.day)
-            }"
-            :style="{ background: item.bgcolor }"
-          >
+            }" :style="{ background: item.bgcolor }">
             <div class="day-number">
               <span class="solar">{{ item.day }}</span>
               <span class="lunar">{{
@@ -26,67 +28,43 @@
               }}</span>
             </div>
 
-            <div @click="enterEditStatus(item, $event)">
-              <a-popover placement="bottom" v-for="subTask in item.task">
+            <div @click="enterEditStatus(item, $event)" style="height:100%">
+              <a-popover placement="bottomLeft" v-for="(subTask, key) in item.task">
                 <template #content>
                   <div class="flex items-center">
-                    <CheckOutlined
-                      style="font-size: 16px"
-                      @click="finishTask(item, subTask)"
-                    />
+                    <CheckOutlined style="font-size: 16px" @click="finishTask(item, subTask)" />
                     <div class="divider"></div>
-                    <a-popover
-                      placement="bottom"
-                      :getPopupContainer="trigger => trigger.parentNode"
-                    >
+                    <a-popover placement="bottomLeft" :getPopupContainer="trigger => trigger.parentNode">
                       <template #content>
-                        <ColorPicker
-                          theme="light"
-                          :color="subTask.color"
-                          :sucker-hide="true"
-                          @changeColor="changeColor($event, subTask, item)"
-                        />
+                        <ColorPicker theme="light" :color="subTask.color" :sucker-hide="true"
+                          @changeColor="changeColor($event, subTask, item)" />
                       </template>
-                      <div
-                        class="flex items-center font-box justify-center"
-                        :style="{ background: subTask.color }"
-                      >
+                      <div class="flex items-center font-box justify-center cursor-pointer"
+                        :style="{ color: subTask.color }">
                         A
                       </div>
                     </a-popover>
+                    <div class="divider"></div>
+                    <delete-outlined class="cursor-pointer" @click="removeTask(item.task, key, item)" />
                   </div>
                 </template>
                 <div class="task-list">
-                  <p
-                    v-if="!subTask.isEdit"
-                    @click="subTask.isEdit = true"
-                    :style="{
-                      color: subTask.color,
-                      textDecoration: subTask.status === 1 ? '' : 'line-through'
-                    }"
-                  >
+                  <p v-if="!subTask.isEdit" @click="subTask.isEdit = true" :style="{
+                        color: subTask.color,
+                        textDecoration: subTask.status === 1 ? '' : 'line-through'
+                      }">
                     {{ subTask.content }}
                   </p>
-                  <input
-                    :style="{
-                      color: subTask.color,
-                      textDecoration: subTask.status === 1 ? '' : 'line-through'
-                    }"
-                    v-else
-                    type="text"
-                    @blur="saveContent(item)"
-                    v-model="subTask.content"
-                  />
+                  <input :style="{
+                    color: subTask.color,
+                    textDecoration: subTask.status === 1 ? '' : 'line-through'
+                  }" v-else type="text" @blur="saveContent(item)" v-model="subTask.content" />
                 </div>
               </a-popover>
 
               <div class="task-list">
-                <input
-                  class="add-input"
-                  type="text"
-                  @blur="addTask(item, $event.target!.value)"
-                  v-model="item.addContent"
-                />
+                <input class="add-input" type="text" @blur="addTask(item, $event.target!.value)"
+                  v-model="item.addContent" />
               </div>
             </div>
           </div>
@@ -107,6 +85,7 @@ import { SUCCESS } from "@/network/response-status";
 import { ColorPicker } from "vue-color-kit";
 import { CheckOutlined } from "@ant-design/icons-vue";
 import "vue-color-kit/dist/vue-color-kit.css";
+import { MenuFoldOutlined, DeleteOutlined, LeftOutlined, RightOutlined } from "@ant-design/icons-vue";
 
 let {
   daysOfWeek,
@@ -115,40 +94,12 @@ let {
   isSelected,
   daysInLastMonth,
   selectDay,
-  currentDate
+  currentDate,
+  prevMonth,
+  nextMonth,
+  getList
 } = useCalendar();
 
-const getList = async () => {
-  let { year, month } = currentDate.value;
-
-  let lastDayofMonth = new Date(year, month + 1, 0).getDate();
-  let { data, code } = await CalendarAPI.getCalendar({
-    startTime: new Date(year, month, 1).getTime(),
-    endTime: new Date(year, month, lastDayofMonth).getTime()
-  });
-
-  if (SUCCESS(code)) {
-    daysInMonth.value.forEach(ele => {
-      ele.isEdit = false;
-      data.forEach(item => {
-        let date = new Date(item.date);
-        let year = date.getFullYear();
-        let month = date.getMonth();
-        let day = date.getDate();
-
-        let { year: cyear, month: cMonth } = currentDate.value;
-
-        if (year === cyear && month == cMonth && day === ele.day) {
-          ele.id = item.id;
-          ele.task = item.task;
-          ele.countdown = item.countdown;
-          ele.bgcolor = item.bgcolor;
-          ele.isEdit = false;
-        }
-      });
-    });
-  }
-};
 
 /**
  * 编辑状态
@@ -158,6 +109,7 @@ const getList = async () => {
 const enterEditStatus = async (item, e) => {
   currentDate.value.day = item.day;
   if (e.target.tagName == "DIV") {
+    console.log(42312)
     let input = e.currentTarget.querySelector(".add-input");
     if (input) {
       input.focus();
@@ -181,6 +133,16 @@ const addTask = (item, value) => {
     saveContent(item);
   }
 };
+
+/**
+ * 删除
+ */
+
+const removeTask = (task, key, item) => {
+  task.splice(key, 1)
+
+  saveContent(item);
+}
 
 /**
  * 完成任务
@@ -241,14 +203,22 @@ onMounted(() => {
 
 .header {
   padding: 5px;
-  text-align: center;
+  text-align: right;
 }
 
 .weekdays {
   display: grid;
+  font-size: 14px;
   grid-template-columns: repeat(7, 1fr);
-  text-align: center;
-  margin: 12px 0;
+  margin: 0px 6px;
+
+  div {
+    font-weight: 600;
+    padding: 4px 8px;
+    margin: 0 2px;
+    background: #f3f9f1;
+  }
+
 }
 
 .days {
@@ -258,11 +228,12 @@ onMounted(() => {
   padding: 4px;
   box-sizing: border-box;
   margin: 4px;
+  margin-top: 0px !important;
 
   .day-item {
     position: relative;
     background: #f3f9f1;
-    height: 200px;
+    min-height: 200px;
     box-sizing: border-box;
     margin: 0.1px;
     padding: 8px;
@@ -270,6 +241,7 @@ onMounted(() => {
     .day-number {
       display: flex;
       align-items: center;
+
       .solar {
         font-size: 16px;
         font-weight: 600;
@@ -300,8 +272,10 @@ onMounted(() => {
 
     .task-list {
       padding: 4px;
+
       p,
       input {
+        height: 30px;
         line-height: 30px;
       }
 

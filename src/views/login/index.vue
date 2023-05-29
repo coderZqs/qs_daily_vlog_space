@@ -20,18 +20,10 @@
 
     <!--     <div class="form">
       <div class="form-item">
-        <input
-          type="text"
-          placeholder="请输入账号"
-          v-model="formState.mobile"
-        />
+        <input type="text" placeholder="请输入账号" v-model="formState.mobile" />
       </div>
       <div class="form-item">
-        <input
-          type="password"
-          placeholder="请输入密码"
-          v-model="formState.password"
-        />
+        <input type="password" placeholder="请输入密码" v-model="formState.password" />
       </div>
       <div class="form-item">
         <div class="login-btn" @click="loign">进入生命画卷</div>
