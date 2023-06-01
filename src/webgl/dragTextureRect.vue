@@ -109,7 +109,7 @@ class GL {
       this.webgl!.bufferData(
         this.webgl!.ARRAY_BUFFER,
         new Float32Array([
-          0.0, 0.0, 1.0, 0.0, 0.0, 1.0, 1.0, 1.0, 1.0, 0.0, 0.0, 1.0
+          0.0, 0.0, 1.0, 0.0, 0.0, 1.0, 0.0, 1.0, 1.0, 0.0, 1.0, 1.0
         ]),
         this.webgl!.STATIC_DRAW
       );
@@ -127,7 +127,6 @@ class GL {
       var texture = this.webgl!.createTexture();
       this.webgl!.bindTexture(this.webgl?.TEXTURE_2D!, texture);
 
-      // 设置参数，让我们可以绘制任何尺寸的图像
       this.webgl!.texParameteri(
         this.webgl!.TEXTURE_2D,
         this.webgl!.TEXTURE_WRAP_S,
