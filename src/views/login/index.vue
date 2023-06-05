@@ -1,24 +1,27 @@
 <template>
   <div class="page-login">
     <div class="first-page">
-      <StickyContent ref="stickyContent" height="800vh">
-        <div class="big-title" data-name="🌀 测试测试">🌀 测试测试</div>
+      <StickyContent ref="stickyContent" height="400vh">
+        <div class="big-title" data-name="🌀 ChingShun">🌀 ChingShun</div>
         <div class="bg"></div>
 
         <div class="screen">
           <div class="border-box">
-            <div class="box-content">
-              <div class="beautiful-text">
-                生产率 加快高质量软件开发。 我们的 AI
-                驱动平台通过可提高开发人员速度的工具推动创新。
-              </div>
+            <div class="box-content flex justify-center items-center">
+              <div style="font-size:100px;color:#1345B7;font-weight:bold">🌀 ChingShun</div>
             </div>
           </div>
         </div>
       </StickyContent>
+
+      <StickyContent ref="stickyContent2">
+        <div class="rect"></div>
+        <div class="rect-left"></div>
+        <div class="rect-right"></div>
+      </StickyContent>
     </div>
 
-    <!--     <div class="form">
+    <!-- <div class="form">
       <div class="form-item">
         <input type="text" placeholder="请输入账号" v-model="formState.mobile" />
       </div>
@@ -47,6 +50,7 @@ interface FormState {
 }
 
 let stickyContent = ref();
+let stickyContent2 = ref();
 
 const formState = reactive<FormState>({
   mobile: "",
@@ -62,9 +66,18 @@ onMounted(() => {
     let { scrollInContainerProportion } = stickyContent.value.init([
       { ele: ".big-title", step: { scale: 0.7 }, start: "0%", end: "10%" },
       { ele: ".big-title", step: { x: -500 }, start: "0%", end: "10%" },
-      { ele: ".big-title", step: { y: -370 }, start: "0%", end: "10%" },
+      { ele: ".big-title", step: { y: -380 }, start: "0%", end: "10%" },
       { ele: ".bg", step: { opacity: 1 }, start: "8%", end: "13%" },
       { ele: ".border-box", step: { opacity: 1 }, start: "8%", end: "14%" }
+    ]);
+
+    stickyContent2.value.init([
+      { ele: ".rect", step: { scale: 2.5 }, start: "10%", end: "30%" },
+      { ele: ".rect", step: { opacity: 1 }, start: "10%", end: "30%" },
+      { ele: ".rect-left", step: { opacity: 1 }, start: "30%", end: "50%" },
+      { ele: ".rect-left", step: { x: 100 }, start: "30%", end: "50%" },
+      { ele: ".rect-right", step: { x: -100 }, start: "50%", end: "70%" },
+      { ele: ".rect-right", step: { opacity: 1 }, start: "50%", end: "70%" }
     ]);
 
     let box = document.querySelector(".border-box");
@@ -78,7 +91,7 @@ onMounted(() => {
       rate = 0;
     }
 
-    box.style.backgroundImage = `conic-gradient(#7EE787 ${rate}deg,transparent ${rate}deg)`;
+    box.style.backgroundImage = `conic-gradient(#1345B7 ${rate}deg,transparent ${rate}deg)`;
   });
 });
 </script>
@@ -197,7 +210,7 @@ onMounted(() => {
       }
 
       .box-content {
-        background: #7697ff;
+        background: black;
         height: calc(100% - 20px);
         width: calc(100% - 20px);
 
@@ -207,19 +220,17 @@ onMounted(() => {
           margin-top: 30px;
           font-size: 30px;
           color: transparent;
-          background: linear-gradient(
-            45deg,
-            transparent 0,
-            transparent 20%,
-            blue 20%,
-            blue 40%,
-            transparent 40%,
-            transparent 60%,
-            blue 60%,
-            blue 80%,
-            transparent 80%,
-            transparent 100%
-          );
+          background: linear-gradient(45deg,
+              transparent 0,
+              transparent 20%,
+              blue 20%,
+              blue 40%,
+              transparent 40%,
+              transparent 60%,
+              blue 60%,
+              blue 80%,
+              transparent 80%,
+              transparent 100%);
           background-size: 100%;
           background-position: 70px 0;
           background-clip: text;
@@ -263,6 +274,7 @@ onMounted(() => {
   from {
     background-position: 100px 0;
   }
+
   to {
     background-position: 300px 0;
   }

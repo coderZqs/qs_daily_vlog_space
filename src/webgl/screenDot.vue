@@ -1,6 +1,6 @@
 <template>
   <div>
-    <canvas class="canvas" width="500" height="500"></canvas>
+    <canvas class="canvas" style="width:100vw;height:100vh"></canvas>
   </div>
 </template>
 
@@ -38,9 +38,11 @@ class GL {
 
   constructor(canvas: HTMLCanvasElement) {
     this.canvas = canvas;
+    canvas.width = canvas.clientWidth;
+    canvas.height = canvas.clientHeight;
     this.webgl = canvas.getContext("webgl");
 
-    this.webgl!.viewport(0, 0, canvas.clientWidth, canvas.clientHeight);
+    this.webgl!.viewport(0, 0, canvas.width, canvas.height);
   }
 
   init() {

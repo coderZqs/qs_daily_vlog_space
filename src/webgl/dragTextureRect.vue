@@ -97,7 +97,7 @@ class GL {
 
   loadTexture() {
     let image = new Image();
-    image.src = "/src/assets/image/login.jpg";
+    image.src = "/src/assets/image/2106311D2_0.jpg";
     image.onload = () => {
       var texCoordLocation = this.webgl!.getAttribLocation(
         this.program!,
@@ -109,7 +109,7 @@ class GL {
       this.webgl!.bufferData(
         this.webgl!.ARRAY_BUFFER,
         new Float32Array([
-          0.0, 0.0, 1.0, 0.0, 0.0, 1.0, 0.0, 1.0, 1.0, 0.0, 1.0, 1.0
+          0.0, 0.0, 1.0, 0.0, 0.0, 1.0, 1.0, 1.0, 1.0, 0.0, 0.0, 1.0
         ]),
         this.webgl!.STATIC_DRAW
       );
