@@ -3,11 +3,15 @@
     <canvas id="canvas" width="400" height="400">
       Please use a browser that supports "canvas"
     </canvas>
+
+    <input type="range" v-model="textureRepeatValue" min="-100" max="100" />
   </div>
 </template>
 
 <script setup lang="ts">
-import { onMounted } from "vue";
+import { onMounted, ref } from "vue";
+
+let textureRepeatValue = ref(1);
 
 onMounted(() => {
   const canvas = document.getElementById("canvas");
@@ -72,8 +76,9 @@ void main() {
 
   const texCoordBuffer = gl.createBuffer();
   gl.bindBuffer(gl.ARRAY_BUFFER, texCoordBuffer);
-  const texCoords = [0, 0, 0, 1, 1, 0, 1, 1];
+  const texCoords = [0, 0, 0, textureRepeatValue.value, textureRepeatValue.value, 0, textureRepeatValue.value, textureRepeatValue.value];
   gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(texCoords), gl.STATIC_DRAW);
+  gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, 1); //反转Y轴
 
   // 创建纹理
   const image = new Image();
@@ -81,13 +86,14 @@ void main() {
     const texture = gl.createTexture();
     gl.bindTexture(gl.TEXTURE_2D, texture);
     gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, image);
-    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
-    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE); // 设置纹理在Y轴上不重复
+    gl.generateMipmap(gl.TEXTURE_2D);
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.REPEAT);
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.REPEAT); // 设置纹理在Y轴上不重复
     gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
     gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
 
     // 清空画布
-    gl.clearColor(0, 0, 0, 0);
+    // gl.clearColor(0, 0, 0, 0);
     gl.clear(gl.COLOR_BUFFER_BIT);
 
     // 使用着色器程序
@@ -110,7 +116,7 @@ void main() {
   };
 
   // 设置图像源
-  image.src = "/src/assets/icon/img/bill.png"; // 替换为您自己的图片路径
+  image.src = "/src/assets/image/fomale.png"; // 替换为您自己的图片路径
 });
 </script>
 

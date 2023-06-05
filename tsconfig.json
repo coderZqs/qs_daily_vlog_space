@@ -9,6 +9,7 @@
     "esModuleInterop": true,
     "allowSyntheticDefaultImports": true,
     "forceConsistentCasingInFileNames": true,
+    "experimentalDecorators": true,
     "useDefineForClassFields": true,
     "noImplicitAny": false,
     "sourceMap": true,
@@ -24,7 +25,9 @@
     "src/**/*.tsx",
     "src/**/*.vue",
     "tests/**/*.ts",
-    "tests/**/*.tsx", "src/views/home/hooks/bg.js", "src/views/home/hooks/bg.js"
+    "tests/**/*.tsx",
+    "src/views/home/hooks/bg.js",
+    "src/views/home/hooks/bg.js"
   ],
   "exclude": ["node_modules"]
 }
