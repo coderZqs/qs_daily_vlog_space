@@ -23,7 +23,7 @@ let fragmentShader = `
    }
 `;
 
-import threejsAPi, { VertexNormalsHelper } from "../threejs/index";
+import threejsAPi, { VertexNormalsHelper } from "@/threejs/index";
 
 let renderer = threejsAPi.initRenderer();
 let camera = threejsAPi.initCamera();
@@ -31,7 +31,7 @@ let scene = new THREE.Scene();
 
 var material = new THREE.ShaderMaterial({
   vertexShader: vertexShader,
-  fragmentShader: fragmentShader,
+  fragmentShader: fragmentShader
 });
 var mesh = new THREE.Mesh(new THREE.BoxGeometry(1, 1, 1, 1, 1, 1), material);
 scene.add(mesh);

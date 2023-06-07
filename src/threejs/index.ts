@@ -8,7 +8,7 @@ import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader";
 import VertexNormalsHelper from "./helper/VertexNormalHelper.js";
 const sizeConfig = {
   height: window.innerHeight,
-  width: window.innerWidth,
+  width: window.innerWidth
 };
 
 /**
@@ -89,9 +89,9 @@ const initCamera = (type = "PerspectiveCamera", near = 0.1, far = 1000) => {
  * @returns
  */
 
-const initRenderer = (params: object = {}) => {
+const initRenderer = (params: object = {}): THREE.WebGLRenderer => {
   const renderer = new THREE.WebGLRenderer({
-    ...params,
+    ...params
   });
   renderer.shadowMap.enabled = true;
   renderer.setSize(sizeConfig.width, sizeConfig.height);
@@ -177,7 +177,7 @@ const addTextureLoader = (
     loader = new THREE.TextureLoader();
   }
 
-  loader.load(textureUrl, (object) => {
+  loader.load(textureUrl, object => {
     callback && callback(object);
   });
 };
@@ -203,7 +203,7 @@ const addPositionalAudio = (
 
     const audioLoader = new THREE.AudioLoader();
 
-    audioLoader.load(audioUrl, (AudioBuffer) => {
+    audioLoader.load(audioUrl, AudioBuffer => {
       PositionalAudio.setBuffer(AudioBuffer);
       PositionalAudio.setVolume(volume || 0.9); //音量
       PositionalAudio.setRefDistance(refDistance || 1); //参数值越大,声音越大
@@ -221,7 +221,7 @@ const addPlane = (size: number, params: object): THREE.Mesh => {
   const plane = new THREE.Mesh(
     new THREE.PlaneGeometry(size, size),
     new THREE.MeshBasicMaterial({
-      ...params,
+      ...params
     })
   );
 
@@ -237,7 +237,7 @@ const addPlane = (size: number, params: object): THREE.Mesh => {
 const loadFBX = (url: string, callback: (arg0: object) => void) => {
   const loader = new FBXLoader();
   // 加载人物
-  loader.load(url, (object) => {
+  loader.load(url, object => {
     callback && callback(object);
   });
 };
@@ -249,7 +249,7 @@ const loadFBX = (url: string, callback: (arg0: object) => void) => {
 const loadOBJ = (url: string, callback: (arg0: object) => void) => {
   const loader = new OBJLoader();
   // 加载人物
-  loader.load(url, (object) => {
+  loader.load(url, object => {
     callback && callback(object);
   });
 };
@@ -261,7 +261,7 @@ const loadOBJ = (url: string, callback: (arg0: object) => void) => {
 const loadGLTF = (url: string, callback: (arg0: object) => void) => {
   const loader = new GLTFLoader();
 
-  loader.load(url, (object) => {
+  loader.load(url, object => {
     callback && callback(object);
   });
 };
@@ -271,11 +271,11 @@ export { VertexNormalsHelper };
 const initTextGeometry = async (text: string, config: object) => {
   const loader = new THREE.FontLoader();
   let geometry;
-  await new Promise((resolve) => {
+  await new Promise(resolve => {
     loader.load("/src/assets/font/FZShuTi_Regular.json", function (font) {
       geometry = new THREE.TextGeometry(text, {
         font: font,
-        ...config,
+        ...config
       });
 
       resolve(1);
@@ -309,5 +309,5 @@ export default {
   loadOBJ,
   loadGLTF,
   initTextGeometry,
-  calcObject3DSize,
+  calcObject3DSize
 };

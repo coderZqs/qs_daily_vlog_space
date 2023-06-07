@@ -12,7 +12,7 @@
 import * as CANNON from "cannon-es";
 import * as THREE from "three";
 import { onMounted } from "vue";
-import { PointerLockControlsCannon } from "../utils/pointerLockControls.js";
+import { PointerLockControlsCannon } from "@/utils/pointerLockControls.js";
 
 /**
  * Example of a really barebones version of a fps game.

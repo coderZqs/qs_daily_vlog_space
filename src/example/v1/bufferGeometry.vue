@@ -6,7 +6,7 @@
 import * as THREE from "three";
 import { onMounted } from "vue";
 
-import threejsAPi from "../threejs/index";
+import threejsAPi from "@/threejs/index";
 
 let renderer = threejsAPi.initRenderer();
 let camera = threejsAPi.initCamera();

@@ -7,7 +7,7 @@ import { ref, onMounted } from "vue";
 import * as THREE from "three";
 import {
   CSS2DRenderer,
-  CSS2DObject,
+  CSS2DObject
 } from "three/examples/jsm/renderers/CSS2DRenderer";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
 
@@ -40,7 +40,7 @@ const generateBox = (i: number) => {
   var cube = new THREE.Mesh(
     new THREE.BoxGeometry(boxSize, boxSize, boxSize),
     new THREE.MeshLambertMaterial({
-      color: boxColor,
+      color: boxColor
     })
   );
 
@@ -107,21 +107,10 @@ const init = () => {
     500
   );
 
-  const controls = new OrbitControls(camera, labelRenderer.domElement);
-  controls.minDistance = 5;
-  controls.maxDistance = 100000;
-
   // 渲染器
   let renderer = new THREE.WebGLRenderer();
   renderer.setSize(window.innerWidth, window.innerHeight);
   renderer.setClearColor(0xb9d3ff, 1);
-
-  if (container.value) {
-    container.value.appendChild(renderer.domElement);
-    container.value.appendChild(labelRenderer.domElement);
-    renderer.render(scene, camera);
-    labelRenderer.render(scene, camera);
-  }
 
   /**
    * 设置定时器
@@ -137,7 +126,6 @@ const init = () => {
     camera.position.y = y / 2;
     camera.position.z = y / 2 / Math.tan(Math.PI / 8); */
     renderer.render(scene, camera);
-    labelRenderer.render(scene, camera);
     mixer.update(clock.getDelta());
   }, 30);
 };
