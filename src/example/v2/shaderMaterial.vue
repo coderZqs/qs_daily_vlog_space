@@ -14,7 +14,7 @@ class GL {
   public scene: THREE.Scene = new THREE.Scene();
   public canvas: HTMLElement | null = null;
   public ambientLight: THREE.AmbientLight | null = null;
-  public mesh: THREE.Mesh | null = null;
+  public points: THREE.Points | null = null;
 
   constructor(canvas: HTMLElement) {
     this.canvas = canvas;
@@ -41,66 +41,69 @@ class GL {
 
   initCube() {
     const textureLoader = new THREE.TextureLoader();
-    textureLoader.load("/src/assets/image/1665467568000.jpg", texture => {
-      console.log(texture);
-      let geometry = new THREE.PlaneGeometry(5);
+    textureLoader.load("/src/assets/image/fomale.png", texture => {
+      texture.wrapS = THREE.RepeatWrapping;
+      texture.wrapS = THREE.RepeatWrapping;
+      let geometry = new THREE.BufferGeometry();
+
+      let width = 500;
+      let height = 500;
+      let points = []
+      let distance = []
+
+      for (let i = 0; i < width; i++) {
+        for (let j = 0; j < height; j++) {
+          points.push(i / width);
+          points.push(j / height);
+          points.push(0);
+
+
+          let disx = i - width;
+          let disy = j - height / 2;
+
+          distance.push(disx / (width))
+          distance.push(disy / (height))
+        }
+      }
+
+      geometry.setAttribute('position', new THREE.BufferAttribute(new Float32Array(points), 2));
+      geometry.setAttribute('uv', new THREE.BufferAttribute(new Float32Array(points), 2));
+      geometry.setAttribute('distance', new THREE.BufferAttribute(new Float32Array(distance), 2));
+
 
       let material = new THREE.ShaderMaterial({
         side: THREE.DoubleSide,
         vertexShader: `
-        varying vec3 vPosition;
+        attribute vec2 distance;
         varying vec2 vUV;
-
-        float random (float p) {
-          return fract(sin(p)*43758.5453123);
-        }
-
+        uniform vec2 uFrequency;
         void main() {
-
-            // 顶点着色器计算后的Position
-            vPosition = position;
-            // 把uv数据传递给片元
             vUV = uv;
-            
-            gl_Position = projectionMatrix * modelViewMatrix * vec4(position.x,random(position.y),0.5 * sin(position.x * 10.0), 1.0);
+            gl_Position = projectionMatrix * modelViewMatrix * vec4(position.x,position.y + distance.y, 0.0 , 1.0);
+            gl_PointSize = 1.0;
         }`,
 
         fragmentShader: `
-        uniform float uRadius; // 设置一个半径范围
-        uniform vec3 uColor; // 颜色1
-        varying vec3 vPosition; // 顶点数据
         varying vec2 vUV; // uv
         uniform sampler2D uTexture; // 材质
         void main() { 
-            // 材质和uv计算为当前位置颜色
-            vec4 mapColor = texture2D(uTexture, vUV);
-
-            vec3 vCenter = vec3(0.0, 0.0, 0.0);
-
-            float len = distance(vCenter, vPosition);
-
-            if (len < uRadius) {
-                gl_FragColor = mapColor;
-            } else {
-                gl_FragColor = vec4(uColor, 1.0);
-            }
+             vec4 color=texture2D(uTexture,vUV);
+             gl_FragColor=color;
         }`,
         uniforms: {
-          uColor: {
-            value: new THREE.Color("#CCCCCC")
-          },
-          uRadius: {
-            value: 5000
-          },
           uTexture: {
             value: texture
+          },
+
+          uFrequency: {
+            value: new THREE.Vector2(10, 3)
           }
         }
       });
 
-      this.mesh = new THREE.Mesh(geometry, material);
-      this.mesh.position.set(0, 0, 0);
-      this.scene.add(this.mesh);
+      this.points = new THREE.Points(geometry, material);
+      this.points.position.set(-0.5, -0.5, 0);
+      this.scene.add(this.points);
     });
   }
 

@@ -3,40 +3,99 @@
     <div class="steering-wheel">
       <div class="control-dot" @mousedown="dragControl"></div>
     </div>
+
+
+    <div class="keyboard">
+      <div></div>
+      <div class="key" :style="{ background: isForward ? '#0078D4' : '' }">W</div>
+      <div></div>
+      <div class="key" :style="{ background: isLeft ? '#0078D4' : '' }">A</div>
+      <div class="key" :style="{ background: isBack ? '#0078D4' : '' }">S</div>
+      <div class="key" :style="{ background: isRight ? '#0078D4' : '' }">D</div>
+    </div>
   </div>
 </template>
 
 <script setup lang="ts">
 import * as THREE from "three";
 import threejsAPI from "@/threejs/index";
-import { onMounted } from "vue";
+import { onMounted, ref } from "vue";
 
 let renderer: THREE.WebGLRenderer = threejsAPI.initRenderer();
 let scene: THREE.Scene = new THREE.Scene();
-let light: THREE.Light = new THREE.AmbientLight(0xffffff);
+let light: THREE.Light = new THREE.AmbientLight(0xffffff, 1);
+let spotLight = new THREE.SpotLight(0xD44E39, 1, 1000, Math.PI / 3)
+spotLight.castShadow = true;
 let camera: THREE.Camera = threejsAPI.initCamera("PerspectiveCamera");
 let plane: THREE.Mesh;
 let sphere: THREE.Mesh;
-let isForward = false;
-let isLeft = false;
-let isRight = false;
-let isBack = false;
+let isForward = ref(false);
+let isLeft = ref(false);
+let isRight = ref(false);
+let isBack = ref(false);
 let angle = 0;
+let point;
 
-light.position.set(0, 0, 0);
+
+const generateStar = () => {
+
+  let vertexPoint: number[] = [];
+  let size = 1000;
+
+  for (let i = 0; i < 10000; i++) {
+    let x, y, z;
+
+    x = Math.random() * (size) - 1000 / 2;
+    y = Math.random() * (size) - 1000 / 2;
+    z = Math.random() * (size) - 1000 / 2;
+
+    vertexPoint.push(x);
+    vertexPoint.push(y);
+    vertexPoint.push(z);
+  }
+
+  let geometry = new THREE.BufferGeometry();
+
+  geometry.setAttribute('position', new THREE.BufferAttribute(new Float32Array(vertexPoint), 3)); // 一个顶点由3个坐标构成
+
+  const material = new THREE.PointsMaterial({
+    color: '#ffff00',
+    size: 2,
+    transparent: true,// 开启透明度
+  });
+
+  point = new THREE.Points(geometry, material)
+  point.position.set(0, 0, 0);
+  scene.add(point);
+}
+
+
+generateStar();
+
+
+spotLight.position.set(20, 20, 20)
+scene.add(spotLight)
 scene.add(light);
-camera.position.set(0, 30, 100);
+scene.castShadow = true;
+camera.position.set(0, 100, 100);
 
-const planeSizeWidth = 100;
-const planeSizeHeight = 100;
+// scene.fog = new THREE.Fog(0x00000, 0, 30);
+
+const planeSizeWidth = 1000;
+const planeSizeHeight = 1000;
 
 const generatePlane = (): THREE.Mesh => {
   plane = new THREE.Mesh(
-    new THREE.BoxGeometry(100, 100, 0.5),
+    new THREE.BoxGeometry(planeSizeWidth, planeSizeHeight, 0.5),
     new THREE.MeshStandardMaterial({
-      color: 0xdee1e6,
+      color: 0x7697FF,
+      opacity: 0.2,
+      transparent: true,
     })
   );
+
+  plane.receiveShadow = true;
+  plane.castShadow = true;
 
   plane.rotation.x = -Math.PI / 2;
   plane.position.set(0, 0, 0);
@@ -46,12 +105,16 @@ const generatePlane = (): THREE.Mesh => {
 
 const generateSphere = (): THREE.Mesh => {
   let sphere = new THREE.Mesh(
-    new THREE.SphereGeometry(1, 36, 36),
-    new THREE.MeshStandardMaterial({ color: 0x050a32 })
+    new THREE.SphereGeometry(5, 36, 36),
+    new THREE.MeshToonMaterial({ color: 0xB8C9FF })
   );
 
   /*   let texture = threejsAPI.addTextureLoader('') */
-  sphere.position.y = 1;
+  sphere.position.y = 5;
+  sphere.receiveShadow = true;
+  sphere.castShadow = true;
+
+  spotLight.target = sphere;
   return sphere;
 };
 
@@ -74,16 +137,16 @@ let addKeyBoardControls = () => {
   window.addEventListener("keydown", (e) => {
     let key = e.key;
     if (key === "w") {
-      isForward = true;
+      isForward.value = true;
     }
     if (key === "s") {
-      isBack = true;
+      isBack.value = true;
     }
     if (key === "a") {
-      isLeft = true;
+      isLeft.value = true;
     }
     if (key === "d") {
-      isRight = true;
+      isRight.value = true;
     }
   });
 
@@ -91,16 +154,16 @@ let addKeyBoardControls = () => {
     let key = e.key;
 
     if (key === "w") {
-      isForward = false;
+      isForward.value = false;
     }
     if (key === "s") {
-      isBack = false;
+      isBack.value = false;
     }
     if (key === "a") {
-      isLeft = false;
+      isLeft.value = false;
     }
     if (key === "d") {
-      isRight = false;
+      isRight.value = false;
     }
   });
 };
@@ -111,22 +174,24 @@ let animate = () => {
   renderer.render(scene, camera);
   requestAnimationFrame(animate);
 
+  point.rotation.y += 0.001;
+
   let stepX: number = 0;
   let stepZ: number = 0;
 
-  if (isForward) {
+  if (isForward.value) {
     stepZ = -0.5;
   }
 
-  if (isBack) {
+  if (isBack.value) {
     stepZ = 0.5;
   }
 
-  if (isLeft) {
+  if (isLeft.value) {
     stepX = -0.5;
   }
 
-  if (isRight) {
+  if (isRight.value) {
     stepX = 0.5;
   }
 
@@ -140,22 +205,19 @@ let animate = () => {
     sphere.position.z += stepZ;
   }
   camera.lookAt(sphere.position);
-  camera.position.set(sphere.position.x, 50, sphere.position.z + 50);
+  camera.position.set(sphere.position.x, 100, sphere.position.z + 50);
 };
 
 let dragControl = (e: MouseEvent) => {
   let steeringWheel = document.querySelector(".steering-wheel") as HTMLElement;
   let controlDot = document.querySelector(".control-dot") as HTMLElement;
   if (controlDot instanceof HTMLElement) {
-    let { top, left } = controlDot.getBoundingClientRect();
     let {
       top: ft,
       left: fl,
       height: fh,
       width: fw,
     } = steeringWheel.getBoundingClientRect();
-    let startX = e.pageX - left;
-    let startY = e.pageY - top;
 
     window.onmousemove = (mouse) => {
       let centerPoint = {
@@ -216,7 +278,7 @@ onMounted(() => {
   position: absolute;
   bottom: 100px;
   left: 100px;
-  background: red;
+  background: rgba(255, 255, 255, 0.1);
   z-index: 9;
   height: 100px;
   width: 100px;
@@ -230,8 +292,30 @@ onMounted(() => {
     height: 30px;
     width: 30px;
     border-radius: 50%;
-    background: gray;
+    background: #DCE5FF;
     cursor: pointer;
+  }
+}
+
+.keyboard {
+  position: fixed;
+  right: 100px;
+  bottom: 100px;
+  display: grid;
+  grid-template-columns: 50px 50px 50px;
+  justify-items: center;
+
+  div {
+    height: 50px;
+    width: 50px;
+    line-height: 50px;
+    text-align: center;
+  }
+
+  .key {
+    user-select: none;
+    font-size: 20px;
+    color: #C8CFFF;
   }
 }
 </style>

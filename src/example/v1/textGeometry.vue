@@ -6,6 +6,8 @@
 import { onMounted } from "vue";
 import * as THREE from "three";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
+import { FontLoader } from 'three/addons/loaders/FontLoader.js';
+import { TextGeometry } from 'three/addons/geometries/TextGeometry.js';
 
 let renderer = new THREE.WebGLRenderer({
   antialias: true,
@@ -26,32 +28,38 @@ spotLight.castShadow = true;
 let ambient = new THREE.AmbientLight(new THREE.Color("#ffffff"), 0.3);
 scene.add(ambient);
 
-// todo
-const TEXT = "########################################";
 
-let group = new THREE.Group();
+let generateWord = async () => {
+  let width = 500;
+  let height = 500;
 
-for (let i = 0; i < TEXT.length; i++) {
-  new THREE.FontLoader().load("/src/assets/image/bold.json", (font) => {
-    console.log(TEXT[i]);
-    const geometry = new THREE.TextGeometry(TEXT[0], {
-      font: font,
-      size: 5,
-      height: 1,
-    });
+  let points = []
 
-    let text = new THREE.Mesh(
-      geometry,
-      new THREE.MeshBasicMaterial({ color: 0xffffff })
-    );
+  for (let i = 0; i < width; i++) {
+    for (let j = 0; j < height; j++) {
+      points.push(i);
+      points.push(j);
+      points.push(0);
+    }
+  }
 
-    let x = Math.sin(((Math.PI * 2) / TEXT.length) * i) * 30;
-    let z = Math.cos(((Math.PI * 2) / TEXT.length) * i) * 30;
-    text.position.set(x, 0, z);
-    group.add(text);
+  let geometry = new THREE.BufferGeometry();
+
+  geometry.setAttribute('position', new THREE.BufferAttribute(points, 3)); // 一个顶点由3个坐标构成
+
+  const material = new THREE.PointsMaterial({
+    color: 0xffffff,
+    size: 0.1,
+    transparent: true,// 开启透明度
   });
+
+  let point = new THREE.Points(geometry, material)
+  point.position.set(0, 0, 0);
+  scene.add(point);
 }
-scene.add(group);
+
+generateWord();
+
 
 let control = new OrbitControls(camera, renderer.domElement);
 
@@ -61,9 +69,6 @@ let animate = () => {
   requestAnimationFrame(animate);
   control.update();
   renderer.render(scene, camera);
-  group.rotation.y -= 0.01;
-  group.rotation.z = Math.sin(time) / 5;
-  group.rotation.x = Math.cos(time) / 5;
 };
 onMounted(() => {
   let dom = document.querySelector("#container");
