@@ -5,8 +5,20 @@
 <script setup lang="ts">
 import T from "@/threejs/index";
 import { AmbientLight } from "three";
-import { onMounted } from "vue";
+import { onMounted, ref } from "vue";
 import * as THREE from "three";
+import { GUI } from "dat.gui";
+import { optionOptions } from "ant-design-vue/lib/vc-mentions/src/Option";
+
+let openOptions = {
+  size: 0
+};
+
+const gui = new GUI();
+const cubeFolder = gui.addFolder("Cube");
+cubeFolder.add(openOptions, "size", 0, 50);
+cubeFolder.add(openOptions, "uFrequency", 0, 50);
+cubeFolder.open();
 
 class GL {
   public camera: THREE.Camera = T.initCamera();
@@ -37,6 +49,11 @@ class GL {
     });
 
     this.renderer.render(this.scene, this.camera);
+
+    if (this.points) {
+      this.points.material.uniforms.uProgress.value = openOptions.size;
+      this.points.material.uniformsNeedUpdate = true;
+    }
   }
 
   initCube() {
@@ -48,45 +65,57 @@ class GL {
 
       let width = 500;
       let height = 500;
-      let points = []
-      let distance = []
+      let points = [];
+      let distance = [];
+      let uv = [];
 
       for (let i = 0; i < width; i++) {
         for (let j = 0; j < height; j++) {
-          points.push(i / width);
-          points.push(j / height);
+          points.push((i / width) * 2 - 1);
+          points.push((j / height) * 2 - 1);
           points.push(0);
 
+          uv.push(i / width);
+          uv.push(j / height);
 
-          let disx = i - width;
+          let disx = i - width / 2;
           let disy = j - height / 2;
 
-          distance.push(disx / (width))
-          distance.push(disy / (height))
+          distance.push(disx / width);
+          distance.push(disy / height);
         }
       }
 
-      geometry.setAttribute('position', new THREE.BufferAttribute(new Float32Array(points), 2));
-      geometry.setAttribute('uv', new THREE.BufferAttribute(new Float32Array(points), 2));
-      geometry.setAttribute('distance', new THREE.BufferAttribute(new Float32Array(distance), 2));
-
+      geometry.setAttribute(
+        "position",
+        new THREE.BufferAttribute(new Float32Array(points), 3)
+      );
+      geometry.setAttribute(
+        "uv",
+        new THREE.BufferAttribute(new Float32Array(uv), 2)
+      );
+      geometry.setAttribute(
+        "distance",
+        new THREE.BufferAttribute(new Float32Array(distance), 2)
+      );
 
       let material = new THREE.ShaderMaterial({
         side: THREE.DoubleSide,
         vertexShader: `
+        uniform float uProgress;
         attribute vec2 distance;
         varying vec2 vUV;
         uniform vec2 uFrequency;
         void main() {
             vUV = uv;
-            gl_Position = projectionMatrix * modelViewMatrix * vec4(position.x,position.y + distance.y, 0.0 , 1.0);
-            gl_PointSize = 1.0;
+            gl_Position = projectionMatrix * modelViewMatrix * vec4(position.x + distance.x * uProgress,position.y + distance.y * uProgress, sin((position.x + distance.x * uProgress) * 3.0) , 1.0);
+            gl_PointSize = 5.0;
         }`,
 
         fragmentShader: `
-        varying vec2 vUV; // uv
-        uniform sampler2D uTexture; // 材质
-        void main() { 
+        varying vec2 vUV;
+        uniform sampler2D uTexture;
+        void main() {
              vec4 color=texture2D(uTexture,vUV);
              gl_FragColor=color;
         }`,
@@ -97,12 +126,15 @@ class GL {
 
           uFrequency: {
             value: new THREE.Vector2(10, 3)
+          },
+
+          uProgress: {
+            value: openOptions.size
           }
         }
       });
 
       this.points = new THREE.Points(geometry, material);
-      this.points.position.set(-0.5, -0.5, 0);
       this.scene.add(this.points);
     });
   }
