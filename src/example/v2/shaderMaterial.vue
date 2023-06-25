@@ -20,7 +20,6 @@ import { Vector3 } from "three";
 const gui = new GUI();
 const cubeFolder = gui.addFolder("Cube");
 cubeFolder.add(openOptions, "size", 0, 50);
-cubeFolder.add(openOptions, "uFrequency", 0, 50);
 cubeFolder.open();
  */
 
@@ -189,7 +188,16 @@ class GL {
     }
   }
 
+  initTestCube() {
+    let box = T.generateCube([1, 1, 1], "MeshPhysicalMaterial", {
+      color: 0xff0000
+    });
+
+    this.scene.add(box);
+  }
+
   initCube() {
+    this.initTestCube();
     const textureLoader = new THREE.TextureLoader();
     textureLoader.load("/src/assets/image/fomale.png", texture => {
       texture.wrapS = THREE.RepeatWrapping;

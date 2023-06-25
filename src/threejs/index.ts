@@ -153,8 +153,8 @@ const judgeRaycasterTouchObject = (
   camera: THREE.Camera
 ) => {
   raycaster.setFromCamera(pointer, camera);
-  const intersectObject = raycaster.intersectObjects(objectList, true);
-  return Boolean(intersectObject.length);
+  const intersectObject = raycaster.intersectObjects(objectList, false);
+  return { isTouch: Boolean(intersectObject.length), intersectObject };
 };
 
 /**
