@@ -1,0 +1,11 @@
+Model Information:
+* title:	Toon-Bat
+* source:	https://sketchfab.com/3d-models/toon-bat-0a714c6bceb043c2bed767fa9b950cb6
+* author:	NORBERTO-3D (https://sketchfab.com/norberto3d)
+
+Model License:
+* license type:	CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)
+* requirements:	Author must be credited. Commercial use is allowed.
+
+If you use this 3D model in your project be sure to copy paste this credit wherever you share it:
+This work is based on "Toon-Bat" (https://sketchfab.com/3d-models/toon-bat-0a714c6bceb043c2bed767fa9b950cb6) by NORBERTO-3D (https://sketchfab.com/norberto3d) licensed under CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)
